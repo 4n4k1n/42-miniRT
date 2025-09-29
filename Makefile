@@ -5,7 +5,21 @@ CFLAGS	:= -Wall -Wextra -Werror -Wunreachable-code -Ofast -march=native -mtune=n
 OBJ_DIR = objs
 CC = cc
 
-SRC = src/main.c
+SRC = \
+	src/main.c \
+	src/math/vec_add.c \
+	src/math/vec_cpy.c \
+	src/math/vec_cross.c \
+	src/math/vec_divide.c \
+	src/math/vec_dot.c \
+	src/math/vec_init.c \
+	src/math/vec_multiply.c \
+	src/math/vec_overload.c \
+	src/math/vec_sqrt.c \
+	src/math/vec_squared.c \
+	src/math/vec_sub.c \
+	src/utils/image.c \
+	src/utils/ray.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
@@ -33,7 +47,7 @@ all: $(LIBFT) $(LIBMLX42) $(NAME)
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(LIBMLX42) $(LIBFT) -o $(NAME)
 
-$(OBJ_DIR)/%.o: src/%.c inc/miniRT.h
+$(OBJ_DIR)/%.o: src/%.c inc/mini_rt.h
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -59,8 +73,6 @@ fclean: clean
 	$(MAKE) fclean -C $(LIBFT_DIR)
 	@rm -rf $(MLX42_DIR)
 
-re:
-	$(MAKE) fclean
-	$(MAKE) all
+re: fclean all
 
 .PHONY: all clean fclean re
