@@ -1,14 +1,18 @@
 #ifndef OBJECTS_H
 # define OBJECTS_H
 
-# include "mini_rt.h"
-
 typedef struct s_vec3
 {
 	double	x;
 	double	y;
 	double	z;
 }	t_vec3;
+
+typedef struct s_ray
+{
+	t_vec3	origin;
+	t_vec3	direction;
+}	t_ray;
 
 typedef struct s_rgb
 {
@@ -61,7 +65,16 @@ typedef struct s_obj_list
 
 typedef struct s_camera
 {
-	t_vec3	vec;
+	t_vec3	center;
+	double	foc;
+	double	viewport_height;
+	double	viewport_width;
+	t_vec3	viewport_u;
+	t_vec3	viewport_v;
+	t_vec3	pixel_delta_u;
+	t_vec3	pixel_delta_v;
+	t_vec3	viewport_upper_left;
+	t_vec3	pixel00_loc;
 }	t_camera;
 
 typedef struct s_light
@@ -83,12 +96,14 @@ typedef struct t_ambiente
 	t_rgb	color;
 }	t_ambiente;
 
-typedef struct s_main
+typedef struct s_data
 {
 	t_obj_list		*objects;
 	t_camera		camera;
 	t_light_list	*light_list;
 	t_ambiente		ambiente;
-}	t_main;
+	int				height;
+	int				width;
+}	t_data;
 
 #endif
