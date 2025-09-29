@@ -20,12 +20,12 @@ t_vec3	*vec3_sub(t_vec3 *dst, t_vec3 *src)
 	return (dst);
 }
 
-inline t_vec3	*vec3_sub_inline(t_vec3 *dst, t_vec3 *src)
+inline t_vec3	vec3_sub_inline(t_vec3 *dst, t_vec3 *src)
 {
 	t_vec3	new;
 
 	new.x = dst->x - src->x;
 	new.y = dst->y - src->y;
 	new.z = dst->z - src->z;
-	return (dst);
+	return (new);
 }

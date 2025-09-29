@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/29 19:27:35 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/09/29 21:35:36 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	main(int ac, char **av)
 	(void)ac;
 	(void)av;
 
-	mlx_set_setting(MLX_MAXIMIZED, true);
+	mlx_set_setting(MLX_MAXIMIZED, false);
 	mlx_t* mlx = mlx_init(WIDTH, HEIGHT, "42Balls", false);
 	if (!mlx)
 		return (1);
@@ -29,13 +29,15 @@ int	main(int ac, char **av)
 	if (!img || (mlx_image_to_window(mlx, img, 0, 0) < 0))
 		return (1);
 
+	t_rgb	color = {255, 255, 255};
+	
 	i = 0;
 	while (i < data.height)
 	{
 		j = 0;
 		while (j < data.width)
 		{
-			
+			mlx_put_pixel(img, i, j, rgb_to_uint32(&color));
 		}
 	}
 

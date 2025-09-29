@@ -18,7 +18,7 @@ t_vec3	*vec3_add(t_vec3 *dst, t_vec3 *src);
 t_vec3	vec3_add_inline(t_vec3 *dst, t_vec3 *src);
 
 t_vec3	*vec3_sub(t_vec3 *dst, t_vec3 *src);
-t_vec3	*vec3_sub_inline(t_vec3 *dst, t_vec3 *src);
+t_vec3	vec3_sub_inline(t_vec3 *dst, t_vec3 *src);
 
 t_vec3	*vec3_cpy(t_vec3 *dst, t_vec3 *src);
 t_vec3	vec3_cpy_inline(t_vec3 *vec);
