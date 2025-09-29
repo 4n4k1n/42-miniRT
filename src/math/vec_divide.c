@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 14:19:58 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/29 14:21:29 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/09/29 15:31:04 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,4 +18,14 @@ t_vec3	*vec3_divide(t_vec3 *vec, double t)
 	vec->y /= t;
 	vec->z /= t;
 	return (vec);
+}
+
+inline t_vec3	vec3_divide_inline(t_vec3 *vec, double t)
+{
+	t_vec3	new;
+
+	new.x = vec->x / t;
+	new.y = vec->y / t;
+	new.z = vec->z / t;
+	return (new);
 }

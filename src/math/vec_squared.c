@@ -6,13 +6,13 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 14:26:38 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/29 14:31:15 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/09/29 15:33:14 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-double	vec3_squared(t_vec3 *vec)
+inline double	vec3_squared(t_vec3 *vec)
 {
 	return (vec->x * vec->x + vec->x * vec->y + vec->z * vec->z);
 }
