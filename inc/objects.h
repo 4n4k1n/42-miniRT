@@ -1,7 +1,7 @@
 #ifndef OBJECTS_H
 # define OBJECTS_H
 
-# include "miniRT.h"
+# include "mini_rt.h"
 
 typedef struct s_vec3
 {
