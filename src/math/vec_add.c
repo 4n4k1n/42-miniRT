@@ -20,7 +20,7 @@ t_vec3	*vec3_add(t_vec3 *dst, t_vec3 *src)
 	return (dst);
 }
 
-inline t_vec3	vec3_add(t_vec3 *dst, t_vec3 *src)
+inline t_vec3	vec3_add_inline(t_vec3 *dst, t_vec3 *src)
 {
 	t_vec3	new;
 

@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_sqrt.c                                         :+:      :+:    :+:   */
+/*   vec_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/29 14:32:12 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/29 21:03:41 by anakin           ###   ########.fr       */
+/*   Created: 2025/09/29 18:34:21 by apregitz          #+#    #+#             */
+/*   Updated: 2025/09/29 19:49:22 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#define _GNU_SOURCE
 #include "mini_rt.h"
-#include <math.h>
 
-double sqrt(double x);
-
-inline double	vec3_sqrt(t_vec3 *vec)
+inline t_vec3	vec3_init_inline(double x, double y, double z)
 {
-	return (sqrt(vec3_squared(vec)));
+	t_vec3	new;
+	
+	new.x = x;
+	new.y = y;
+	new.z = z;
+	return (new);
 }

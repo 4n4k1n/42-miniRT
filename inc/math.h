@@ -1,7 +1,7 @@
 #ifndef MATH_H
 # define MATH_H
 
-# include "mini_rt.h"
+# include "objects.h"
 
 // member operations
 t_vec3	*vec3_add_member(t_vec3 *dst, t_vec3 *src);
@@ -18,7 +18,7 @@ t_vec3	*vec3_add(t_vec3 *dst, t_vec3 *src);
 t_vec3	vec3_add_inline(t_vec3 *dst, t_vec3 *src);
 
 t_vec3	*vec3_sub(t_vec3 *dst, t_vec3 *src);
-t_vec3	*vec3_sub_inline(t_vec3 *dst, t_vec3 *src);
+t_vec3	vec3_sub_inline(t_vec3 *dst, t_vec3 *src);
 
 t_vec3	*vec3_cpy(t_vec3 *dst, t_vec3 *src);
 t_vec3	vec3_cpy_inline(t_vec3 *vec);
@@ -35,5 +35,7 @@ t_vec3	vec3_divide_inline(t_vec3 *vec, double t);
 t_vec3	vec3_cross_inline(t_vec3 *a, t_vec3 *b);
 
 double	vec3_dot_inline(t_vec3 *a, t_vec3 *b);
+
+t_vec3	vec3_init_inline(double x, double y, double z);
 
 #endif
