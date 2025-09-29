@@ -1,38 +1,66 @@
+MAKEFLAGS += -s
+
 NAME	:= miniRT
 CFLAGS	:= -Wall -Wextra -Werror -Wunreachable-code -Ofast -march=native -mtune=native -flto -funroll-loops
-LIBMLX	:= ./MLX42
+OBJ_DIR = objs
+CC = cc
 
-HEADERS	:= -I ./inc -I $(LIBMLX)/include
-LIBS	:= $(LIBMLX)/build/libmlx42.a -ldl -lglfw -pthread -lm
+SRC = src/main.c
 
-SRC_DIR = src
-OBJ_DIR = obj
+OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
-SRCS	:= main.c
+UNAME_S := $(shell uname -s)
 
-OBJS := $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
+LIBFT_DIR = ./libft
+LIBFT = $(LIBFT_DIR)/libft.a
 
-all: libmlx $(NAME)
+MLX42_DIR = ./MLX42
 
-libmlx:
-	@cmake $(LIBMLX) -B $(LIBMLX)/build && make -C $(LIBMLX)/build -j4
+ifeq ($(UNAME_S),Linux)
+	LIBMLX42 = $(MLX42_DIR)/build/libmlx42.a -ldl -lglfw -pthread -lm
+	CFLAGS += -D LINUX
+else ifeq ($(UNAME_S),Darwin)
+	LIBMLX42 = $(MLX42_DIR)/build/libmlx42.a -lglfw -framework Cocoa -framework OpenGL -framework IOKit
+	CFLAGS += -D OSX
+else
+	$(error OS not supported: $(UNAME_S))
+endif
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c inc/miniRT.h
-	$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
+CFLAGS += -I./inc -I$(MLX42_DIR)/include
 
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+all: $(LIBFT) $(LIBMLX42) $(NAME)
 
-$(NAME): $(OBJ_DIR) $(OBJS)
-	$(CC) $(OBJS) $(LIBS) $(HEADERS) -o $(NAME)
+$(NAME): $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBMLX42) $(LIBFT) -o $(NAME)
+
+$(OBJ_DIR)/%.o: src/%.c inc/miniRT.h
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
+
+$(LIBMLX42):
+	@if [ ! -d $(MLX42_DIR) ]; then \
+		git clone https://github.com/codam-coding-college/MLX42.git \
+		$(MLX42_DIR); \
+	fi
+	@if [ ! -f $(MLX42_DIR)/build/libmlx42.a ]; then \
+		cmake $(MLX42_DIR) -B $(MLX42_DIR)/build && \
+		cmake --build $(MLX42_DIR)/build -j4; \
+	fi
 
 clean:
 	rm -rf $(OBJ_DIR)
-	rm -rf $(LIBMLX)/build
+	$(MAKE) clean -C $(LIBFT_DIR)
 
 fclean: clean
-	rm -rf $(NAME)
+	rm -f $(NAME)
+	$(MAKE) fclean -C $(LIBFT_DIR)
+	@rm -rf $(MLX42_DIR)
 
-re: clean all
+re:
+	$(MAKE) fclean
+	$(MAKE) all
 
-.PHONY: all clean fclean re libmlx
+.PHONY: all clean fclean re
