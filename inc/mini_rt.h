@@ -4,8 +4,10 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <math.h>
 # include "objects.h"
 # include "../MLX42/include/MLX42/MLX42.h"
+# include "math.h"
 
 # define WIDTH 600
 # define HEIGHT 400
