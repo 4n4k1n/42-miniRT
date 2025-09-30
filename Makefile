@@ -17,8 +17,7 @@ SRC = src/main.c \
 		src/math/vec_sqrt.c \
 		src/math/vec_squared.c \
 		src/math/vec_sub.c \
-		src/utils/image.c \
-		src/utils/ray.c \
+		src/utils/color.c \
 		src/parsing/error.c \
 		src/parsing/list.c \
 		src/parsing/parsing.c \
@@ -27,6 +26,7 @@ SRC = src/main.c \
 		src/parsing/validation.c \
 		src/parsing/validators.c \
 		src/logic/hit_sphere.c \
+		src/logic/camera.c \
 		src/logic/hittable.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)

@@ -1,6 +1,9 @@
 #ifndef OBJECTS_H
 # define OBJECTS_H
 
+# include "../MLX42/include/MLX42/MLX42.h"
+
+
 typedef struct s_vec3
 {
 	double			x;
@@ -72,22 +75,6 @@ typedef struct s_obj_list
 	size_t			size;
 }					t_obj_list;
 
-typedef struct s_camera
-{
-	t_vec3	cords;
-	t_vec3	orientation;
-	double	fov;
-	double	foc;
-	double	viewport_height;
-	double	viewport_width;
-	t_vec3	viewport_u;
-	t_vec3	viewport_v;
-	t_vec3	pixel_delta_u;
-	t_vec3	pixel_delta_v;
-	t_vec3	viewport_upper_left;
-	t_vec3	pixel00_loc;
-}	t_camera;
-
 typedef struct s_light
 {
 	t_vec3			cords;
@@ -108,6 +95,30 @@ typedef struct t_ambient
 	t_rgb			color;
 }					t_ambient;
 
+typedef struct s_camera
+{
+	// Public Camera Parameters (like the book's class public section)
+	double	aspect_ratio;
+	int		image_width;
+	
+	// Private Camera Variables (like the book's class private section)
+	int		image_height;
+	t_vec3	center;
+	t_vec3	pixel00_loc;
+	t_vec3	pixel_delta_u;
+	t_vec3	pixel_delta_v;
+	
+	// Legacy fields (to be removed/refactored)
+	t_vec3	cords;
+	t_vec3	orientation;
+	double	foc;
+	double	viewport_height;
+	double	viewport_width;
+	t_vec3	viewport_u;
+	t_vec3	viewport_v;
+	t_vec3	viewport_upper_left;
+}	t_camera;
+
 typedef struct s_data
 {
 	t_obj_list		*objects;
@@ -116,6 +127,8 @@ typedef struct s_data
 	t_ambient		ambiente;
 	int				height;
 	int				width;
+	mlx_t			*mlx;
+	mlx_image_t		*img;
 }	t_data;
 
 #endif

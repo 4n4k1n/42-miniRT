@@ -8,6 +8,7 @@
 # include <math.h>
 # include <fcntl.h>
 # include "objects.h"
+# include "camera.h"
 # include "parsing.h"
 # include "own_math.h"
 # include "hittable.h"
@@ -16,11 +17,9 @@
 # include "../libft/libft.h"
 
 # define WIDTH 1920
-# define HEIGHT 820
-# define ASPECT_RATIO 21.0 / 9.0
-
-t_rgb		ray_color(t_ray *ray, t_obj_list *world);
+# define HEIGHT 1080
+# define ASPECT_RATIO WIDTH / HEIGHT
+t_rgb	ray_color(t_ray *ray);
 uint32_t	rgb_to_uint32(t_rgb *color);
-void	init_camera(t_data *data);
 
 #endif

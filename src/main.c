@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
 /*   Updated: 2025/09/30 17:07:00 by nweber           ###   ########.fr       */
@@ -48,55 +48,23 @@ static void	build_demo_world(t_data *data)
 int	main(int ac, char **av)
 {
 	t_data	data;
-	int		i;
-	int		j;
 
 	(void)ac;
 	(void)av;
-
-	// Initialize camera
+	
 	init_camera(&data);
-
-	// Build a simple world of hittables (two spheres)
 	build_demo_world(&data);
 
 	mlx_set_setting(MLX_MAXIMIZED, false);
-	mlx_t* mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
-	if (!mlx)
+	data.mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
+	if (!data.mlx)
 		return (1);
-	mlx_image_t* img = mlx_new_image(mlx, WIDTH, HEIGHT);
-	if (!img || (mlx_image_to_window(mlx, img, 0, 0) < 0))
+	data.img = mlx_new_image(data.mlx, WIDTH, HEIGHT);
+	if (!data.img || (mlx_image_to_window(data.mlx, data.img, 0, 0) < 0))
 		return (1);
 
-	// Render
-	i = 0;
-	while (i < HEIGHT)
-	{
-		j = 0;
-		while (j < WIDTH)
-		{
-			// Calculate ray for this pixel
-			t_vec3 temp_u = vec3_multiply_inline(&data.camera.pixel_delta_u, j);
-			t_vec3 temp_v = vec3_multiply_inline(&data.camera.pixel_delta_v, i);
-			t_vec3 temp_offset = vec3_add_inline(&temp_u, &temp_v);
-			t_vec3 pixel_center = vec3_add_inline(&data.camera.pixel00_loc, &temp_offset);
-			t_vec3 ray_direction = vec3_sub_inline(&pixel_center, &data.camera.cords);
-
-			t_ray ray;
-			ray.origin = data.camera.cords;
-			ray.direction = ray_direction;
-
-			// Get color from world
-			t_rgb color = ray_color(&ray, data.objects);
-			uint32_t packed = rgb_to_uint32(&color);
-			mlx_put_pixel(img, j, i, packed);
-			j++;
-		}
-		i++;
-	}
-
-	mlx_loop(mlx);
-	mlx_terminate(mlx);
-
+	render(&data);
+	mlx_loop(data.mlx);
+	mlx_terminate(data.mlx);
 	return (0);
 }

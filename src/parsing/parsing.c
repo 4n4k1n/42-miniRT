@@ -49,7 +49,7 @@ static int	init_scene_lists(t_data *scene)
 	scene->light_list->size = 0;
 	scene->ambiente.lighting = -1.0;
 	scene->ambiente.color.r = -1;
-	scene->camera.fov = -1;
+	scene->camera.foc = -1;
 	return (0);
 }
 

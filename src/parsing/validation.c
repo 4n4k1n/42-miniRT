@@ -49,7 +49,7 @@ int	parse_camera(char **tokens, t_data *scene, t_arg_check *args)
 		return (rt_error("camera FOV out of range [0,180]"));
 	scene->camera.cords = pos;
 	scene->camera.orientation = dir;
-	scene->camera.fov = fov;
+	scene->camera.foc = fov;
 	args->has_c = 1;
 	return (0);
 }
