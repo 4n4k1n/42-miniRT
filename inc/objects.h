@@ -86,6 +86,8 @@ typedef struct s_camera
 	t_vec3	pixel_delta_v;
 	t_vec3	viewport_upper_left;
 	t_vec3	pixel00_loc;
+	int		samples_per_pixel;
+	double	pixel_samples_scale;
 }	t_camera;
 
 typedef struct s_light

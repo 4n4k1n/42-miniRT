@@ -17,6 +17,7 @@ SRC = src/main.c \
 		src/math/vec_sqrt.c \
 		src/math/vec_squared.c \
 		src/math/vec_sub.c \
+		src/math/random.c \
 		src/utils/image.c \
 		src/utils/ray.c \
 		src/parsing/error.c \
