@@ -1,11 +1,13 @@
 MAKEFLAGS += -s
 
 NAME	:= miniRT
-CFLAGS	:= -Wall -Wextra -Werror -Wunreachable-code -Ofast -march=native -mtune=native -flto -funroll-loops
+CFLAGS	:= -Wall -Wextra -Werror -flto
 OBJ_DIR = objs
 CC = cc
 
-SRC = src/main.c
+SRC = src/main.c src/parsing/error.c src/parsing/utils.c src/parsing/parsing.c \
+	src/parsing/validation.c src/parsing/validators.c src/parsing/list.c \
+	src/parsing/validation_obj.c src/parsing/debug.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
