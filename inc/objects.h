@@ -74,7 +74,9 @@ typedef struct s_obj_list
 
 typedef struct s_camera
 {
-	t_vec3	center;
+	t_vec3	cords;
+	t_vec3	orientation;
+	double	fov;
 	double	foc;
 	double	viewport_height;
 	double	viewport_width;
