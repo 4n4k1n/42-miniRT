@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vec_add.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 13:32:23 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/29 15:02:41 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/09/30 17:12:32 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_vec3	*vec3_add(t_vec3 *dst, t_vec3 *src)
 	return (dst);
 }
 
-inline t_vec3	vec3_add_inline(t_vec3 *dst, t_vec3 *src)
+inline t_vec3	vec3_add_inline(const t_vec3 *dst, const t_vec3 *src)
 {
 	t_vec3	new;
 
