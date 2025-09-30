@@ -1,6 +1,8 @@
 #ifndef OBJECTS_H
 # define OBJECTS_H
 
+# include <stdint.h>
+
 typedef struct s_vec3
 {
 	double			x;
@@ -110,8 +112,43 @@ typedef struct t_ambient
 	t_rgb			color;
 }					t_ambient;
 
+typedef struct s_anti_aliasing
+{
+	int 		min_spp;
+	int			max_spp;
+	double		acc_r;
+	double		acc_g;
+	double		acc_b;
+	int			n;
+	double		mean;
+	double		m2;
+	double		off_u;
+	double		off_v;
+	t_vec3		temp_u;
+	t_vec3		temp_v;
+	t_vec3		temp_offset;
+	t_vec3		pixel_sample;
+	t_vec3		ray_direction;
+	t_ray		ray;
+	t_rgb		sample;
+	double		luma;
+	double		delta;
+	double		delta2;
+	double		var;
+	double		inv_n;
+	double		avg_r;
+	double		avg_g;
+	double		avg_b;
+	double		rbyte;
+	double		gbyte;
+	double		bbyte;
+	t_rgb		color;
+	uint32_t	packed;
+}	t_anti_aliasing;
+
 typedef struct s_data
 {
+	t_anti_aliasing	aa;
 	t_obj_list		*objects;
 	t_camera		camera;
 	t_light_list	*light_list;
