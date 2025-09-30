@@ -10,17 +10,15 @@
 # include "objects.h"
 # include "parsing.h"
 # include "own_math.h"
+# include "camera.h"
 
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/libft.h"
 
 # define WIDTH 1920
 # define HEIGHT 820
-# define ASPECT_RATIO 21.0 / 9.0
-
+# define ASPECT_RATIO WIDTH / HEIGHT
 t_rgb	ray_color(t_ray *ray);
 uint32_t	rgb_to_uint32(t_rgb *color);
-void	init_camera(t_data *data);
-double	hit_sphere(t_vec3 center, double radius, t_ray *r);
 
 #endif
