@@ -6,11 +6,11 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 17:28:26 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/30 11:01:05 by nweber           ###   ########.fr       */
+/*   Updated: 2025/09/30 11:27:40 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "mini_rt.h"
 
 // fd = open(av[1], O_RDONLY)
 // while(1)
@@ -33,7 +33,7 @@ static char	*trim_and_strip(char *s)
 	return (out);
 }
 
-static int	init_scene_lists(t_main *scene)
+static int	init_scene_lists(t_data *scene)
 {
 	scene->objects = (t_obj_list *)malloc(sizeof(t_obj_list));
 	if (!scene->objects)
@@ -53,7 +53,7 @@ static int	init_scene_lists(t_main *scene)
 	return (0);
 }
 
-static int	dispatch_line(char **tokens, t_main *scene, t_arg_check *args)
+static int	dispatch_line(char **tokens, t_data *scene, t_arg_check *args)
 {
 	if (!tokens || !tokens[0] || tokens[0][0] == '\0')
 		return (0);
@@ -72,7 +72,7 @@ static int	dispatch_line(char **tokens, t_main *scene, t_arg_check *args)
 	return (rt_error("invalid identifier"));
 }
 
-static int	read_parse(int fd, t_main *scene, t_arg_check *args)
+static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 {
 	char	*raw;
 	char	*line;
@@ -105,7 +105,7 @@ static int	read_parse(int fd, t_main *scene, t_arg_check *args)
 	return (0);
 }
 
-int	parse_scene(const char *path, t_main *scene)
+int	parse_scene(const char *path, t_data *scene)
 {
 	int			fd;
 	t_arg_check	args;

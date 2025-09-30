@@ -9,6 +9,7 @@
 # include <fcntl.h>
 # include "objects.h"
 # include "parsing.h"
+# include "math.h"
 
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/libft.h"

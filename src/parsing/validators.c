@@ -6,11 +6,11 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 20:27:38 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/30 10:53:11 by nweber           ###   ########.fr       */
+/*   Updated: 2025/09/30 11:32:34 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "mini_rt.h"
 
 int	validate_fov(double fov)
 {
