@@ -16,8 +16,8 @@
 # include "../libft/libft.h"
 
 # define WIDTH 1920
-# define HEIGHT 820
-# define ASPECT_RATIO WIDTH / HEIGHT
+# define HEIGHT 1080
+# define ASPECT_RATIO 21.0 / 19.0
 t_rgb	ray_color(t_ray *ray);
 uint32_t	rgb_to_uint32(t_rgb *color);
 
