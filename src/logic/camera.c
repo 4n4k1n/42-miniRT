@@ -48,7 +48,12 @@ t_rgb	ray_color(t_ray *ray)
 	t_vec3	result;
 
 	center = vec3_init_inline(0.0, 0.0, -1.0);
-	t = hit_sphere(center, 0.5, ray);
+	t_sphere sphere = {center, 1.0, {0, 0, 0}};
+	t_hit_record rec;
+	if (hit_sphere_obj(&sphere, ray, 0.001, 1000.0, &rec))
+		t = rec.t;
+	else
+		t = -1.0;
 	if (t > 0.0)
 	{
 		p = ray_at(ray, t);
