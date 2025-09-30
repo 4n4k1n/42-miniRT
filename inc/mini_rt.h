@@ -1,5 +1,5 @@
-#ifndef MINIRT_H
-# define MINIRT_H
+#ifndef MINI_RT_H
+# define MINI_RT_H
 
 # include <stdio.h>
 # include <string.h>
@@ -9,7 +9,7 @@
 # include <fcntl.h>
 # include "objects.h"
 # include "parsing.h"
-# include "math.h"
+# include "own_math.h"
 
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/libft.h"
@@ -21,6 +21,6 @@
 t_rgb	ray_color(t_ray *ray);
 uint32_t	rgb_to_uint32(t_rgb *color);
 void	init_camera(t_data *data);
-int		hit_sphere(t_vec3 center, double radius, t_ray *r);
+double	hit_sphere(t_vec3 center, double radius, t_ray *r);
 
 #endif
