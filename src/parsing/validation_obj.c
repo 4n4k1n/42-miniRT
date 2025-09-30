@@ -6,13 +6,13 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 10:36:19 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/30 10:55:46 by nweber           ###   ########.fr       */
+/*   Updated: 2025/09/30 11:32:14 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "mini_rt.h"
 
-int	parse_sphere(char **tokens, t_main *scene)
+int	parse_sphere(char **tokens, t_data *scene)
 {
 	t_obj	*o;
 
@@ -33,7 +33,7 @@ int	parse_sphere(char **tokens, t_main *scene)
 	return (0);
 }
 
-int	parse_plane(char **tokens, t_main *scene)
+int	parse_plane(char **tokens, t_data *scene)
 {
 	t_obj	*o;
 
@@ -55,7 +55,7 @@ int	parse_plane(char **tokens, t_main *scene)
 	return (0);
 }
 
-int	parse_cylinder(char **tokens, t_main *scene)
+int	parse_cylinder(char **tokens, t_data *scene)
 {
 	t_obj	*o;
 

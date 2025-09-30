@@ -6,13 +6,13 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 20:20:31 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/30 10:54:42 by nweber           ###   ########.fr       */
+/*   Updated: 2025/09/30 11:32:27 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "mini_rt.h"
 
-int	parse_ambient(char **tokens, t_main *scene, t_arg_check *args)
+int	parse_ambient(char **tokens, t_data *scene, t_arg_check *args)
 {
 	double	ratio;
 
@@ -31,7 +31,7 @@ int	parse_ambient(char **tokens, t_main *scene, t_arg_check *args)
 	return (0);
 }
 
-int	parse_camera(char **tokens, t_main *scene, t_arg_check *args)
+int	parse_camera(char **tokens, t_data *scene, t_arg_check *args)
 {
 	t_vec3	pos;
 	t_vec3	dir;
@@ -54,7 +54,7 @@ int	parse_camera(char **tokens, t_main *scene, t_arg_check *args)
 	return (0);
 }
 
-int	parse_light(char **tokens, t_main *scene, t_arg_check *args)
+int	parse_light(char **tokens, t_data *scene, t_arg_check *args)
 {
 	int		argc;
 	t_light	*ln;

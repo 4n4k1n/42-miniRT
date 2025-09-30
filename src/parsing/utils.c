@@ -6,11 +6,11 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 18:26:42 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/30 11:01:41 by nweber           ###   ########.fr       */
+/*   Updated: 2025/09/30 11:27:46 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "miniRT.h"
+#include "mini_rt.h"
 
 int	is_rt_file(const char *path)
 {
