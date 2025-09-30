@@ -36,3 +36,8 @@ int	vec_non_zero(t_vec3 v)
 {
 	return (!(v.x == 0.0 && v.y == 0.0 && v.z == 0.0));
 }
+
+int	in_range_d(double v, double min, double max)
+{
+	return (v >= min && v <= max);
+}
