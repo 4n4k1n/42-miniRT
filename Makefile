@@ -21,7 +21,14 @@ SRCS	:= main.c \
 		math/vec_squared.c \
 		math/vec_sub.c \
 		utils/image.c \
-		utils/ray.c
+		utils/ray.c \
+		parsing/error.c \
+		parsing/list.c \
+		parsing/parsing.c \
+		parsing/utils.c \
+		parsing/validation_obj.c \
+		parsing/validation.c \
+		parsing/validators.c
 
 OBJS := $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
