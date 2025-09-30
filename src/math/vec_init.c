@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Creates and initializes a new 3D vector
+ * Sets x, y, z components to given values
+ * Returns new vector by value
+ */
 inline t_vec3	vec3_init_inline(double x, double y, double z)
 {
 	t_vec3	new;

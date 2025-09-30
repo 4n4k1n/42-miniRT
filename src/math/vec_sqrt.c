@@ -16,6 +16,11 @@
 
 double sqrt(double x);
 
+/**
+ * Calculates the length (magnitude) of a vector
+ * Formula: |vec| = √(x² + y² + z²)
+ * Returns scalar length of the vector
+ */
 inline double	vec3_sqrt(const t_vec3 *vec)
 {
 	return (sqrt(vec3_squared(vec)));

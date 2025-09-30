@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Negates all components of a vector (multiplies by -1)
+ * Formula: vec = -vec for each component
+ * Modifies original vector and returns pointer to it
+ */
 t_vec3	*vec3_overload(t_vec3 *vec)
 {
 	vec->x *= -1;
@@ -20,6 +25,11 @@ t_vec3	*vec3_overload(t_vec3 *vec)
 	return (vec);
 }
 
+/**
+ * Negates all components of a vector, returns new vector
+ * Formula: new_vec = -vec for each component
+ * Inline version for performance
+ */
 inline t_vec3	vec3_overload_inline(const t_vec3 *vec)
 {
 	t_vec3	new;

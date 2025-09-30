@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Calculates dot product of two vectors
+ * Formula: a·b = ax*bx + ay*by + az*bz
+ * Returns scalar value used for angles and projections
+ */
 inline double	vec3_dot_inline(const t_vec3 *a, const t_vec3 *b)
 {
 	return (a->x * b->x + a->y * b->y + a->z * b->z);

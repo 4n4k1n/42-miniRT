@@ -12,6 +12,12 @@
 
 #include "mini_rt.h"
 
+/**
+ * Tests if a ray intersects with a sphere object
+ * Uses quadratic formula to solve ray-sphere intersection
+ * Formula: discriminant = h² - ac where a=|dir|², h=dir·oc, c=|oc|²-r²
+ * Returns 1 if hit, 0 if miss
+ */
 int	hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin, double tmax, t_hit_record *rec)
 {
 	const double	radius = s->diameter * 0.5;

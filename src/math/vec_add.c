@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Adds two vectors, modifying the destination vector
+ * Formula: dst = dst + src for each component
+ * Returns pointer to modified destination
+ */
 t_vec3	*vec3_add(t_vec3 *dst, t_vec3 *src)
 {
 	dst->x += src->x;
@@ -20,6 +25,11 @@ t_vec3	*vec3_add(t_vec3 *dst, t_vec3 *src)
 	return (dst);
 }
 
+/**
+ * Adds two vectors, returns new vector
+ * Formula: new_vec = dst + src for each component
+ * Inline version for performance
+ */
 inline t_vec3	vec3_add_inline(const t_vec3 *dst, const t_vec3 *src)
 {
 	t_vec3	new;

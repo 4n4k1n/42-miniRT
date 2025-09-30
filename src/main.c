@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Creates a demo scene with two spheres for testing
+ * Sets up object list and adds one small sphere and one large ground sphere
+ * Used to test ray tracing functionality
+ */
 static void	build_demo_world(t_data *data)
 {
 	t_obj	*s1;
@@ -45,6 +50,11 @@ static void	build_demo_world(t_data *data)
 	}
 }
 
+/**
+ * Main entry point of the miniRT ray tracer
+ * Initializes camera, creates demo world, sets up MLX window
+ * Renders the scene and starts the main loop
+ */
 int	main(int ac, char **av)
 {
 	t_data	data;

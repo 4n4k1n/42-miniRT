@@ -12,6 +12,14 @@
 
 #include "mini_rt.h"
 
+/**
+ * Parses ambient lighting parameters from tokens
+ * Format: A <ratio> <r,g,b>
+ * @param tokens Array of parsed string tokens
+ * @param scene Scene data structure to populate
+ * @param args Argument validation state
+ * @return 0 on success, 1 on failure
+ */
 int	parse_ambient(char **tokens, t_data *scene, t_arg_check *args)
 {
 	double	ratio;
@@ -31,6 +39,14 @@ int	parse_ambient(char **tokens, t_data *scene, t_arg_check *args)
 	return (0);
 }
 
+/**
+ * Parses camera parameters from tokens
+ * Format: C <x,y,z> <nx,ny,nz> <fov>
+ * @param tokens Array of parsed string tokens
+ * @param scene Scene data structure to populate
+ * @param args Argument validation state
+ * @return 0 on success, 1 on failure
+ */
 int	parse_camera(char **tokens, t_data *scene, t_arg_check *args)
 {
 	t_vec3	pos;
@@ -54,6 +70,14 @@ int	parse_camera(char **tokens, t_data *scene, t_arg_check *args)
 	return (0);
 }
 
+/**
+ * Parses light source parameters from tokens
+ * Format: L <x,y,z> <brightness> [r,g,b]
+ * @param tokens Array of parsed string tokens
+ * @param scene Scene data structure to populate
+ * @param args Argument validation state
+ * @return 0 on success, 1 on failure
+ */
 int	parse_light(char **tokens, t_data *scene, t_arg_check *args)
 {
 	int		argc;

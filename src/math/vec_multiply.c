@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Multiplies vector by scalar, modifying original vector
+ * Formula: vec = vec * t for each component
+ * Returns pointer to modified vector
+ */
 t_vec3	*vec3_multiply(t_vec3 *vec, double t)
 {
 	vec->x *= t;
@@ -20,6 +25,11 @@ t_vec3	*vec3_multiply(t_vec3 *vec, double t)
 	return (vec);
 }
 
+/**
+ * Multiplies vector by scalar, returns new vector
+ * Formula: new_vec = vec * t for each component
+ * Inline version for performance
+ */
 inline t_vec3	vec3_multiply_inline(const t_vec3 *vec, double t)
 {
 	t_vec3	new;

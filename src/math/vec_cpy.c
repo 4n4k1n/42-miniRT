@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Copies vector components from source to destination
+ * Modifies destination vector with source values
+ * Returns pointer to destination vector
+ */
 t_vec3	*vec3_cpy(t_vec3 *dst, t_vec3 *src)
 {
 	dst->x = src->x;
@@ -20,6 +25,11 @@ t_vec3	*vec3_cpy(t_vec3 *dst, t_vec3 *src)
 	return (dst);
 }
 
+/**
+ * Creates a copy of a vector
+ * Returns new vector with same values
+ * Inline version for performance
+ */
 inline t_vec3	vec3_cpy_inline(const t_vec3 *vec)
 {
 	return (*vec);

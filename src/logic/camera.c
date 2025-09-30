@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Calculates a point along a ray at parameter t
+ * Formula: point = origin + t * direction
+ * Used for ray tracing to find intersection points
+ */
 static inline t_vec3	ray_at(t_ray *ray, double t)
 {
 	t_vec3	temp;
@@ -20,6 +25,12 @@ static inline t_vec3	ray_at(t_ray *ray, double t)
 	return (vec3_add_inline(&ray->origin, &temp));
 }
 
+/**
+ * Determines the color for a ray by checking sphere intersection
+ * If ray hits sphere: calculates surface normal and converts to color
+ * If no hit: creates gradient background from white to blue
+ * Formula for normal: N = (hit_point - sphere_center) / radius
+ */
 t_rgb	ray_color(t_ray *ray)
 {
 	t_vec3	color_a = {1.0, 1.0, 1.0};
@@ -65,6 +76,11 @@ t_rgb	ray_color(t_ray *ray)
 	return (return_color);
 }
 
+/**
+ * Calculates image height based on width and aspect ratio
+ * Formula: height = width / aspect_ratio
+ * Ensures minimum height of 1 pixel
+ */
 static int	get_image_height(int width, double ra)
 {
 	int	height;
@@ -75,6 +91,11 @@ static int	get_image_height(int width, double ra)
 	return (height);
 }
 
+/**
+ * Initializes camera parameters for ray tracing
+ * Sets up viewport dimensions, pixel deltas, and starting pixel location
+ * Creates coordinate system for converting screen pixels to world rays
+ */
 void	init_camera(t_data *data)
 {
 	t_init_tmp tmp;
@@ -100,6 +121,11 @@ void	init_camera(t_data *data)
 	data->camera.pixel00_loc = vec3_add_inline(&data->camera.viewport_upper_left, &tmp.t7);
 }
 
+/**
+ * Calculates color for a specific pixel at screen coordinates (i,j)
+ * Converts screen coordinates to world ray and traces it
+ * Returns RGB color value for that pixel
+ */
 static t_rgb	get_pixel_color(t_camera *cam, int i, int j)
 {
 	t_pixel_tmp tmp;
@@ -116,6 +142,11 @@ static t_rgb	get_pixel_color(t_camera *cam, int i, int j)
 	return (color);
 }
 
+/**
+ * Main rendering loop that processes all pixels in the image
+ * Iterates through each pixel, calculates its color, and draws it
+ * Converts color values from [0,1] range to [0,255] for display
+ */
 void	render(t_data *data)
 {
 	int		i;
