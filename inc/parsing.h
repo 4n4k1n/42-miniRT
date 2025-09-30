@@ -12,16 +12,16 @@ typedef struct s_arg_check
 
 // Error
 int		rt_error(const char *msg);
-void	free_scene(t_main *scene);
+void	free_scene(t_data *scene);
 
 // Parsing
-int		parse_scene(const char *path, t_main *scene);
-int		parse_ambient(char **tokens, t_main *scene, t_arg_check *args);
-int		parse_camera(char **tokens, t_main *scene, t_arg_check *args);
-int		parse_light(char **tokens, t_main *scene, t_arg_check *args);
-int		parse_cylinder(char **tokens, t_main *scene);
-int		parse_plane(char **tokens, t_main *scene);
-int		parse_sphere(char **tokens, t_main *scene);
+int		parse_scene(const char *path, t_data *scene);
+int		parse_ambient(char **tokens, t_data *scene, t_arg_check *args);
+int		parse_camera(char **tokens, t_data *scene, t_arg_check *args);
+int		parse_light(char **tokens, t_data *scene, t_arg_check *args);
+int		parse_cylinder(char **tokens, t_data *scene);
+int		parse_plane(char **tokens, t_data *scene);
+int		parse_sphere(char **tokens, t_data *scene);
 
 // Utils
 int		is_rt_file(const char *path);
@@ -42,7 +42,7 @@ t_light	*light_new(void);
 int		light_push(t_light_list *lst, t_light *node);
 
 /* Debug printer (tester) */
-void	print_scene(const t_main *scene);
+void	print_scene(const t_data *scene);
 void	print_vec3(const char *name, t_vec3 v);
 void	print_rgb(const char *name, t_rgb c);
 
