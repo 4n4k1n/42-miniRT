@@ -49,7 +49,7 @@ void	init_camera(t_data *data)
 	data->camera.pixel00_loc = vec3_add_inline(&data->camera.viewport_upper_left, &tmp.t7);
 }
 
-static t_rgb	get_pixel_color(const t_camera *cam, int i, int j)
+static t_rgb	get_pixel_color(t_camera *cam, int i, int j)
 {
 	t_pixel_tmp tmp;
 	t_rgb       color;

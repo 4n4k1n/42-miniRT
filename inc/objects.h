@@ -1,8 +1,8 @@
 #ifndef OBJECTS_H
 # define OBJECTS_H
 
-# include "mini_rt.h"
-# include "camera.h"
+# include "../MLX42/include/MLX42/MLX42.h"
+
 
 typedef struct s_vec3
 {
@@ -94,6 +94,21 @@ typedef struct t_ambient
 	double			lighting;
 	t_rgb			color;
 }					t_ambient;
+
+typedef struct s_camera
+{
+	t_vec3	cords;
+	t_vec3	orientation;
+	double	foc;
+	double	viewport_height;
+	double	viewport_width;
+	t_vec3	viewport_u;
+	t_vec3	viewport_v;
+	t_vec3	pixel_delta_u;
+	t_vec3	pixel_delta_v;
+	t_vec3	viewport_upper_left;
+	t_vec3	pixel00_loc;
+}	t_camera;
 
 typedef struct s_data
 {
