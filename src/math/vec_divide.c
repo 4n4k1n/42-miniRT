@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vec_divide.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 14:19:58 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/29 15:31:04 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/09/30 17:13:08 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_vec3	*vec3_divide(t_vec3 *vec, double t)
 	return (vec);
 }
 
-inline t_vec3	vec3_divide_inline(t_vec3 *vec, double t)
+inline t_vec3	vec3_divide_inline(const t_vec3 *vec, double t)
 {
 	t_vec3	new;
 

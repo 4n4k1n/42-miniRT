@@ -11,6 +11,7 @@
 # include "camera.h"
 # include "parsing.h"
 # include "own_math.h"
+# include "hittable.h"
 
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/libft.h"
