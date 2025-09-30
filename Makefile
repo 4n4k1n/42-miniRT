@@ -1,68 +1,58 @@
-MAKEFLAGS += -s
-
 NAME	:= miniRT
-CFLAGS	:= -Wall -Wextra -Werror -flto
-OBJ_DIR = objs
-CC = cc
+CFLAGS	:= -Wall -Wextra -Werror -Wunreachable-code -Ofast -march=native -mtune=native -flto -funroll-loops -lm
+LIBMLX	:= ./MLX42
 
-SRC = src/main.c src/parsing/error.c src/parsing/utils.c src/parsing/parsing.c \
-	src/parsing/validation.c src/parsing/validators.c src/parsing/list.c \
-	src/parsing/validation_obj.c src/parsing/debug.c
+HEADERS	:= -I ./inc -I $(LIBMLX)/include
+LIBS	:= $(LIBMLX)/build/libmlx42.a -ldl -lglfw -pthread -lm
 
-OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
+SRC_DIR = src
+OBJ_DIR = obj
 
-UNAME_S := $(shell uname -s)
+SRCS	:= main.c \
+		math/vec_add.c \
+		math/vec_cpy.c \
+		math/vec_cross.c \
+		math/vec_divide.c \
+		math/vec_dot.c \
+		math/vec_init.c \
+		math/vec_multiply.c \
+		math/vec_overload.c \
+		math/vec_sqrt.c \
+		math/vec_squared.c \
+		math/vec_sub.c \
+		utils/image.c \
+		utils/ray.c \
+		parsing/error.c \
+		parsing/list.c \
+		parsing/parsing.c \
+		parsing/utils.c \
+		parsing/validation_obj.c \
+		parsing/validation.c \
+		parsing/validators.c
 
-LIBFT_DIR = ./libft
-LIBFT = $(LIBFT_DIR)/libft.a
+OBJS := $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 
-MLX42_DIR = ./MLX42
+all: libmlx $(NAME)
 
-ifeq ($(UNAME_S),Linux)
-	LIBMLX42 = $(MLX42_DIR)/build/libmlx42.a -ldl -lglfw -pthread -lm
-	CFLAGS += -D LINUX
-else ifeq ($(UNAME_S),Darwin)
-	LIBMLX42 = $(MLX42_DIR)/build/libmlx42.a -lglfw -framework Cocoa -framework OpenGL -framework IOKit
-	CFLAGS += -D OSX
-else
-	$(error OS not supported: $(UNAME_S))
-endif
+libmlx:
+	@cmake $(LIBMLX) -B $(LIBMLX)/build && make -C $(LIBMLX)/build -j4
 
-CFLAGS += -I./inc -I$(MLX42_DIR)/include
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
-all: $(LIBFT) $(LIBMLX42) $(NAME)
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR) $(OBJ_DIR)/math $(OBJ_DIR)/utils
 
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBMLX42) $(LIBFT) -o $(NAME)
-
-$(OBJ_DIR)/%.o: src/%.c inc/miniRT.h
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
-
-$(LIBMLX42):
-	@if [ ! -d $(MLX42_DIR) ]; then \
-		git clone https://github.com/codam-coding-college/MLX42.git \
-		$(MLX42_DIR); \
-	fi
-	@if [ ! -f $(MLX42_DIR)/build/libmlx42.a ]; then \
-		cmake $(MLX42_DIR) -B $(MLX42_DIR)/build && \
-		cmake --build $(MLX42_DIR)/build -j4; \
-	fi
+$(NAME): $(OBJS)
+	$(CC) $(OBJS) $(LIBS) $(HEADERS) -o $(NAME)
 
 clean:
 	rm -rf $(OBJ_DIR)
-	$(MAKE) clean -C $(LIBFT_DIR)
+	rm -rf $(LIBMLX)/build
 
 fclean: clean
-	rm -f $(NAME)
-	$(MAKE) fclean -C $(LIBFT_DIR)
-	@rm -rf $(MLX42_DIR)
+	rm -rf $(NAME)
 
-re:
-	$(MAKE) fclean
-	$(MAKE) all
+re: clean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re libmlx
