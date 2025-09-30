@@ -83,7 +83,7 @@ void	init_camera(t_data *data)
 	data->height = get_image_height(WIDTH, ASPECT_RATIO);
 	data->camera.foc = 1.0;
 	data->camera.viewport_height = 2.0;
-	data->camera.viewport_width = data->camera.viewport_height * (WIDTH / HEIGHT);
+	data->camera.viewport_width = data->camera.viewport_height * ASPECT_RATIO;
 	data->camera.cords = vec3_init_inline(0.0, 0.0, 0.0);
 	data->camera.viewport_u = vec3_init_inline(data->camera.viewport_width, 0.0, 0.0);
 	data->camera.viewport_v = vec3_init_inline(0.0, data->camera.viewport_height * -1, 0.0);
