@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 17:28:26 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/29 20:10:31 by nweber           ###   ########.fr       */
+/*   Updated: 2025/09/30 11:01:05 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,18 @@
 // Random amount of whitespaces and newlines
 // First info is always the identifier
 //
+
+static char	*trim_and_strip(char *s)
+{
+	char	*hash;
+	char	*out;
+
+	hash = ft_strchr(s, '#');
+	if (hash)
+		*hash = '\0';
+	out = ft_strtrim(s, " \t\r\n");
+	return (out);
+}
 
 static int	init_scene_lists(t_main *scene)
 {
@@ -60,29 +72,33 @@ static int	dispatch_line(char **tokens, t_main *scene, t_arg_check *args)
 	return (rt_error("invalid identifier"));
 }
 
-static int	read_parse(int fd, t_main *scene)
+static int	read_parse(int fd, t_main *scene, t_arg_check *args)
 {
-	t_arg_check	*args;
-	char		*line;
-	char		**tokens;
+	char	*raw;
+	char	*line;
+	char	**tokens;
 
 	args->has_a = 0;
 	args->has_c = 0;
 	args->has_l = 0;
-	line = get_next_line(fd);
-	while (line)
+	raw = get_next_line(fd);
+	while (raw)
 	{
-		if (line[0] != '\0' && line[0] != '\n')
+		line = trim_and_strip(raw);
+		free(raw);
+		if (!line)
+			return (rt_error("malloc error"));
+		if (line[0] != '\0')
 		{
 			tokens = ft_split(line, ' ');
 			if (!tokens)
 				return (free(line), rt_error("malloc error"));
-			if (dispatch_line(tokens, scene, &args))
+			if (dispatch_line(tokens, scene, args))
 				return (ft_array_free(tokens), free(line), 1);
 			ft_array_free(tokens);
 		}
 		free(line);
-		line = get_next_line(fd);
+		raw = get_next_line(fd);
 	}
 	if (!args->has_a || !args->has_c || !args->has_l)
 		return (rt_error("missing elements"));
@@ -91,18 +107,19 @@ static int	read_parse(int fd, t_main *scene)
 
 int	parse_scene(const char *path, t_main *scene)
 {
-	int	fd;
+	int			fd;
+	t_arg_check	args;
 
 	if (!path || !scene)
-		return(rt_error("invalid arguments"));
-	if (!is_rt(path))
+		return (rt_error("invalid arguments"));
+	if (!is_rt_file(path))
 		return (rt_error("invalid file(expected .rt)"));
-	if (init_scene(scene))
+	if (init_scene_lists(scene))
 		return (rt_error("initialization error"));
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 		return (rt_error("failed to open file"));
-	if (read_parse(fd, scene))
+	if (read_parse(fd, scene, &args))
 		return (close(fd), rt_error("parsing error"));
 	close(fd);
 	return (0);
