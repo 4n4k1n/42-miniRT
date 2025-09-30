@@ -97,6 +97,18 @@ typedef struct t_ambient
 
 typedef struct s_camera
 {
+	// Public Camera Parameters (like the book's class public section)
+	double	aspect_ratio;
+	int		image_width;
+	
+	// Private Camera Variables (like the book's class private section)
+	int		image_height;
+	t_vec3	center;
+	t_vec3	pixel00_loc;
+	t_vec3	pixel_delta_u;
+	t_vec3	pixel_delta_v;
+	
+	// Legacy fields (to be removed/refactored)
 	t_vec3	cords;
 	t_vec3	orientation;
 	double	foc;
@@ -104,10 +116,7 @@ typedef struct s_camera
 	double	viewport_width;
 	t_vec3	viewport_u;
 	t_vec3	viewport_v;
-	t_vec3	pixel_delta_u;
-	t_vec3	pixel_delta_v;
 	t_vec3	viewport_upper_left;
-	t_vec3	pixel00_loc;
 }	t_camera;
 
 typedef struct s_data
