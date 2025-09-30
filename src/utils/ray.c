@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 16:54:31 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/30 11:54:27 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/09/30 12:39:55 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ t_rgb	ray_color(t_ray *ray)
 	t_vec3	temp1;
 	t_vec3	temp2;
 	double	a;
-	
-	if (hit_sphere(&(t_vec3){0.0, 0.0, -1.0}, 0.5, ray))
-		return ((t_rgb){1.0, 0.0, 0.0});
+
+	if (hit_sphere(vec3_init_inline(0.0, 0.0, -1.0), 0.5, ray))
+		return((t_rgb){1.0, 0.0, 0.0});
 	unit_direction = vec3_cpy_inline(&ray->direction);
 	a = 0.5 * (unit_direction.y + 1.0);
 	temp1 = vec3_multiply_inline(&color_a, 1.0 - a);

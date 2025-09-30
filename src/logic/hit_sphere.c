@@ -3,28 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   hit_sphere.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:32:34 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/30 11:55:51 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/09/30 12:37:52 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-bool	hit_sphere(t_vec3 *center, double radius, t_ray *ray)
+int	hit_sphere(t_vec3 center, double radius, t_ray *r)
 {
 	t_vec3	oc;
 	double	a;
 	double	b;
 	double	c;
-	double	dis;
-	
-	(void)center;
-	oc = vec3_sub_inline(center, &ray->origin);
-	a = vec3_dot_inline(&ray->direction, &ray->direction);
-	b = -2.0 * vec3_dot_inline(&ray->direction, &oc);
+	double	discriminant;
+
+	oc = vec3_sub_inline(&center, &r->origin);
+	a = vec3_dot_inline(&r->direction, &r->direction);
+	b = -2.0 * vec3_dot_inline(&r->direction, &oc);
 	c = vec3_dot_inline(&oc, &oc) - radius * radius;
-	dis = b * b - 4 * a * c;
-	return (dis >= 0);
+	discriminant = b * b - 4.0 * a * c;
+	return (discriminant >= 0.0);
 }
