@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Prints error message to stderr with "Error\n" prefix
+ * @param msg The error message to display
+ * @return Always returns 1 for error propagation
+ */
 int	rt_error(const char *msg)
 {
 	if (msg)
@@ -23,6 +28,10 @@ int	rt_error(const char *msg)
 	return (1);
 }
 
+/**
+ * Frees all objects in the object list and the list itself
+ * @param lst Pointer to object list to free
+ */
 static void	free_objects(t_obj_list *lst)
 {
 	t_obj	*cur;
@@ -40,6 +49,10 @@ static void	free_objects(t_obj_list *lst)
 	free(lst);
 }
 
+/**
+ * Frees all lights in the light list and the list itself
+ * @param lst Pointer to light list to free
+ */
 static void	free_lights(t_light_list *lst)
 {
 	t_light	*cur;
@@ -57,6 +70,10 @@ static void	free_lights(t_light_list *lst)
 	free(lst);
 }
 
+/**
+ * Frees all allocated memory in the scene data structure
+ * @param scene Pointer to scene data structure to free
+ */
 void	free_scene(t_data *scene)
 {
 	if (!scene)

@@ -1,5 +1,10 @@
 #include "mini_rt.h"
 
+/**
+ * Determines if ray hits front or back face of surface
+ * Sets normal vector to point against ray direction
+ * Used for proper lighting calculations
+ */
 void	set_face_normal(t_hit_record *rec, const t_ray *r, const t_vec3 *outw)
 {
 	double	dotv;
@@ -12,6 +17,11 @@ void	set_face_normal(t_hit_record *rec, const t_ray *r, const t_vec3 *outw)
 		rec->normal = vec3_overload_inline((t_vec3 *)outw);
 }
 
+/**
+ * Generic hit test function for any object type
+ * Dispatches to appropriate hit function based on object type
+ * Currently only supports spheres, expandable for other shapes
+ */
 int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record *rec)
 {
 	if (!o || !rec)
@@ -22,6 +32,11 @@ int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record 
 	return (0);
 }
 
+/**
+ * Tests ray intersection against all objects in the scene
+ * Finds closest intersection within distance range [min, max]
+ * Returns 1 if any object hit, 0 otherwise
+ */
 int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, t_hit_record *out)
 {
 	t_hit_record	tmp;

@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Creates a new object node with specified type
+ * @param type The type of object to create (SPHERE, PLANE, CYLINDER)
+ * @return Pointer to new object or NULL if allocation fails
+ */
 t_obj	*obj_new(t_obj_type type)
 {
 	t_obj	*o;
@@ -24,6 +29,12 @@ t_obj	*obj_new(t_obj_type type)
 	return (o);
 }
 
+/**
+ * Adds an object node to the end of the object list
+ * @param lst Pointer to object list
+ * @param node Object node to add
+ * @return 0 on success, 1 on failure
+ */
 int	obj_push(t_obj_list *lst, t_obj *node)
 {
 	if (!lst || !node)
@@ -37,6 +48,10 @@ int	obj_push(t_obj_list *lst, t_obj *node)
 	return (0);
 }
 
+/**
+ * Creates a new light node
+ * @return Pointer to new light or NULL if allocation fails
+ */
 t_light	*light_new(void)
 {
 	t_light	*l;
@@ -48,6 +63,12 @@ t_light	*light_new(void)
 	return (l);
 }
 
+/**
+ * Adds a light node to the end of the light list
+ * @param lst Pointer to light list
+ * @param node Light node to add
+ * @return 0 on success, 1 on failure
+ */
 int	light_push(t_light_list *lst, t_light *node)
 {
 	if (!lst || !node)

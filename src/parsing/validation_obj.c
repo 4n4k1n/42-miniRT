@@ -12,6 +12,13 @@
 
 #include "mini_rt.h"
 
+/**
+ * Parses sphere object parameters from tokens
+ * Format: sp <x,y,z> <diameter> <r,g,b>
+ * @param tokens Array of parsed string tokens
+ * @param scene Scene data structure to populate
+ * @return 0 on success, 1 on failure
+ */
 int	parse_sphere(char **tokens, t_data *scene)
 {
 	t_obj	*o;
@@ -33,6 +40,13 @@ int	parse_sphere(char **tokens, t_data *scene)
 	return (0);
 }
 
+/**
+ * Parses plane object parameters from tokens
+ * Format: pl <x,y,z> <nx,ny,nz> <r,g,b>
+ * @param tokens Array of parsed string tokens
+ * @param scene Scene data structure to populate
+ * @return 0 on success, 1 on failure
+ */
 int	parse_plane(char **tokens, t_data *scene)
 {
 	t_obj	*o;
@@ -55,6 +69,13 @@ int	parse_plane(char **tokens, t_data *scene)
 	return (0);
 }
 
+/**
+ * Parses cylinder object parameters from tokens
+ * Format: cy <x,y,z> <nx,ny,nz> <diameter> <height> <r,g,b>
+ * @param tokens Array of parsed string tokens
+ * @param scene Scene data structure to populate
+ * @return 0 on success, 1 on failure
+ */
 int	parse_cylinder(char **tokens, t_data *scene)
 {
 	t_obj	*o;

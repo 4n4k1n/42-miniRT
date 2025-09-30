@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Checks if file path has .rt extension
+ * @param path File path to check
+ * @return 1 if path ends with .rt, 0 otherwise
+ */
 int	is_rt_file(const char *path)
 {
 	size_t	len;
@@ -27,6 +32,12 @@ int	is_rt_file(const char *path)
 	return (0);
 }
 
+/**
+ * Parses a string to double value
+ * @param str String to parse
+ * @param out Pointer to store parsed double
+ * @return 0 on success, 1 on failure
+ */
 int	parse_double(const char *str, double *out)
 {
 	if (!str || !out)
@@ -35,6 +46,12 @@ int	parse_double(const char *str, double *out)
 	return (0);
 }
 
+/**
+ * Parses comma-separated string to 3D vector (x,y,z)
+ * @param str String in format "x,y,z"
+ * @param out Pointer to store parsed vector
+ * @return 0 on success, 1 on failure
+ */
 int	parse_vec3(const char *str, t_vec3 *out)
 {
 	char	**tokens;
@@ -53,6 +70,13 @@ int	parse_vec3(const char *str, t_vec3 *out)
 	return (0);
 }
 
+/**
+ * Parses comma-separated string to RGB color (r,g,b)
+ * Values must be in range [0,255]
+ * @param str String in format "r,g,b"
+ * @param out Pointer to store parsed RGB values
+ * @return 0 on success, 1 on failure
+ */
 int	parse_rgb(const char *str, t_rgb *out)
 {
 	char	**tokens;
