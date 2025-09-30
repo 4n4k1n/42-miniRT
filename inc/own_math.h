@@ -1,5 +1,5 @@
-#ifndef MATH_H
-# define MATH_H
+#ifndef OWN_MATH_H
+# define OWN_MATH_H
 
 # include "objects.h"
 

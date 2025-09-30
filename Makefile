@@ -25,7 +25,8 @@ SRC = src/main.c \
 		src/parsing/utils.c \
 		src/parsing/validation_obj.c \
 		src/parsing/validation.c \
-		src/parsing/validators.c
+		src/parsing/validators.c \
+		src/logic/hit_sphere.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
