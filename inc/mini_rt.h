@@ -21,5 +21,6 @@
 t_rgb	ray_color(t_ray *ray);
 uint32_t	rgb_to_uint32(t_rgb *color);
 void	init_camera(t_data *data);
+bool	hit_sphere(t_vec3 *center, double radius, t_ray *ray)
 
 #endif
