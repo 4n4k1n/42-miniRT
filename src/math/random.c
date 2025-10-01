@@ -31,16 +31,6 @@ inline double random_double_range(double min, double max)
 	return min + (max - min) * random_double();
 }
 
-inline t_vec3	random_vec3(double min, double max)
-{
-	t_vec3	vec;
-
-	vec.x = random_double_range(min, max);
-	vec.y = random_double_range(min, max);
-	vec.z = random_double_range(min, max);
-	return (vec);
-}
-
 /*
 		Haha muessen wir bestimmt nicht umschreiben
 */
