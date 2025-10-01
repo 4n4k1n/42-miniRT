@@ -146,6 +146,7 @@ typedef struct s_camera
 	t_vec3	viewport_u;
 	t_vec3	viewport_v;
 	t_vec3	viewport_upper_left;
+	int		samples_per_pixel;
 }	t_camera;
 
 typedef struct s_data
