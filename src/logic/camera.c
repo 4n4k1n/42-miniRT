@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 02:33:58 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 13:55:33 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,21 @@ static inline t_vec3	ray_at(t_ray *ray, double t)
 	return (vec3_add_inline(&ray->origin, &temp));
 }
 
+static inline t_rgb	rgb_multiply_inline(t_rgb color, double t)
+{
+	color.r *= t;
+	color.g *= t;
+	color.b *= t;
+	return (color);
+}
+
 /**
  * Determines the color for a ray by checking sphere intersection
  * If ray hits sphere: calculates surface normal and converts to color
  * If no hit: creates gradient background from white to blue
  * Formula for normal: N = (hit_point - sphere_center) / radius
  */
-t_rgb	ray_color(t_ray *ray, t_obj_list *world)
+t_rgb	ray_color(t_ray *ray, t_obj_list *world, int depth)
 {
 	t_hit_record	rec;
 	t_rgb			return_color;
@@ -43,19 +51,26 @@ t_rgb	ray_color(t_ray *ray, t_obj_list *world)
 	t_vec3			temp1;
 	t_vec3			temp2;
 	t_vec3			result;
-	double			r;
-	double			g;
-	double			b;
+	// double			r;
+	// double			g;
+	// double			b;
+	t_vec3			direction;
+	t_rgb			black = {0.0, 0.0, 0.0};
 
+	if (depth <= 0)
+		return (black);
 	if (world && world_hit(world, ray, 0.001, INFINITY, &rec))
 	{
-		r = 0.5 * (rec.normal.x + 1.0);
-		g = 0.5 * (rec.normal.y + 1.0);
-		b = 0.5 * (rec.normal.z + 1.0);
-		return_color.r = fmin(fmax(r, 0.0), 1.0) * 255.999;
-		return_color.g = fmin(fmax(g, 0.0), 1.0) * 255.999;
-		return_color.b = fmin(fmax(b, 0.0), 1.0) * 255.999;
-		return (return_color);
+		// r = 0.5 * (rec.normal.x + 1.0);
+		// g = 0.5 * (rec.normal.y + 1.0);
+		// b = 0.5 * (rec.normal.z + 1.0);
+		// return_color.r = fmin(fmax(r, 0.0), 1.0) * 255.999;
+		// return_color.g = fmin(fmax(g, 0.0), 1.0) * 255.999;
+		// return_color.b = fmin(fmax(b, 0.0), 1.0) * 255.999;
+		// return (return_color);
+		direction = random_on_hemisphere(&rec.normal);
+		direction = vec3_add_inline(&direction, &rec.normal);
+		return (rgb_multiply_inline(ray_color(&(t_ray){rec.p, direction}, world, depth - 1), COLOR_INTENSITY));
 	}
 	len = sqrt(vec3_dot_inline(&ray->direction, &ray->direction));
 	if (len != 0.0)
@@ -135,6 +150,7 @@ void	render(t_data *data)
 		while (j < WIDTH)
 		{
 			mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
+			// mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
 			j++;
 		}
 		i++;

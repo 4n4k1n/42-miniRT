@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monte_carlo_aa.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 01:06:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/01 01:55:48 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 12:43:08 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,27 @@ static void	init_aa(t_anti_aliasing *aa)
 	aa->max_spp = AA_MAX_SAMPLES;
 }
 
+uint32_t	without_aa(t_data *data, int i, int j)
+{
+	t_vec3	temp_u;
+	t_vec3	temp_v;
+	t_vec3	temp_offset;
+	t_vec3	pixel_sample;
+	t_vec3	ray_direction;
+	t_ray	ray;
+	t_rgb	color;
+
+	temp_u = vec3_multiply_inline(&data->camera.pixel_delta_u, j);
+	temp_v = vec3_multiply_inline(&data->camera.pixel_delta_v, i);
+	temp_offset = vec3_add_inline(&temp_u, &temp_v);
+	pixel_sample = vec3_add_inline(&data->camera.pixel00_loc, &temp_offset);
+	ray_direction = vec3_sub_inline(&pixel_sample, &data->camera.cords);
+	ray.origin = data->camera.cords;
+	ray.direction = ray_direction;
+	color = ray_color(&ray, data->objects, MAX_DEPTH);
+	return (rgb_to_uint32(&color));
+}
+
 uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j)
 {
 	init_aa(aa);
@@ -42,7 +63,7 @@ uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j)
 		aa->ray_direction = vec3_sub_inline(&aa->pixel_sample, &data->camera.cords);
 		aa->ray.origin = data->camera.cords;
 		aa->ray.direction = aa->ray_direction;
-		aa->sample = ray_color(&aa->ray, data->objects);
+		aa->sample = ray_color(&aa->ray, data->objects, MAX_DEPTH);
 		aa->acc_r += aa->sample.r;
 		aa->acc_g += aa->sample.g;
 		aa->acc_b += aa->sample.b;

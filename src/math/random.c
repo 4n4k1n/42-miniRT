@@ -9,7 +9,7 @@ void random_seed(unsigned int seed)
 }
 
 /* xorshift64* core */
-static unsigned long long rng_next_u64(void)
+static inline unsigned long long rng_next_u64(void)
 {
 	unsigned long long x = g_rng_state;
 	x ^= x >> 12;
@@ -19,14 +19,14 @@ static unsigned long long rng_next_u64(void)
 	return x * 2685821657736338717ULL;
 }
 
-double random_double(void)
+inline double random_double(void)
 {
 	const unsigned long long r = rng_next_u64();
 	const unsigned long long mantissa = r >> 11;
 	return (double)mantissa * (1.0 / 9007199254740992.0);
 }
 
-double random_double_range(double min, double max)
+inline double random_double_range(double min, double max)
 {
 	return min + (max - min) * random_double();
 }
