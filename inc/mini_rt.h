@@ -12,6 +12,7 @@
 # include "parsing.h"
 # include "own_math.h"
 # include "hittable.h"
+# include "material.h"
 
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/libft.h"
@@ -23,11 +24,11 @@
 // Adaptive AA configuration
 // Minimum samples per pixel before checking variance
 # ifndef AA_MIN_SAMPLES
-#  define AA_MIN_SAMPLES 32
+#  define AA_MIN_SAMPLES 16
 # endif
 
 # ifndef AA_MAX_SAMPLES
-#  define AA_MAX_SAMPLES 128
+#  define AA_MAX_SAMPLES 256
 # endif
 
 // Variance threshold on normalized luminance [0,1]. stddev ~= sqrt(AA_VAR_EPS)

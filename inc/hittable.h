@@ -10,6 +10,7 @@ typedef struct	s_hit_record
 	double	t;
 	int		front_face;
 	t_rgb	rgb;
+	t_material	*mat;
 }			t_hit_record;
 
 int		hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin, double tmax, t_hit_record *rec);
