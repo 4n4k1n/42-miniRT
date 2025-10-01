@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 22:56:04 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 23:08:37 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 			mlx_close_window(data->mlx);
 		else if (keydata.key == MLX_KEY_W)
 			data->camera.cords.z -= 0.2;
-		else if (keydata.key == MLX_KEY_DOWN)
+		else if (keydata.key == MLX_KEY_S)
 			data->camera.cords.z += 0.2;
 		else if (keydata.key == MLX_KEY_A)
 			data->camera.cords.x -= 0.2;
