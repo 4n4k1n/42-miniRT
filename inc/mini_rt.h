@@ -26,6 +26,7 @@ uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j);
 uint32_t	without_aa(t_data *data, int i, int j);
 t_vec3	random_on_hemisphere(t_vec3 *normal);
 void	update_camera(t_data *data);
+void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up);
 void	key_hook(mlx_key_data_t keydata, void *param);
 
 #endif

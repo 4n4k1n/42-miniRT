@@ -49,7 +49,8 @@ SRC = src/main.c \
 		src/logic/camera.c \
 		src/logic/metal.c \
 		src/logic/lambertian.c \
-		src/math/random_vec.c
+		src/math/random_vec.c \
+		src/utils/mlx_hooks.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
