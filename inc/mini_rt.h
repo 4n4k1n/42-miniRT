@@ -37,6 +37,8 @@
 
 # define MAX_DEPTH 1024
 
+# define COLOR_INTENSITY 0.5
+
 t_rgb		ray_color(t_ray *ray, t_obj_list *world, int depth);
 uint32_t	rgb_to_uint32(t_rgb *color);
 void	init_camera(t_data *data);
