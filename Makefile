@@ -1,7 +1,7 @@
 MAKEFLAGS += -s
 
 NAME	:= miniRT
-CFLAGS	:= -Wall -Wextra -Werror -flto 
+CFLAGS	:= -Wall -Wextra -Werror -flto
 OBJ_DIR = objs
 CC = cc
 
@@ -18,6 +18,8 @@ SRC = src/main.c \
 		src/math/vec_squared.c \
 		src/math/vec_sub.c \
 		src/math/random.c \
+		src/math/vec_zero.c \
+		src/math/vec_reflect.c \
 		src/utils/color.c \
 		src/parsing/error.c \
 		src/parsing/list.c \
@@ -30,6 +32,8 @@ SRC = src/main.c \
 		src/logic/hittable.c \
 		src/logic/monte_carlo_aa.c \
 		src/logic/camera.c \
+		src/logic/metal.c \
+		src/logic/lambertian.c \
 		src/math/random_vec.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
