@@ -23,11 +23,11 @@
 // Adaptive AA configuration
 // Minimum samples per pixel before checking variance
 # ifndef AA_MIN_SAMPLES
-#  define AA_MIN_SAMPLES 2
+#  define AA_MIN_SAMPLES 8
 # endif
 
 # ifndef AA_MAX_SAMPLES
-#  define AA_MAX_SAMPLES 4
+#  define AA_MAX_SAMPLES 16
 # endif
 
 // Variance threshold on normalized luminance [0,1]. stddev ~= sqrt(AA_VAR_EPS)
@@ -40,5 +40,6 @@ t_rgb		ray_color(t_ray *ray, t_obj_list *world);
 uint32_t	rgb_to_uint32(t_rgb *color);
 void	init_camera(t_data *data);
 uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j);
+uint32_t	without_aa(t_data *data, int i, int j);
 
 #endif

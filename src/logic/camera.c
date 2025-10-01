@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 02:33:58 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 10:23:53 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,8 @@ void	render(t_data *data)
 		j = 0;
 		while (j < WIDTH)
 		{
-			mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
+			// mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
+			mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
 			j++;
 		}
 		i++;

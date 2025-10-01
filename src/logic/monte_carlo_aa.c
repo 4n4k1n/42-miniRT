@@ -28,6 +28,27 @@ static void	init_aa(t_anti_aliasing *aa)
 	aa->max_spp = AA_MAX_SAMPLES;
 }
 
+uint32_t	without_aa(t_data *data, int i, int j)
+{
+	t_vec3	temp_u;
+	t_vec3	temp_v;
+	t_vec3	temp_offset;
+	t_vec3	pixel_sample;
+	t_vec3	ray_direction;
+	t_ray	ray;
+	t_rgb	color;
+
+	temp_u = vec3_multiply_inline(&data->camera.pixel_delta_u, j);
+	temp_v = vec3_multiply_inline(&data->camera.pixel_delta_v, i);
+	temp_offset = vec3_add_inline(&temp_u, &temp_v);
+	pixel_sample = vec3_add_inline(&data->camera.pixel00_loc, &temp_offset);
+	ray_direction = vec3_sub_inline(&pixel_sample, &data->camera.cords);
+	ray.origin = data->camera.cords;
+	ray.direction = ray_direction;
+	color = ray_color(&ray, data->objects);
+	return (rgb_to_uint32(&color));
+}
+
 uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j)
 {
 	init_aa(aa);
