@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 13:55:33 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/01 22:11:22 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,8 +146,10 @@ void	render(t_data *data)
 		j = 0;
 		while (j < WIDTH)
 		{
-			mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
-			// mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
+			if (ANTI_ALIASING)
+				mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
+			else
+				mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
 			j++;
 		}
 		printf("%d\n", i);

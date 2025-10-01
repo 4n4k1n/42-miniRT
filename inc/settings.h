@@ -19,4 +19,8 @@
 # define ASPECT_RATIO ((double)WIDTH / (double)HEIGHT)
 # define AA_MAX_SAMPLES (AA_MIN_SAMPLES * 8)
 
+# ifndef ANTI_ALIASING
+#  define ANTI_ALIASING 0
+# endif
+
 #endif
