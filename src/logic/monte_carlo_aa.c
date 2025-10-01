@@ -75,7 +75,7 @@ uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j)
 		aa->m2 += aa->delta * aa->delta2;
 		if (aa->n >= aa->min_spp)
 		{
-			if (aa->n < 1)
+			if (aa->n > 1)
 				aa->var = aa->m2 / (aa->n - 1);
 			else
 				aa->var = 0.0;

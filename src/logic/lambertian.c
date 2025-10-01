@@ -1,0 +1,28 @@
+#include "mini_rt.h"
+
+static int	lambertian_scatter(const t_material *self, const t_ray *r_in,
+		const t_hit_record *rec, t_rgb *attenuation, t_ray *scattered)
+{
+	t_vec3	dir;
+
+	(void)r_in;
+	dir = random_on_hemisphere((t_vec3 *)&rec->normal);
+	scattered->origin = rec->p;
+	scattered->direction = dir;
+	*attenuation = self->albedo;
+	return (1);
+}
+
+t_material	*material_lambertian(t_rgb albedo)
+{
+	t_material	*m;
+
+	m = (t_material *)malloc(sizeof(t_material));
+	if (!m)
+		return (NULL);
+	m->scatter = &lambertian_scatter;
+	m->albedo = albedo;
+	m->fuzz = 0.0;
+	m->type = 0;
+	return (m);
+}

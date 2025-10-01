@@ -3,27 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 13:55:33 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/01 22:11:22 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
-
-/**
- * Calculates a point along a ray at parameter t
- * Formula: point = origin + t * direction
- * Used for ray tracing to find intersection points
- */
-static inline t_vec3	ray_at(t_ray *ray, double t)
-{
-	t_vec3	temp;
-
-	temp = vec3_multiply_inline(&ray->direction, t);
-	return (vec3_add_inline(&ray->origin, &temp));
-}
 
 static inline t_rgb	rgb_multiply_inline(t_rgb color, double t)
 {
@@ -31,6 +18,15 @@ static inline t_rgb	rgb_multiply_inline(t_rgb color, double t)
 	color.g *= t;
 	color.b *= t;
 	return (color);
+}
+
+static inline t_rgb	rgb_modulate_inline(t_rgb a, t_rgb b)
+{
+	t_rgb out;
+	out.r = (a.r * b.r) / 255.999;
+	out.g = (a.g * b.g) / 255.999;
+	out.b = (a.b * b.b) / 255.999;
+	return out;
 }
 
 /**
@@ -51,27 +47,28 @@ t_rgb	ray_color(t_ray *ray, t_obj_list *world, int depth)
 	t_vec3			temp1;
 	t_vec3			temp2;
 	t_vec3			result;
-	// double			r;
-	// double			g;
-	// double			b;
-	t_vec3			direction;
-	t_rgb			black = {0.0, 0.0, 0.0};
 
 	if (depth <= 0)
-		return (black);
+		return (t_rgb){0.0, 0.0, 0.0};
+
 	if (world && world_hit(world, ray, 0.001, INFINITY, &rec))
 	{
-		// r = 0.5 * (rec.normal.x + 1.0);
-		// g = 0.5 * (rec.normal.y + 1.0);
-		// b = 0.5 * (rec.normal.z + 1.0);
-		// return_color.r = fmin(fmax(r, 0.0), 1.0) * 255.999;
-		// return_color.g = fmin(fmax(g, 0.0), 1.0) * 255.999;
-		// return_color.b = fmin(fmax(b, 0.0), 1.0) * 255.999;
-		// return (return_color);
-		direction = random_on_hemisphere(&rec.normal);
-		direction = vec3_add_inline(&direction, &rec.normal);
+		if (rec.mat)
+		{
+			t_ray scattered;
+			t_rgb attenuation;
+			if (rec.mat->scatter(rec.mat, ray, &rec, &attenuation, &scattered))
+			{
+				t_rgb bounced = ray_color(&scattered, world, depth - 1);
+				return rgb_modulate_inline(attenuation, bounced);
+			}
+			return (t_rgb){0.0, 0.0, 0.0};
+		}
+		// Fallback: old diffuse bounce if no material set
+		t_vec3 direction = random_on_hemisphere(&rec.normal);
 		return (rgb_multiply_inline(ray_color(&(t_ray){rec.p, direction}, world, depth - 1), COLOR_INTENSITY));
 	}
+
 	len = sqrt(vec3_dot_inline(&ray->direction, &ray->direction));
 	if (len != 0.0)
 		unit_direction = vec3_divide_inline(&ray->direction, len);
@@ -149,10 +146,13 @@ void	render(t_data *data)
 		j = 0;
 		while (j < WIDTH)
 		{
-			mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
-			// mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
+			if (ANTI_ALIASING)
+				mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
+			else
+				mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
 			j++;
 		}
+		printf("%d\n", i);
 		i++;
 	}
 }

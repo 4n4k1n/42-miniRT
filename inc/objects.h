@@ -4,6 +4,8 @@
 # include <stdint.h>
 # include "../MLX42/include/MLX42/MLX42.h"
 
+typedef struct s_material t_material;
+
 typedef struct s_vec3
 {
 	double			x;
@@ -36,6 +38,7 @@ typedef struct s_sphere
 	t_vec3			cords;
 	double			diameter;
 	t_rgb			rgb;
+	t_material		*mat;
 }					t_sphere;
 
 typedef struct s_plane
