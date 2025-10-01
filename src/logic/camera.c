@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 13:10:06 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/01 13:50:14 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ t_rgb	ray_color(t_ray *ray, t_obj_list *world, int depth)
 		// return_color.b = fmin(fmax(b, 0.0), 1.0) * 255.999;
 		// return (return_color);
 		direction = random_on_hemisphere(&rec.normal);
+		direction = vec3_add_inline(&direction, &rec.normal);
 		return (rgb_multiply_inline(ray_color(&(t_ray){rec.p, direction}, world, depth - 1), 0.5));
 	}
 	len = sqrt(vec3_dot_inline(&ray->direction, &ray->direction));
