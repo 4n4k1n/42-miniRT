@@ -25,5 +25,6 @@ void	init_camera(t_data *data);
 uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j);
 uint32_t	without_aa(t_data *data, int i, int j);
 t_vec3	random_on_hemisphere(t_vec3 *normal);
+void	update_camera(t_data *data);
 
 #endif
