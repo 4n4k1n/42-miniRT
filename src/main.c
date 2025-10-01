@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 21:56:52 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 22:18:54 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,30 @@ int	get_time_in_ms(void)
 }
 
 /**
+ * Key hook function to handle arrow key presses
+ * Captures arrow key events and prints them to stdout
+ */
+void	key_hook(mlx_key_data_t keydata, void *param)
+{
+	t_data	*data;
+
+	data = (t_data *)param;
+	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
+	{
+		if (keydata.key == MLX_KEY_UP)
+			printf("Arrow key pressed: UP\n");
+		else if (keydata.key == MLX_KEY_DOWN)
+			printf("Arrow key pressed: DOWN\n");
+		else if (keydata.key == MLX_KEY_LEFT)
+			printf("Arrow key pressed: LEFT\n");
+		else if (keydata.key == MLX_KEY_RIGHT)
+			printf("Arrow key pressed: RIGHT\n");
+		else if (keydata.key == MLX_KEY_ESCAPE)
+			mlx_close_window(data->mlx);
+	}
+}
+
+/**
  * Main entry point of the miniRT ray tracer
  * Initializes camera, creates demo world, sets up MLX window
  * Renders the scene and starts the main loop
@@ -107,6 +131,7 @@ int	main(int ac, char **av)
 	data.img = mlx_new_image(data.mlx, WIDTH, HEIGHT);
 	if (!data.img || (mlx_image_to_window(data.mlx, data.img, 0, 0) < 0))
 		return (1);
+	mlx_key_hook(data.mlx, key_hook, data.mlx);
 	render_time = get_time_in_ms();
 	render(&data);
 	printf("\n%.2f sec\n", (float)(get_time_in_ms() - render_time) / 1000);
