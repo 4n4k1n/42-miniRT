@@ -6,11 +6,23 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 23:23:01 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 23:37:58 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
+
+void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up)
+{
+	forward->x = cos(data->camera.pitch) * cos(data->camera.yaw);
+	forward->y = sin(data->camera.pitch);
+	forward->z = cos(data->camera.pitch) * sin(data->camera.yaw);
+	*up = vec3_init_inline(0.0, 1.0, 0.0);
+	*right = vec3_cross_inline(forward, up);
+	*right = vec3_divide_inline(right, vec3_sqrt(right));
+	*up = vec3_cross_inline(right, forward);
+	*up = vec3_divide_inline(up, vec3_sqrt(up));
+}
 
 void	update_camera(t_data *data)
 {
@@ -19,15 +31,7 @@ void	update_camera(t_data *data)
 	t_vec3 right;
 	t_vec3 up;
 
-	forward.x = cos(data->camera.pitch) * cos(data->camera.yaw);
-	forward.y = sin(data->camera.pitch);
-	forward.z = cos(data->camera.pitch) * sin(data->camera.yaw);
-	
-	up = vec3_init_inline(0.0, 1.0, 0.0);
-	right = vec3_cross_inline(&forward, &up);
-	right = vec3_divide_inline(&right, vec3_sqrt(&right));
-	up = vec3_cross_inline(&right, &forward);
-	up = vec3_divide_inline(&up, vec3_sqrt(&up));
+	get_camera_vectors(data, &forward, &right, &up);
 	
 	data->camera.viewport_u = vec3_multiply_inline(&right, data->camera.viewport_width);
 	data->camera.viewport_v = vec3_multiply_inline(&up, -data->camera.viewport_height);
