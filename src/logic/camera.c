@@ -6,11 +6,48 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 22:11:22 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 23:37:58 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
+
+void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up)
+{
+	forward->x = cos(data->camera.pitch) * cos(data->camera.yaw);
+	forward->y = sin(data->camera.pitch);
+	forward->z = cos(data->camera.pitch) * sin(data->camera.yaw);
+	*up = vec3_init_inline(0.0, 1.0, 0.0);
+	*right = vec3_cross_inline(forward, up);
+	*right = vec3_divide_inline(right, vec3_sqrt(right));
+	*up = vec3_cross_inline(right, forward);
+	*up = vec3_divide_inline(up, vec3_sqrt(up));
+}
+
+void	update_camera(t_data *data)
+{
+	t_init_tmp tmp;
+	t_vec3 forward;
+	t_vec3 right;
+	t_vec3 up;
+
+	get_camera_vectors(data, &forward, &right, &up);
+	
+	data->camera.viewport_u = vec3_multiply_inline(&right, data->camera.viewport_width);
+	data->camera.viewport_v = vec3_multiply_inline(&up, -data->camera.viewport_height);
+	data->camera.pixel_delta_u = vec3_divide_inline(&data->camera.viewport_u, WIDTH);
+	data->camera.pixel_delta_v = vec3_divide_inline(&data->camera.viewport_v, HEIGHT);
+	
+	tmp.t1 = vec3_multiply_inline(&forward, data->camera.foc);
+	tmp.t2 = vec3_sub_inline(&data->camera.cords, &tmp.t1);
+	tmp.t3 = vec3_divide_inline(&data->camera.viewport_u, 2.0);
+	tmp.t4 = vec3_sub_inline(&tmp.t2, &tmp.t3);
+	tmp.t5 = vec3_divide_inline(&data->camera.viewport_v, 2.0);
+	data->camera.viewport_upper_left = vec3_sub_inline(&tmp.t4, &tmp.t5);
+	tmp.t6 = vec3_add_inline(&data->camera.pixel_delta_u, &data->camera.pixel_delta_v);
+	tmp.t7 = vec3_multiply_inline(&tmp.t6, 0.5);
+	data->camera.pixel00_loc = vec3_add_inline(&data->camera.viewport_upper_left, &tmp.t7);
+}
 
 static inline t_rgb	rgb_multiply_inline(t_rgb color, double t)
 {
@@ -106,27 +143,15 @@ static int	get_image_height(int width, double ra)
  */
 void	init_camera(t_data *data)
 {
-	t_init_tmp tmp;
-
 	data->width = WIDTH;
 	data->height = get_image_height(WIDTH, ASPECT_RATIO);
 	data->camera.foc = 1.0;
 	data->camera.viewport_height = 2.0;
 	data->camera.viewport_width = data->camera.viewport_height * ASPECT_RATIO;
 	data->camera.cords = vec3_init_inline(0.0, 0.0, 0.0);
-	data->camera.viewport_u = vec3_init_inline(data->camera.viewport_width, 0.0, 0.0);
-	data->camera.viewport_v = vec3_init_inline(0.0, data->camera.viewport_height * -1, 0.0);
-	data->camera.pixel_delta_u = vec3_divide_inline(&data->camera.viewport_u, WIDTH);
-	data->camera.pixel_delta_v = vec3_divide_inline(&data->camera.viewport_v, HEIGHT);
-	tmp.t1 = vec3_init_inline(0.0, 0.0, data->camera.foc);
-	tmp.t2 = vec3_sub_inline(&data->camera.cords, &tmp.t1);
-	tmp.t3 = vec3_divide_inline(&data->camera.viewport_u, 2.0);
-	tmp.t4 = vec3_sub_inline(&tmp.t2, &tmp.t3);
-	tmp.t5 = vec3_divide_inline(&data->camera.viewport_v, 2.0);
-	data->camera.viewport_upper_left = vec3_sub_inline(&tmp.t4, &tmp.t5);
-	tmp.t6 = vec3_add_inline(&data->camera.pixel_delta_u, &data->camera.pixel_delta_v);
-	tmp.t7 = vec3_multiply_inline(&tmp.t6, 0.5);
-	data->camera.pixel00_loc = vec3_add_inline(&data->camera.viewport_upper_left, &tmp.t7);
+	data->camera.pitch = 0.0;
+	data->camera.yaw = 0.0;
+	update_camera(data);
 }
 
 

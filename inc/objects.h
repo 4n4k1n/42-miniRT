@@ -143,6 +143,8 @@ typedef struct s_camera
 	t_vec3	pixel_delta_v;
 	t_vec3	cords;
 	t_vec3	orientation;
+	double	pitch;
+	double	yaw;
 	double	foc;
 	double	viewport_height;
 	double	viewport_width;
