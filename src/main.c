@@ -39,7 +39,7 @@ static void	build_demo_world(t_data *data)
         s2->data.sphere.cords = vec3_init_inline(0.0, -100.5, -1.0);
         s2->data.sphere.diameter = 200.0;
         s2->data.sphere.rgb = (t_rgb){255, 255, 255};
-        s2->data.sphere.mat = material_lambertian((t_rgb){204.0, 204.0, 0.0}); // 0.8*255
+        s2->data.sphere.mat = material_metal((t_rgb){204.0, 204.0, 204.0}, 0.0);
         obj_push(data->objects, s2);
     }
 
@@ -50,7 +50,7 @@ static void	build_demo_world(t_data *data)
         s1->data.sphere.cords = vec3_init_inline(0.0, 0.0, -1.2);
         s1->data.sphere.diameter = 1.0;
         s1->data.sphere.rgb = (t_rgb){255, 255, 255};
-        s1->data.sphere.mat = material_lambertian((t_rgb){25.5, 51.0, 127.5}); // 0.1,0.2,0.5
+        s1->data.sphere.mat = material_metal((t_rgb){204.0, 204.0, 204.0}, 0.0);
         obj_push(data->objects, s1);
     }
 
@@ -61,7 +61,7 @@ static void	build_demo_world(t_data *data)
         s3->data.sphere.cords = vec3_init_inline(-1.0, 0.0, -1.0);
         s3->data.sphere.diameter = 1.0;
         s3->data.sphere.rgb = (t_rgb){255, 255, 255};
-        s3->data.sphere.mat = material_metal((t_rgb){204.0, 204.0, 204.0}, 0.3);
+        s3->data.sphere.mat = material_metal((t_rgb){204.0, 153.0, 51.0}, 0.0);
         obj_push(data->objects, s3);
     }
 
@@ -72,7 +72,7 @@ static void	build_demo_world(t_data *data)
         s4->data.sphere.cords = vec3_init_inline(1.0, 0.0, -1.0);
         s4->data.sphere.diameter = 1.0;
         s4->data.sphere.rgb = (t_rgb){255, 255, 255};
-        s4->data.sphere.mat = material_metal((t_rgb){204.0, 153.0, 51.0}, 1.0);
+        s4->data.sphere.mat = material_metal((t_rgb){204.0, 153.0, 51.0}, 0.0);
         obj_push(data->objects, s4);
     }
 }

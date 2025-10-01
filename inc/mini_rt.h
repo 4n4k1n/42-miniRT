@@ -24,11 +24,11 @@
 // Adaptive AA configuration
 // Minimum samples per pixel before checking variance
 # ifndef AA_MIN_SAMPLES
-#  define AA_MIN_SAMPLES 16
+#  define AA_MIN_SAMPLES 256
 # endif
 
 # ifndef AA_MAX_SAMPLES
-#  define AA_MAX_SAMPLES 256
+#  define AA_MAX_SAMPLES (AA_MIN_SAMPLES * 8)
 # endif
 
 // Variance threshold on normalized luminance [0,1]. stddev ~= sqrt(AA_VAR_EPS)

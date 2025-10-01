@@ -12,19 +12,6 @@
 
 #include "mini_rt.h"
 
-/**
- * Calculates a point along a ray at parameter t
- * Formula: point = origin + t * direction
- * Used for ray tracing to find intersection points
- */
-static inline t_vec3	ray_at(t_ray *ray, double t)
-{
-	t_vec3	temp;
-
-	temp = vec3_multiply_inline(&ray->direction, t);
-	return (vec3_add_inline(&ray->origin, &temp));
-}
-
 static inline t_rgb	rgb_multiply_inline(t_rgb color, double t)
 {
 	color.r *= t;
@@ -163,6 +150,7 @@ void	render(t_data *data)
 			// mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
 			j++;
 		}
+		printf("%d\n", i);
 		i++;
 	}
 }
