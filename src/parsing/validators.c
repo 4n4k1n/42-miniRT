@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Validates field of view angle for camera
+ * @param fov Field of view angle in degrees
+ * @return 0 if valid [0,180], 1 if invalid
+ */
 int	validate_fov(double fov)
 {
 	if (fov < 0 || fov > 180)
@@ -19,6 +24,13 @@ int	validate_fov(double fov)
 	return (0);
 }
 
+/**
+ * Checks if all vector components are within specified range
+ * @param vec Pointer to 3D vector to check
+ * @param min Minimum allowed value
+ * @param max Maximum allowed value
+ * @return 1 if all components in range, 0 otherwise
+ */
 int	vec_in_range(t_vec3 *vec, double min, double max)
 {
 	if (!vec)
@@ -32,11 +44,23 @@ int	vec_in_range(t_vec3 *vec, double min, double max)
 	return (1);
 }
 
+/**
+ * Checks if vector is non-zero (at least one component != 0)
+ * @param v 3D vector to check
+ * @return 1 if non-zero, 0 if zero vector
+ */
 int	vec_non_zero(t_vec3 v)
 {
 	return (!(v.x == 0.0 && v.y == 0.0 && v.z == 0.0));
 }
 
+/**
+ * Checks if double value is within specified range [min,max]
+ * @param v Value to check
+ * @param min Minimum allowed value (inclusive)
+ * @param max Maximum allowed value (inclusive)
+ * @return 1 if in range, 0 otherwise
+ */
 int	in_range_d(double v, double min, double max)
 {
 	return (v >= min && v <= max);

@@ -8,6 +8,7 @@
 # include <math.h>
 # include <fcntl.h>
 # include "objects.h"
+# include "camera.h"
 # include "parsing.h"
 # include "own_math.h"
 # include "hittable.h"

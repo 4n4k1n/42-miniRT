@@ -1,28 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_init.c                                         :+:      :+:    :+:   */
+/*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/29 18:34:21 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/29 19:49:22 by apregitz         ###   ########.fr       */
+/*   Created: 2025/09/29 16:54:31 by apregitz          #+#    #+#             */
+/*   Updated: 2025/09/30 21:17:18 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Creates and initializes a new 3D vector
- * Sets x, y, z components to given values
- * Returns new vector by value
+ * Converts RGB color struct to 32-bit integer format
+ * Formula: (R << 24) | (G << 16) | (B << 8) | alpha
+ * Used for MLX pixel rendering
  */
-inline t_vec3	vec3_init_inline(double x, double y, double z)
+uint32_t	rgb_to_uint32(t_rgb *color)
 {
-	t_vec3	new;
-	
-	new.x = x;
-	new.y = y;
-	new.z = z;
-	return (new);
+	return ((uint32_t)((int)color->r << 24 | (int)color->g << 16 | (int)color->b << 8 | 0xf0));
 }

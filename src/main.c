@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
 /*   Updated: 2025/10/01 01:52:46 by anakin           ###   ########.fr       */
@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Creates a demo scene with two spheres for testing
+ * Sets up object list and adds one small sphere and one large ground sphere
+ * Used to test ray tracing functionality
+ */
 static void	build_demo_world(t_data *data)
 {
 	t_obj	*s1;
@@ -45,11 +50,14 @@ static void	build_demo_world(t_data *data)
 	}
 }
 
+/**
+ * Main entry point of the miniRT ray tracer
+ * Initializes camera, creates demo world, sets up MLX window
+ * Renders the scene and starts the main loop
+ */
 int	main(int ac, char **av)
 {
 	t_data	data;
-	int		i;
-	int		j;
 
 	(void)ac;
 	(void)av;
@@ -57,11 +65,11 @@ int	main(int ac, char **av)
 	init_camera(&data);
 	build_demo_world(&data);
 	mlx_set_setting(MLX_MAXIMIZED, false);
-	mlx_t* mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
-	if (!mlx)
+	data.mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
+	if (!data.mlx)
 		return (1);
-	mlx_image_t* img = mlx_new_image(mlx, WIDTH, HEIGHT);
-	if (!img || (mlx_image_to_window(mlx, img, 0, 0) < 0))
+	data.img = mlx_new_image(data.mlx, WIDTH, HEIGHT);
+	if (!data.img || (mlx_image_to_window(data.mlx, data.img, 0, 0) < 0))
 		return (1);
 	i = 0;
 	while (i < HEIGHT)
@@ -74,7 +82,7 @@ int	main(int ac, char **av)
 		}
 		i++;
 	}
-	mlx_loop(mlx);
-	mlx_terminate(mlx);
+	mlx_loop(data.mlx);
+	mlx_terminate(data.mlx);
 	return (0);
 }

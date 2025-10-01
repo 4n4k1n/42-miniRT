@@ -21,6 +21,11 @@
 // First info is always the identifier
 //
 
+/**
+ * Removes comments and whitespace from input line
+ * Strips everything after '#' character and trims spaces
+ * Returns cleaned string for parsing
+ */
 static char	*trim_and_strip(char *s)
 {
 	char	*hash;
@@ -33,6 +38,11 @@ static char	*trim_and_strip(char *s)
 	return (out);
 }
 
+/**
+ * Initializes scene data structures and lists
+ * Allocates memory for object and light lists
+ * Sets default values for scene elements
+ */
 static int	init_scene_lists(t_data *scene)
 {
 	scene->objects = (t_obj_list *)malloc(sizeof(t_obj_list));
@@ -49,10 +59,15 @@ static int	init_scene_lists(t_data *scene)
 	scene->light_list->size = 0;
 	scene->ambiente.lighting = -1.0;
 	scene->ambiente.color.r = -1;
-	scene->camera.fov = -1;
+	scene->camera.foc = -1;
 	return (0);
 }
 
+/**
+ * Routes parsed tokens to appropriate element parser
+ * Identifies element type (A, C, L, sp, pl, cy) and calls specific parser
+ * Returns 0 on success, error code on failure
+ */
 static int	dispatch_line(char **tokens, t_data *scene, t_arg_check *args)
 {
 	if (!tokens || !tokens[0] || tokens[0][0] == '\0')
@@ -72,6 +87,11 @@ static int	dispatch_line(char **tokens, t_data *scene, t_arg_check *args)
 	return (rt_error("invalid identifier"));
 }
 
+/**
+ * Main parsing loop that reads and processes each line
+ * Reads file line by line, cleans and tokenizes each line
+ * Validates presence of required elements (A, C, L)
+ */
 static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 {
 	char	*raw;
@@ -105,6 +125,11 @@ static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 	return (0);
 }
 
+/**
+ * Main entry point for scene file parsing
+ * Opens .rt file, initializes scene, and coordinates parsing process
+ * Returns 0 on success, 1 on error
+ */
 int	parse_scene(const char *path, t_data *scene)
 {
 	int			fd;

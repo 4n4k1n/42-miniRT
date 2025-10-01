@@ -12,6 +12,11 @@
 
 #include "mini_rt.h"
 
+/**
+ * Calculates cross product of two vectors
+ * Formula: a×b = (ay*bz-az*by, az*bx-ax*bz, ax*by-ay*bx)
+ * Returns vector perpendicular to both input vectors
+ */
 inline t_vec3	vec3_cross_inline(const t_vec3 *a, const t_vec3 *b)
 {
 	t_vec3	new;

@@ -2,6 +2,7 @@
 # define OBJECTS_H
 
 # include <stdint.h>
+# include "../MLX42/include/MLX42/MLX42.h"
 
 typedef struct s_vec3
 {
@@ -74,24 +75,6 @@ typedef struct s_obj_list
 	size_t			size;
 }					t_obj_list;
 
-typedef struct s_camera
-{
-	t_vec3	cords;
-	t_vec3	orientation;
-	double	fov;
-	double	foc;
-	double	viewport_height;
-	double	viewport_width;
-	t_vec3	viewport_u;
-	t_vec3	viewport_v;
-	t_vec3	pixel_delta_u;
-	t_vec3	pixel_delta_v;
-	t_vec3	viewport_upper_left;
-	t_vec3	pixel00_loc;
-	int		samples_per_pixel;
-	double	pixel_samples_scale;
-}	t_camera;
-
 typedef struct s_light
 {
 	t_vec3			cords;
@@ -146,6 +129,25 @@ typedef struct s_anti_aliasing
 	uint32_t	packed;
 }	t_anti_aliasing;
 
+typedef struct s_camera
+{
+	double	aspect_ratio;
+	int		image_width;
+	int		image_height;
+	t_vec3	center;
+	t_vec3	pixel00_loc;
+	t_vec3	pixel_delta_u;
+	t_vec3	pixel_delta_v;
+	t_vec3	cords;
+	t_vec3	orientation;
+	double	foc;
+	double	viewport_height;
+	double	viewport_width;
+	t_vec3	viewport_u;
+	t_vec3	viewport_v;
+	t_vec3	viewport_upper_left;
+}	t_camera;
+
 typedef struct s_data
 {
 	t_anti_aliasing	aa;
@@ -155,6 +157,8 @@ typedef struct s_data
 	t_ambient		ambiente;
 	int				height;
 	int				width;
+	mlx_t			*mlx;
+	mlx_image_t		*img;
 }	t_data;
 
 #endif
