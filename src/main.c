@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 02:28:47 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 21:56:52 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,14 @@ static void	build_demo_world(t_data *data)
     }
 }
 
+int	get_time_in_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
 /**
  * Main entry point of the miniRT ray tracer
  * Initializes camera, creates demo world, sets up MLX window
@@ -85,10 +93,11 @@ static void	build_demo_world(t_data *data)
 int	main(int ac, char **av)
 {
 	t_data	data;
+	int	render_time;
 
 	(void)ac;
 	(void)av;
-	data.camera.samples_per_pixel = AA_MAX_SAMPLES; // AA
+	data.camera.samples_per_pixel = AA_MAX_SAMPLES;
 	init_camera(&data);
 	build_demo_world(&data);
 	mlx_set_setting(MLX_MAXIMIZED, false);
@@ -98,7 +107,9 @@ int	main(int ac, char **av)
 	data.img = mlx_new_image(data.mlx, WIDTH, HEIGHT);
 	if (!data.img || (mlx_image_to_window(data.mlx, data.img, 0, 0) < 0))
 		return (1);
+	render_time = get_time_in_ms();
 	render(&data);
+	printf("\n%.2f sec\n", (float)(get_time_in_ms() - render_time) / 1000);
 	mlx_loop(data.mlx);
 	mlx_terminate(data.mlx);
 	return (0);
