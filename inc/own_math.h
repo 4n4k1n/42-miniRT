@@ -37,4 +37,8 @@ double	vec3_dot_inline(const t_vec3 *a, const t_vec3 *b);
 
 t_vec3	vec3_init_inline(double x, double y, double z);
 
+void	random_seed(unsigned int seed);
+double	random_double(void);
+double	random_double_range(double min, double max);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/30 17:07:00 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/01 01:52:46 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,9 @@ int	main(int ac, char **av)
 
 	(void)ac;
 	(void)av;
-	
+	data.camera.samples_per_pixel = AA_MAX_SAMPLES; // AA
 	init_camera(&data);
 	build_demo_world(&data);
-
 	mlx_set_setting(MLX_MAXIMIZED, false);
 	data.mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
 	if (!data.mlx)
@@ -72,8 +71,17 @@ int	main(int ac, char **av)
 	data.img = mlx_new_image(data.mlx, WIDTH, HEIGHT);
 	if (!data.img || (mlx_image_to_window(data.mlx, data.img, 0, 0) < 0))
 		return (1);
-
-	render(&data);
+	i = 0;
+	while (i < HEIGHT)
+	{
+		j = 0;
+		while (j < WIDTH)
+		{
+			mlx_put_pixel(img, j, i, monte_carlo_aa(&data, &data.aa, i, j));
+			j++;
+		}
+		i++;
+	}
 	mlx_loop(data.mlx);
 	mlx_terminate(data.mlx);
 	return (0);

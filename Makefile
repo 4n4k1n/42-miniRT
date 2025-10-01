@@ -26,8 +26,9 @@ SRC = src/main.c \
 		src/parsing/validation.c \
 		src/parsing/validators.c \
 		src/logic/hit_sphere.c \
-		src/logic/camera.c \
-		src/logic/hittable.c
+		src/logic/hittable.c \
+		src/logic/monte_carlo_aa.c \
+		src/logic/camera.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
