@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 01:52:46 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 02:28:47 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,7 @@ int	main(int ac, char **av)
 	data.img = mlx_new_image(data.mlx, WIDTH, HEIGHT);
 	if (!data.img || (mlx_image_to_window(data.mlx, data.img, 0, 0) < 0))
 		return (1);
-	i = 0;
-	while (i < HEIGHT)
-	{
-		j = 0;
-		while (j < WIDTH)
-		{
-			mlx_put_pixel(img, j, i, monte_carlo_aa(&data, &data.aa, i, j));
-			j++;
-		}
-		i++;
-	}
+	render(&data);
 	mlx_loop(data.mlx);
 	mlx_terminate(data.mlx);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/30 20:47:26 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 02:33:58 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,39 +31,30 @@ static inline t_vec3	ray_at(t_ray *ray, double t)
  * If no hit: creates gradient background from white to blue
  * Formula for normal: N = (hit_point - sphere_center) / radius
  */
-t_rgb	ray_color(t_ray *ray)
+t_rgb	ray_color(t_ray *ray, t_obj_list *world)
 {
-	t_vec3	color_a = {1.0, 1.0, 1.0};
-	t_vec3	color_b = {0.5, 0.7, 1.0};
-	t_rgb	return_color;
-	t_vec3	unit_direction;
-	t_vec3	p;
-	t_vec3	center;
-	t_vec3	N;
-	double	t;
-	double	len;
-	double	a;
-	t_vec3	temp1;
-	t_vec3	temp2;
-	t_vec3	result;
+	t_hit_record	rec;
+	t_rgb			return_color;
+	t_vec3			color_a = (t_vec3){1.0, 1.0, 1.0};
+	t_vec3			color_b = (t_vec3){0.5, 0.7, 1.0};
+	t_vec3			unit_direction;
+	double			len;
+	double			a;
+	t_vec3			temp1;
+	t_vec3			temp2;
+	t_vec3			result;
+	double			r;
+	double			g;
+	double			b;
 
-	center = vec3_init_inline(0.0, 0.0, -1.0);
-	t_sphere sphere = {center, 1.0, {0, 0, 0}};
-	t_hit_record rec;
-	if (hit_sphere_obj(&sphere, ray, 0.001, 1000.0, &rec))
-		t = rec.t;
-	else
-		t = -1.0;
-	if (t > 0.0)
+	if (world && world_hit(world, ray, 0.001, INFINITY, &rec))
 	{
-		p = ray_at(ray, t);
-		N = vec3_sub_inline(&p, &center);
-		len = sqrt(vec3_dot_inline(&N, &N));
-		if (len != 0.0)
-			N = vec3_divide_inline(&N, len);
-		return_color.r = 0.5 * (N.x + 1.0);
-		return_color.g = 0.5 * (N.y + 1.0);
-		return_color.b = 0.5 * (N.z + 1.0);
+		r = 0.5 * (rec.normal.x + 1.0);
+		g = 0.5 * (rec.normal.y + 1.0);
+		b = 0.5 * (rec.normal.z + 1.0);
+		return_color.r = fmin(fmax(r, 0.0), 1.0) * 255.999;
+		return_color.g = fmin(fmax(g, 0.0), 1.0) * 255.999;
+		return_color.b = fmin(fmax(b, 0.0), 1.0) * 255.999;
 		return (return_color);
 	}
 	len = sqrt(vec3_dot_inline(&ray->direction, &ray->direction));
@@ -75,9 +66,9 @@ t_rgb	ray_color(t_ray *ray)
 	temp1 = vec3_multiply_inline(&color_a, 1.0 - a);
 	temp2 = vec3_multiply_inline(&color_b, a);
 	result = vec3_add_inline(&temp1, &temp2);
-	return_color.r = result.x;
-	return_color.g = result.y;
-	return_color.b = result.z;
+	return_color.r = fmin(fmax(result.x, 0.0), 1.0) * 255.999;
+	return_color.g = fmin(fmax(result.y, 0.0), 1.0) * 255.999;
+	return_color.b = fmin(fmax(result.z, 0.0), 1.0) * 255.999;
 	return (return_color);
 }
 
@@ -126,26 +117,6 @@ void	init_camera(t_data *data)
 	data->camera.pixel00_loc = vec3_add_inline(&data->camera.viewport_upper_left, &tmp.t7);
 }
 
-/**
- * Calculates color for a specific pixel at screen coordinates (i,j)
- * Converts screen coordinates to world ray and traces it
- * Returns RGB color value for that pixel
- */
-static t_rgb	get_pixel_color(t_camera *cam, int i, int j)
-{
-	t_pixel_tmp tmp;
-	t_rgb       color;
-
-	tmp.u = vec3_multiply_inline(&cam->pixel_delta_u, j);
-	tmp.v = vec3_multiply_inline(&cam->pixel_delta_v, i);
-	tmp.offset = vec3_add_inline(&tmp.u, &tmp.v);
-	tmp.center = vec3_add_inline(&cam->pixel00_loc, &tmp.offset);
-	tmp.dir = vec3_sub_inline(&tmp.center, &cam->cords);
-	tmp.ray.origin = cam->cords;
-	tmp.ray.direction = tmp.dir;
-	color = ray_color(&tmp.ray);
-	return (color);
-}
 
 /**
  * Main rendering loop that processes all pixels in the image
@@ -156,7 +127,6 @@ void	render(t_data *data)
 {
 	int		i;
 	int		j;
-	t_rgb	color;
 
 	i = 0;
 	while (i < HEIGHT)
@@ -164,11 +134,7 @@ void	render(t_data *data)
 		j = 0;
 		while (j < WIDTH)
 		{
-			color = get_pixel_color(&data->camera, i, j);
-			color.r = (int)(color.r * 255.0);
-			color.g = (int)(color.g * 255.0);
-			color.b = (int)(color.b * 255.0);
-			mlx_put_pixel(data->img, j, i, rgb_to_uint32(&color));
+			mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
 			j++;
 		}
 		i++;
