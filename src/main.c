@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 23:08:37 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 23:23:12 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,53 +102,6 @@ void	cleanup_objects(t_obj_list *objects)
 		current = next;
 	}
 	free(objects);
-}
-
-void	update_camera(t_data *data)
-{
-	t_init_tmp tmp;
-
-	tmp.t1 = vec3_init_inline(0.0, 0.0, data->camera.foc);
-	tmp.t2 = vec3_sub_inline(&data->camera.cords, &tmp.t1);
-	tmp.t3 = vec3_divide_inline(&data->camera.viewport_u, 2.0);
-	tmp.t4 = vec3_sub_inline(&tmp.t2, &tmp.t3);
-	tmp.t5 = vec3_divide_inline(&data->camera.viewport_v, 2.0);
-	data->camera.viewport_upper_left = vec3_sub_inline(&tmp.t4, &tmp.t5);
-	tmp.t6 = vec3_add_inline(&data->camera.pixel_delta_u, &data->camera.pixel_delta_v);
-	tmp.t7 = vec3_multiply_inline(&tmp.t6, 0.5);
-	data->camera.pixel00_loc = vec3_add_inline(&data->camera.viewport_upper_left, &tmp.t7);
-}
-
-/**
- * Key hook function to handle arrow key presses
- * Captures arrow key events and prints them to stdout
- */
-void	key_hook(mlx_key_data_t keydata, void *param)
-{
-	t_data	*data;
-
-	data = (t_data *)param;
-	if ((keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) && (keydata.key == MLX_KEY_W
-		|| keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_A
-		|| keydata.key == MLX_KEY_D || keydata.key == MLX_KEY_SPACE || keydata.key == MLX_KEY_LEFT_SHIFT || keydata.key == MLX_KEY_ESCAPE))
-	{
-		if (keydata.key == MLX_KEY_ESCAPE)
-			mlx_close_window(data->mlx);
-		else if (keydata.key == MLX_KEY_W)
-			data->camera.cords.z -= 0.2;
-		else if (keydata.key == MLX_KEY_S)
-			data->camera.cords.z += 0.2;
-		else if (keydata.key == MLX_KEY_A)
-			data->camera.cords.x -= 0.2;
-		else if (keydata.key == MLX_KEY_D)
-			data->camera.cords.x += 0.2;
-		else if (keydata.key == MLX_KEY_SPACE)
-			data->camera.cords.y += 0.2;
-		else if (keydata.key == MLX_KEY_LEFT_SHIFT)
-			data->camera.cords.y -= 0.2;
-		update_camera(data);
-		render(data);
-	}
 }
 
 /**
