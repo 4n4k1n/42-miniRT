@@ -16,7 +16,7 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fassociative-math -ffinite-math-only -fno-signed-zeros \
   -fipa-pta -fipa-cp-clone -fipa-sra -fipa-pure-const -fipa-reference \
   -fdevirtualize -fdevirtualize-speculatively \
-  -fno-stack-protector -fno-exceptions -fwhole-program
+  -fno-stack-protector -fno-exceptions -fwhole-program -fsanitize=address,undefined -g
 OBJ_DIR = objs
 CC = cc
 

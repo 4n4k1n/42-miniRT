@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 22:18:54 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/01 22:56:04 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,40 @@ int	get_time_in_ms(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
+void	cleanup_objects(t_obj_list *objects)
+{
+	t_obj	*current;
+	t_obj	*next;
+
+	if (!objects)
+		return ;
+	current = objects->head;
+	while (current)
+	{
+		next = current->next;
+		if (current->type == SPHERE && current->data.sphere.mat)
+			free(current->data.sphere.mat);
+		free(current);
+		current = next;
+	}
+	free(objects);
+}
+
+void	update_camera(t_data *data)
+{
+	t_init_tmp tmp;
+
+	tmp.t1 = vec3_init_inline(0.0, 0.0, data->camera.foc);
+	tmp.t2 = vec3_sub_inline(&data->camera.cords, &tmp.t1);
+	tmp.t3 = vec3_divide_inline(&data->camera.viewport_u, 2.0);
+	tmp.t4 = vec3_sub_inline(&tmp.t2, &tmp.t3);
+	tmp.t5 = vec3_divide_inline(&data->camera.viewport_v, 2.0);
+	data->camera.viewport_upper_left = vec3_sub_inline(&tmp.t4, &tmp.t5);
+	tmp.t6 = vec3_add_inline(&data->camera.pixel_delta_u, &data->camera.pixel_delta_v);
+	tmp.t7 = vec3_multiply_inline(&tmp.t6, 0.5);
+	data->camera.pixel00_loc = vec3_add_inline(&data->camera.viewport_upper_left, &tmp.t7);
+}
+
 /**
  * Key hook function to handle arrow key presses
  * Captures arrow key events and prints them to stdout
@@ -94,18 +128,26 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 	t_data	*data;
 
 	data = (t_data *)param;
-	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
+	if ((keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) && (keydata.key == MLX_KEY_W
+		|| keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_A
+		|| keydata.key == MLX_KEY_D || keydata.key == MLX_KEY_SPACE || keydata.key == MLX_KEY_LEFT_SHIFT || keydata.key == MLX_KEY_ESCAPE))
 	{
-		if (keydata.key == MLX_KEY_UP)
-			printf("Arrow key pressed: UP\n");
-		else if (keydata.key == MLX_KEY_DOWN)
-			printf("Arrow key pressed: DOWN\n");
-		else if (keydata.key == MLX_KEY_LEFT)
-			printf("Arrow key pressed: LEFT\n");
-		else if (keydata.key == MLX_KEY_RIGHT)
-			printf("Arrow key pressed: RIGHT\n");
-		else if (keydata.key == MLX_KEY_ESCAPE)
+		if (keydata.key == MLX_KEY_ESCAPE)
 			mlx_close_window(data->mlx);
+		else if (keydata.key == MLX_KEY_W)
+			data->camera.cords.z -= 0.2;
+		else if (keydata.key == MLX_KEY_DOWN)
+			data->camera.cords.z += 0.2;
+		else if (keydata.key == MLX_KEY_A)
+			data->camera.cords.x -= 0.2;
+		else if (keydata.key == MLX_KEY_D)
+			data->camera.cords.x += 0.2;
+		else if (keydata.key == MLX_KEY_SPACE)
+			data->camera.cords.y += 0.2;
+		else if (keydata.key == MLX_KEY_LEFT_SHIFT)
+			data->camera.cords.y -= 0.2;
+		update_camera(data);
+		render(data);
 	}
 }
 
@@ -131,11 +173,13 @@ int	main(int ac, char **av)
 	data.img = mlx_new_image(data.mlx, WIDTH, HEIGHT);
 	if (!data.img || (mlx_image_to_window(data.mlx, data.img, 0, 0) < 0))
 		return (1);
-	mlx_key_hook(data.mlx, key_hook, data.mlx);
+	mlx_key_hook(data.mlx, key_hook, &data);
 	render_time = get_time_in_ms();
 	render(&data);
 	printf("\n%.2f sec\n", (float)(get_time_in_ms() - render_time) / 1000);
 	mlx_loop(data.mlx);
+	cleanup_objects(data.objects);
+	mlx_delete_image(data.mlx, data.img);
 	mlx_terminate(data.mlx);
 	return (0);
 }
