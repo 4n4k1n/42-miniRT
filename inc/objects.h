@@ -156,6 +156,7 @@ typedef struct s_camera
 
 typedef struct s_data
 {
+	bool			aa_state;
 	t_anti_aliasing	aa;
 	t_obj_list		*objects;
 	t_camera		camera;

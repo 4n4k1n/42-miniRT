@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/01 23:35:45 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/02 11:45:25 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,16 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		|| keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_A
 		|| keydata.key == MLX_KEY_D || keydata.key == MLX_KEY_SPACE || keydata.key == MLX_KEY_LEFT_SHIFT 
 		|| keydata.key == MLX_KEY_UP || keydata.key == MLX_KEY_DOWN 
-		|| keydata.key == MLX_KEY_LEFT || keydata.key == MLX_KEY_RIGHT || keydata.key == MLX_KEY_ESCAPE))
+		|| keydata.key == MLX_KEY_LEFT || keydata.key == MLX_KEY_RIGHT || keydata.key == MLX_KEY_ESCAPE || keydata.key == MLX_KEY_R))
 	{
 		if (keydata.key == MLX_KEY_ESCAPE)
 			mlx_close_window(data->mlx);
+		else if (keydata.key == MLX_KEY_R)
+		{
+			data->aa_state = !data->aa_state;
+			render(data);
+			return ;
+		}
 		else if (keydata.key == MLX_KEY_W || keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_A || keydata.key == MLX_KEY_D)
 		{
 			get_camera_vectors(data, &forward, &right, &up);

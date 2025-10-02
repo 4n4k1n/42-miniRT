@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/01 23:23:12 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/02 11:43:11 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ int	main(int ac, char **av)
 
 	(void)ac;
 	(void)av;
+    data.aa_state = ANTI_ALIASING;
 	data.camera.samples_per_pixel = AA_MAX_SAMPLES;
 	init_camera(&data);
 	build_demo_world(&data);
