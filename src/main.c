@@ -19,11 +19,11 @@
  */
 static void	build_demo_world(t_data *data)
 {
-    t_obj	*s1;
-    t_obj	*s2;
-    // NEW demo spheres
-    t_obj	*s3;
-    t_obj	*s4;
+    t_obj	*o;
+    int		i;
+    int		ring_count;
+    double	angle;
+    double	radius;
 
     data->objects = (t_obj_list *)malloc(sizeof(t_obj_list));
     if (!data->objects)
@@ -32,48 +32,72 @@ static void	build_demo_world(t_data *data)
     data->objects->tail = NULL;
     data->objects->size = 0;
 
-    // Ground sphere: lambertian (0.8,0.8,0.0)
-    s2 = obj_new(SPHERE);
-    if (s2)
+    /* Epic metallic ground (big low-fuzz mirror) */
+    o = obj_new(SPHERE);
+    if (o)
     {
-        s2->data.sphere.cords = vec3_init_inline(0.0, -100.5, -1.0);
-        s2->data.sphere.diameter = 200.0;
-        s2->data.sphere.rgb = (t_rgb){255, 255, 255};
-        s2->data.sphere.mat = material_metal((t_rgb){204.0, 204.0, 204.0}, 0.0);
-        obj_push(data->objects, s2);
+        o->data.sphere.cords = vec3_init_inline(0.0, -1001.0, -1.0);
+        o->data.sphere.diameter = 2002.0;
+        o->data.sphere.rgb = (t_rgb){255, 255, 255};
+        o->data.sphere.mat = material_metal((t_rgb){220.0, 225.0, 230.0}, 0.01);
+        obj_push(data->objects, o);
     }
 
-    // Center sphere: lambertian (0.1,0.2,0.5)
-    s1 = obj_new(SPHERE);
-    if (s1)
+    /* Central polished orb (near-perfect chrome) */
+    o = obj_new(SPHERE);
+    if (o)
     {
-        s1->data.sphere.cords = vec3_init_inline(0.0, 0.0, -1.2);
-        s1->data.sphere.diameter = 1.0;
-        s1->data.sphere.rgb = (t_rgb){255, 255, 255};
-        s1->data.sphere.mat = material_metal((t_rgb){204.0, 204.0, 204.0}, 0.0);
-        obj_push(data->objects, s1);
+        o->data.sphere.cords = vec3_init_inline(0.0, 0.6, -1.5);
+        o->data.sphere.diameter = 1.6;
+        o->data.sphere.rgb = (t_rgb){255, 255, 255};
+        o->data.sphere.mat = material_metal((t_rgb){235.0, 235.0, 240.0}, 0.0);
+        obj_push(data->objects, o);
     }
 
-    // Left sphere: metal (0.8,0.8,0.8), fuzz 0.3
-    s3 = obj_new(SPHERE);
-    if (s3)
+    /* Inner golden core (slightly rough gold) */
+    o = obj_new(SPHERE);
+    if (o)
     {
-        s3->data.sphere.cords = vec3_init_inline(-1.0, 0.0, -1.0);
-        s3->data.sphere.diameter = 1.0;
-        s3->data.sphere.rgb = (t_rgb){255, 255, 255};
-        s3->data.sphere.mat = material_metal((t_rgb){204.0, 153.0, 51.0}, 0.0);
-        obj_push(data->objects, s3);
+        o->data.sphere.cords = vec3_init_inline(0.0, 0.6, -1.5);
+        o->data.sphere.diameter = 0.7;
+        o->data.sphere.rgb = (t_rgb){255, 215, 0};
+        o->data.sphere.mat = material_metal((t_rgb){255.0, 200.0, 80.0}, 0.04);
+        obj_push(data->objects, o);
     }
 
-    // Right sphere: metal (0.8,0.6,0.2), fuzz 1.0
-    s4 = obj_new(SPHERE);
-    if (s4)
+    /* Ring of metallic satellites around the orb */
+    ring_count = 14;
+    radius = 3.2;
+    for (i = 0; i < ring_count; ++i)
     {
-        s4->data.sphere.cords = vec3_init_inline(1.0, 0.0, -1.0);
-        s4->data.sphere.diameter = 1.0;
-        s4->data.sphere.rgb = (t_rgb){255, 255, 255};
-        s4->data.sphere.mat = material_metal((t_rgb){204.0, 153.0, 51.0}, 0.0);
-        obj_push(data->objects, s4);
+        angle = (2.0 * M_PI * i) / (double)ring_count;
+        o = obj_new(SPHERE);
+        if (!o)
+            continue;
+        o->data.sphere.cords = vec3_init_inline(cos(angle) * radius, 0.9 + 0.3 * sin(3*angle), sin(angle) * radius - 1.5);
+        o->data.sphere.diameter = 0.45;
+        o->data.sphere.rgb = (t_rgb){200, 200, 220};
+        /* vary albedo and fuzz for visual variety */
+        o->data.sphere.mat = material_metal((t_rgb){180.0 + (i % 3) * 20.0, 180.0 + (i % 5) * 12.0, 200.0}, 0.02 + (i % 4) * 0.02);
+        obj_push(data->objects, o);
+    }
+
+    /* A few tall metallic spires (stacked spheres) */
+    for (i = 0; i < 3; ++i)
+    {
+        int j;
+        double cx = -5.5 + i * 5.5;
+        for (j = 0; j < 4; ++j)
+        {
+            o = obj_new(SPHERE);
+            if (!o)
+                continue;
+            o->data.sphere.cords = vec3_init_inline(cx, 0.25 + j * 0.6, -3.0);
+            o->data.sphere.diameter = 0.5 - j * 0.06;
+            o->data.sphere.rgb = (t_rgb){220, 210, 200};
+            o->data.sphere.mat = material_metal((t_rgb){200.0 + j * 10.0, 190.0 + j * 8.0, 180.0}, 0.03 + j * 0.02);
+            obj_push(data->objects, o);
+        }
     }
 }
 
