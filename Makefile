@@ -16,9 +16,9 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fassociative-math -ffinite-math-only -fno-signed-zeros \
   -fipa-pta -fipa-cp-clone -fipa-sra -fipa-pure-const -fipa-reference \
   -fdevirtualize -fdevirtualize-speculatively \
-  -fno-stack-protector -fno-exceptions -fwhole-program -fsanitize=address,undefined -g
+  -fno-stack-protector -fno-exceptions -fwhole-program
 OBJ_DIR = objs
-CC = cc
+CC = gcc
 
 SRC = src/main.c \
 		src/math/vec_add.c \
@@ -49,6 +49,7 @@ SRC = src/main.c \
 		src/logic/camera.c \
 		src/logic/metal.c \
 		src/logic/lambertian.c \
+		src/logic/dielectric.c \
 		src/math/random_vec.c \
 		src/utils/mlx_hooks.c
 
