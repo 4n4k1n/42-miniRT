@@ -46,6 +46,7 @@ typedef struct s_plane
 	t_vec3			cords;
 	t_vec3			norm;
 	t_rgb			rgb;
+	t_material		*mat;
 }					t_plane;
 
 typedef struct s_cylinder

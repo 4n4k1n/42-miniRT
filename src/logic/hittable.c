@@ -28,6 +28,8 @@ int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record 
 		return (0);
 	if (o->type == SPHERE)
 		return (hit_sphere_obj(&o->data.sphere, r, min, max, rec));
+	if (o->type == PLANE)
+		return (hit_plane_obj(&o->data.plane, r, min, max, rec));
 	// ADD THE REST OF THE OBJS
 	return (0);
 }
