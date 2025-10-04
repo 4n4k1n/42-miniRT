@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/04 20:07:50 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/04 23:00:40 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,5 +196,5 @@ void	render(t_data *data)
 		printf("%d\n", i);
 		i++;
 	}
-	printf("\n%.2f fps\n", 1000 / (get_time_in_ms() - render_time));
+	printf("\n%.2f fps\n", 1000 / (double)(get_time_in_ms() - render_time));
 }
