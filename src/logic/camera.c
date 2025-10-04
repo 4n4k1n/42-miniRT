@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/04 17:55:11 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/04 20:07:50 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,11 @@ static inline t_rgb	rgb_modulate_inline(t_rgb a, t_rgb b)
  * If no hit: creates gradient background from white to blue
  * Formula for normal: N = (hit_point - sphere_center) / radius
  */
-t_rgb	ray_color(t_ray *ray, t_obj_list *world, int depth)
+t_rgb	ray_color(t_ray *initial_ray, t_obj_list *world, int max_depth)
 {
+	t_ray			current_ray = *initial_ray;
+	t_rgb			final_color = (t_rgb){255.0, 255.0, 255.0};
 	t_hit_record	rec;
-	t_rgb			return_color;
 	t_vec3			color_a = (t_vec3){1.0, 1.0, 1.0};
 	t_vec3			color_b = (t_vec3){0.5, 0.7, 1.0};
 	t_vec3			unit_direction;
@@ -84,41 +85,54 @@ t_rgb	ray_color(t_ray *ray, t_obj_list *world, int depth)
 	t_vec3			temp1;
 	t_vec3			temp2;
 	t_vec3			result;
+	t_rgb			sky_color;
+	int				depth;
 
-	// if (depth <= 0)
-	// 	return (t_rgb){0.0, 0.0, 0.0};
-
-	if (depth > 1 && world && world_hit(world, ray, 0.001, INFINITY, &rec))
+	depth = 0;
+	while (depth < max_depth)
 	{
-		if (rec.mat)
+		if (world && world_hit(world, &current_ray, 0.001, INFINITY, &rec))
 		{
-			t_ray scattered;
-			t_rgb attenuation;
-			if (rec.mat->scatter(rec.mat, ray, &rec, &attenuation, &scattered))
+			if (rec.mat)
 			{
-				t_rgb bounced = ray_color(&scattered, world, depth - 1);
-				return rgb_modulate_inline(attenuation, bounced);
+				t_ray scattered;
+				t_rgb attenuation;
+				if (rec.mat->scatter(rec.mat, &current_ray, &rec, &attenuation, &scattered))
+				{
+					final_color = rgb_modulate_inline(final_color, attenuation);
+					current_ray = scattered;
+				}
+				else
+				{
+					return (t_rgb){0.0, 0.0, 0.0};
+				}
 			}
-			return (t_rgb){0.0, 0.0, 0.0};
+			else
+			{
+				t_vec3 direction = random_on_hemisphere(&rec.normal);
+				final_color = rgb_multiply_inline(final_color, COLOR_INTENSITY);
+				current_ray = (t_ray){rec.p, direction};
+			}
 		}
-		// Fallback: old diffuse bounce if no material set
-		t_vec3 direction = random_on_hemisphere(&rec.normal);
-		return (rgb_multiply_inline(ray_color(&(t_ray){rec.p, direction}, world, depth - 1), COLOR_INTENSITY));
+		else
+		{
+			len = sqrt(vec3_dot_inline(&current_ray.direction, &current_ray.direction));
+			if (len != 0.0)
+				unit_direction = vec3_divide_inline(&current_ray.direction, len);
+			else
+				unit_direction = vec3_cpy_inline(&current_ray.direction);
+			a = 0.5 * (unit_direction.y + 1.0);
+			temp1 = vec3_multiply_inline(&color_a, 1.0 - a);
+			temp2 = vec3_multiply_inline(&color_b, a);
+			result = vec3_add_inline(&temp1, &temp2);
+			sky_color.r = fmin(fmax(result.x, 0.0), 1.0) * 255.999;
+			sky_color.g = fmin(fmax(result.y, 0.0), 1.0) * 255.999;
+			sky_color.b = fmin(fmax(result.z, 0.0), 1.0) * 255.999;
+			return rgb_modulate_inline(final_color, sky_color);
+		}
+		depth++;
 	}
-
-	len = sqrt(vec3_dot_inline(&ray->direction, &ray->direction));
-	if (len != 0.0)
-		unit_direction = vec3_divide_inline(&ray->direction, len);
-	else
-		unit_direction = vec3_cpy_inline(&ray->direction);
-	a = 0.5 * (unit_direction.y + 1.0);
-	temp1 = vec3_multiply_inline(&color_a, 1.0 - a);
-	temp2 = vec3_multiply_inline(&color_b, a);
-	result = vec3_add_inline(&temp1, &temp2);
-	return_color.r = fmin(fmax(result.x, 0.0), 1.0) * 255.999;
-	return_color.g = fmin(fmax(result.y, 0.0), 1.0) * 255.999;
-	return_color.b = fmin(fmax(result.z, 0.0), 1.0) * 255.999;
-	return (return_color);
+	return (final_color);
 }
 
 /**
