@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_hooks.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/02 11:45:25 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/04 17:37:54 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		|| keydata.key == MLX_KEY_LEFT || keydata.key == MLX_KEY_RIGHT || keydata.key == MLX_KEY_ESCAPE || keydata.key == MLX_KEY_R))
 	{
 		if (keydata.key == MLX_KEY_ESCAPE)
-			mlx_close_window(data->mlx);
+			return (mlx_close_window(data->mlx));
 		else if (keydata.key == MLX_KEY_R)
 		{
 			data->aa_state = !data->aa_state;

@@ -6,8 +6,8 @@
 // AA_MIN_SAMPLES: the minimum amount of rays per pixel (should be between 8 and 32)
 // MAX_DEPTH: the number of child rays that are created when there is an intersection (should be between 8 and 64)
 # define SCALE 0.5
-# define AA_MIN_SAMPLES 32
-# define MAX_DEPTH 64
+# define AA_MIN_SAMPLES 8
+# define MAX_DEPTH 16
 
 // for lume and color intensity(dont need to be modified normally)
 # define AA_VAR_EPS 0.0004
