@@ -28,5 +28,6 @@ t_vec3	random_on_hemisphere(t_vec3 *normal);
 void	update_camera(t_data *data);
 void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up);
 void	key_hook(mlx_key_data_t keydata, void *param);
+int	get_time_in_ms(void);
 
 #endif
