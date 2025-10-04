@@ -16,7 +16,7 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fassociative-math -ffinite-math-only -fno-signed-zeros \
   -fipa-pta -fipa-cp-clone -fipa-sra -fipa-pure-const -fipa-reference \
   -fdevirtualize -fdevirtualize-speculatively \
-  -fno-stack-protector -fno-exceptions -fwhole-program -fsanitize=address,undefined -g
+  -fno-stack-protector -fno-exceptions -fwhole-program -g -gdwarf-4
 OBJ_DIR = objs
 CC = cc
 
@@ -50,7 +50,8 @@ SRC = src/main.c \
 		src/logic/metal.c \
 		src/logic/lambertian.c \
 		src/math/random_vec.c \
-		src/utils/mlx_hooks.c
+		src/utils/mlx_hooks.c \
+		src/parsing/debug.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
@@ -102,7 +103,6 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 	$(MAKE) fclean -C $(LIBFT_DIR)
-	@rm -rf $(MLX42_DIR)
 
 re:
 	$(MAKE) fclean
