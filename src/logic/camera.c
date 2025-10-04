@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/02 11:46:58 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/04 17:55:11 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,10 @@ t_rgb	ray_color(t_ray *ray, t_obj_list *world, int depth)
 	t_vec3			temp2;
 	t_vec3			result;
 
-	if (depth <= 0)
-		return (t_rgb){0.0, 0.0, 0.0};
+	// if (depth <= 0)
+	// 	return (t_rgb){0.0, 0.0, 0.0};
 
-	if (world && world_hit(world, ray, 0.001, INFINITY, &rec))
+	if (depth > 1 && world && world_hit(world, ray, 0.001, INFINITY, &rec))
 	{
 		if (rec.mat)
 		{
@@ -164,7 +164,9 @@ void	render(t_data *data)
 {
 	int		i;
 	int		j;
+	int	render_time;
 
+	render_time = get_time_in_ms();
 	i = 0;
 	while (i < HEIGHT)
 	{
@@ -180,4 +182,5 @@ void	render(t_data *data)
 		printf("%d\n", i);
 		i++;
 	}
+	printf("\n%.2f fps\n", 1000 / (get_time_in_ms() - render_time));
 }

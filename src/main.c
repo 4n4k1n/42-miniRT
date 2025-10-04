@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/02 11:43:11 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/04 17:41:44 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,14 +112,15 @@ void	cleanup_objects(t_obj_list *objects)
 int	main(int ac, char **av)
 {
 	t_data	data;
-	int	render_time;
 
 	(void)ac;
-	(void)av;
+    if (parse_scene(av[1], &data))
+        return (1);
+        print_scene(&data);
     data.aa_state = ANTI_ALIASING;
 	data.camera.samples_per_pixel = AA_MAX_SAMPLES;
 	init_camera(&data);
-	build_demo_world(&data);
+	// build_demo_world(&data);
 	mlx_set_setting(MLX_MAXIMIZED, false);
 	data.mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
 	if (!data.mlx)
@@ -128,9 +129,7 @@ int	main(int ac, char **av)
 	if (!data.img || (mlx_image_to_window(data.mlx, data.img, 0, 0) < 0))
 		return (1);
 	mlx_key_hook(data.mlx, key_hook, &data);
-	render_time = get_time_in_ms();
 	render(&data);
-	printf("\n%.2f sec\n", (float)(get_time_in_ms() - render_time) / 1000);
 	mlx_loop(data.mlx);
 	cleanup_objects(data.objects);
 	mlx_delete_image(data.mlx, data.img);
