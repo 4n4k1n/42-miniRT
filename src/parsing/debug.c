@@ -58,6 +58,11 @@ static void	print_lights(const t_light_list *lst)
 
 static void print_material(t_material *mat)
 {
+	if (!mat)
+	{
+		printf(" mat=NULL ");
+		return;
+	}
 	if (mat->type == LAMBERTIAN)
 		printf(" mat=LAMBERTIAN ");
 	if (mat->type == METAL)

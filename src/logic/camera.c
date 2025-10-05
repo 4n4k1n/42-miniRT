@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/04 23:00:40 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/05 11:38:34 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,33 @@ static inline t_rgb	rgb_modulate_inline(t_rgb a, t_rgb b)
 	return out;
 }
 
+static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
+{
+	double	len;
+	t_vec3	unit_direction;
+	double	a;
+	t_vec3	temp1;
+	t_vec3	temp2;
+	t_vec3			color_a = (t_vec3){1.0, 1.0, 1.0};
+	t_vec3			color_b = (t_vec3){0.5, 0.7, 1.0};
+	t_vec3			result;
+	t_rgb			sky_color;
+
+	len = sqrt(vec3_dot_inline(&current_ray->direction, &current_ray->direction));
+	if (len != 0.0)
+		unit_direction = vec3_divide_inline(&current_ray->direction, len);
+	else
+		unit_direction = vec3_cpy_inline(&current_ray->direction);
+	a = 0.5 * (unit_direction.y + 1.0);
+	temp1 = vec3_multiply_inline(&color_a, 1.0 - a);
+	temp2 = vec3_multiply_inline(&color_b, a);
+	result = vec3_add_inline(&temp1, &temp2);
+	sky_color.r = fmin(fmax(result.x, 0.0), 1.0) * 255.999;
+	sky_color.g = fmin(fmax(result.y, 0.0), 1.0) * 255.999;
+	sky_color.b = fmin(fmax(result.z, 0.0), 1.0) * 255.999;
+	return (rgb_modulate_inline(*final, sky_color));
+}
+
 /**
  * Determines the color for a ray by checking sphere intersection
  * If ray hits sphere: calculates surface normal and converts to color
@@ -77,15 +104,6 @@ t_rgb	ray_color(t_ray *initial_ray, t_obj_list *world, int max_depth)
 	t_ray			current_ray = *initial_ray;
 	t_rgb			final_color = (t_rgb){255.0, 255.0, 255.0};
 	t_hit_record	rec;
-	t_vec3			color_a = (t_vec3){1.0, 1.0, 1.0};
-	t_vec3			color_b = (t_vec3){0.5, 0.7, 1.0};
-	t_vec3			unit_direction;
-	double			len;
-	double			a;
-	t_vec3			temp1;
-	t_vec3			temp2;
-	t_vec3			result;
-	t_rgb			sky_color;
 	int				depth;
 
 	depth = 0;
@@ -103,33 +121,18 @@ t_rgb	ray_color(t_ray *initial_ray, t_obj_list *world, int max_depth)
 					current_ray = scattered;
 				}
 				else
-				{
 					return (t_rgb){0.0, 0.0, 0.0};
-				}
 			}
 			else
 			{
 				t_vec3 direction = random_on_hemisphere(&rec.normal);
+				direction = vec3_add_inline(&rec.normal, &direction);
 				final_color = rgb_multiply_inline(final_color, COLOR_INTENSITY);
 				current_ray = (t_ray){rec.p, direction};
 			}
 		}
 		else
-		{
-			len = sqrt(vec3_dot_inline(&current_ray.direction, &current_ray.direction));
-			if (len != 0.0)
-				unit_direction = vec3_divide_inline(&current_ray.direction, len);
-			else
-				unit_direction = vec3_cpy_inline(&current_ray.direction);
-			a = 0.5 * (unit_direction.y + 1.0);
-			temp1 = vec3_multiply_inline(&color_a, 1.0 - a);
-			temp2 = vec3_multiply_inline(&color_b, a);
-			result = vec3_add_inline(&temp1, &temp2);
-			sky_color.r = fmin(fmax(result.x, 0.0), 1.0) * 255.999;
-			sky_color.g = fmin(fmax(result.y, 0.0), 1.0) * 255.999;
-			sky_color.b = fmin(fmax(result.z, 0.0), 1.0) * 255.999;
-			return rgb_modulate_inline(final_color, sky_color);
-		}
+			return (calculate_final_color(&final_color, &current_ray));
 		depth++;
 	}
 	return (final_color);

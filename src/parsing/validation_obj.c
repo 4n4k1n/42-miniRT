@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validation_obj.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 10:36:19 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/04 16:34:11 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/05 12:21:58 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	parse_material(char **tokens, int len, t_obj *o)
 {
 	if (len == 4)
-		o->data.sphere.mat = material_lambertian(o->data.sphere.rgb);
+		o->data.sphere.mat = NULL;
 	else if (len == 5)
 	{
 		if (tokens[4][0] == 'L')
