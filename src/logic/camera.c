@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/05 11:03:06 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/05 11:38:34 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 	sky_color.r = fmin(fmax(result.x, 0.0), 1.0) * 255.999;
 	sky_color.g = fmin(fmax(result.y, 0.0), 1.0) * 255.999;
 	sky_color.b = fmin(fmax(result.z, 0.0), 1.0) * 255.999;
-	return rgb_modulate_inline(*final, sky_color);
+	return (rgb_modulate_inline(*final, sky_color));
 }
 
 /**
@@ -126,6 +126,7 @@ t_rgb	ray_color(t_ray *initial_ray, t_obj_list *world, int max_depth)
 			else
 			{
 				t_vec3 direction = random_on_hemisphere(&rec.normal);
+				direction = vec3_add_inline(&rec.normal, &direction);
 				final_color = rgb_multiply_inline(final_color, COLOR_INTENSITY);
 				current_ray = (t_ray){rec.p, direction};
 			}
