@@ -1,0 +1,39 @@
+A 0.05 255,255,255
+
+C 0,2,8 0,-0.2,-1 60
+
+L 0,0,0 1.2
+
+# Sun (center, bright yellow)
+sp 0,0,0 1.8 255,255,100
+
+# Mercury (small, metallic)
+sp 2.5,0.1,-0.5 0.4 169,169,169 M
+
+# Venus (yellow-orange, lambertian)
+sp -3.2,0.3,0.8 0.6 255,198,73 L
+
+# Earth (blue-green, lambertian)
+sp 4.8,-0.2,-1.2 0.8 100,149,237 L
+
+# Mars (red, lambertian)
+sp -5.5,-0.4,1.5 0.6 205,92,92 L
+
+# Jupiter (large, striped brown)
+sp 8.2,0.8,-2.1 1.6 222,184,135
+
+# Saturn (pale yellow with metallic rings simulated by smaller spheres)
+sp -10.5,-0.6,2.8 1.4 250,235,140 L
+sp -10.2,-0.6,2.8 0.2 192,192,192 M
+sp -10.8,-0.6,2.8 0.2 192,192,192 M
+
+# Uranus (pale blue)
+sp 12.8,1.2,-3.5 1.0 175,238,238 L
+
+# Neptune (deep blue)
+sp -14.2,-1.0,4.2 0.9 72,61,139 L
+
+# Some asteroids (small metallic spheres)
+sp 6.1,0.5,-0.8 0.15 128,128,128 M
+sp 6.3,-0.3,-1.1 0.12 128,128,128 M
+sp 6.8,0.2,-0.9 0.18 128,128,128 M
