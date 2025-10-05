@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/04 17:41:44 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/05 14:30:37 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ int	main(int ac, char **av)
 	(void)ac;
     if (parse_scene(av[1], &data))
         return (1);
-        print_scene(&data);
+    print_scene(&data);
     data.aa_state = ANTI_ALIASING;
 	data.camera.samples_per_pixel = AA_MAX_SAMPLES;
 	init_camera(&data);
