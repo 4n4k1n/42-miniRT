@@ -56,7 +56,30 @@ typedef struct s_cylinder
 	double			diameter;
 	double			height;
 	t_rgb			rgb;
+	t_material		*mat;
 }					t_cylinder;
+
+typedef struct s_cyl_hit
+{
+	t_vec3	axis;
+	t_vec3	k;
+	t_vec3	point;
+	t_vec3	v;
+	t_vec3	axis_part;
+	t_vec3	outward;
+	double	axis_len;
+	double	radius;
+	double	half_h;
+	double	d_dot_a;
+	double	k_dot_a;
+	double	a;
+	double	h;
+	double	c;
+	double	disc;
+	double	root;
+	double	s;
+	double	len;
+}	t_cyl_hit;
 
 typedef union u_obj_data
 {
