@@ -25,6 +25,7 @@ static void	build_demo_world(t_data *data)
 	t_obj	*p_floor;
 	t_obj	*p_back;
 	t_obj	*p_left;
+	t_obj	*cyl;
 
 	data->objects = (t_obj_list *)malloc(sizeof(t_obj_list));
 	if (!data->objects)
@@ -92,6 +93,18 @@ static void	build_demo_world(t_data *data)
 		p_left->data.plane.mat = material_metal((t_rgb){255.0, 200.0, 200.0}, 0.0);
 		obj_push(data->objects, p_left);
 	}
+
+	cyl = obj_new(CYLINDER);
+	if (cyl)
+	{
+		cyl->data.cylinder.cords = vec3_init_inline(0.0, -0.25, -2.0);
+		cyl->data.cylinder.norm = vec3_init_inline(0.0, 1.0, 0.0);
+		cyl->data.cylinder.diameter = 0.6;
+		cyl->data.cylinder.height = 6.2;
+		cyl->data.cylinder.rgb = (t_rgb){200, 100, 50};
+		cyl->data.cylinder.mat = material_metal((t_rgb){200.0, 100.0, 50.0}, 0.0);
+		obj_push(data->objects, cyl);
+	}
 }
 
 int	get_time_in_ms(void)
@@ -117,6 +130,8 @@ void	cleanup_objects(t_obj_list *objects)
 			free(current->data.sphere.mat);
 		if (current->type == PLANE && current->data.plane.mat)
 			free(current->data.plane.mat);
+		if (current->type == CYLINDER && current->data.cylinder.mat)
+			free(current->data.cylinder.mat);
 		free(current);
 		current = next;
 	}
