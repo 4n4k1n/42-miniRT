@@ -21,6 +21,7 @@ int	change_thread_state(t_data *data)
 	{
 		pthread_mutex_lock(&data->threads[i].active_mutex);
 		data->threads[i].active = !data->threads[i].active;
+		pthread_cond_signal(&data->threads[i].active_cond);
 		pthread_mutex_unlock(&data->threads[i].active_mutex);
 		i++;
 	}
@@ -29,19 +30,13 @@ int	change_thread_state(t_data *data)
 
 int	ft_wait(t_thread *thread)
 {
-	bool	active;
 	bool	shutdown;
 
-	active = 0;
-	shutdown = 0;
-	while (!active && !shutdown)
-	{
-		pthread_mutex_lock(&thread->active_mutex);
-		active = thread->active;
-		shutdown = thread->shutdown;
-		pthread_mutex_unlock(&thread->active_mutex);
-		usleep(500);
-	}
+	pthread_mutex_lock(&thread->active_mutex);
+	while (!thread->active && !thread->shutdown)
+		pthread_cond_wait(&thread->active_cond, &thread->active_mutex);
+	shutdown = thread->shutdown;
+	pthread_mutex_unlock(&thread->active_mutex);
 	return (shutdown);
 }
 
@@ -63,13 +58,11 @@ void	*thread_job(void *arg)
 			j = 0;
 			while (j < WIDTH)
 			{
-				if (ANTI_ALIASING)
+				if (thread->data->aa_state)
 					color = monte_carlo_aa(thread->data, i, j);
 				else
 					color = without_aa(thread->data, i, j);
-				pthread_mutex_lock(&thread->data->pixel_mutex);
 				mlx_put_pixel(thread->data->img, j, i, color);
-				pthread_mutex_unlock(&thread->data->pixel_mutex);
 				j++;
 			}
 			i += thread->data->threads_amount;
@@ -77,9 +70,7 @@ void	*thread_job(void *arg)
 		pthread_mutex_lock(&thread->active_mutex);
 		thread->active = !thread->active;
 		pthread_mutex_unlock(&thread->active_mutex);
-		pthread_mutex_lock(&thread->data->threads_done_mutex);
-		thread->data->threads_done++;
-		pthread_mutex_unlock(&thread->data->threads_done_mutex);
+		__atomic_add_fetch(&thread->data->threads_done, 1, __ATOMIC_SEQ_CST);
 	}
 	return (NULL);
 }
@@ -95,10 +86,9 @@ int	init_threads(t_data *data)
 	while (i < data->threads_amount)
 	{
 		pthread_mutex_init(&data->threads[i].active_mutex, NULL);
+		pthread_cond_init(&data->threads[i].active_cond, NULL);
 		i++;
 	}
-	pthread_mutex_init(&data->threads_done_mutex, NULL);
-	pthread_mutex_init(&data->pixel_mutex, NULL);
 	i = 0;
 	while (i < data->threads_amount)
 	{
@@ -123,22 +113,16 @@ int	render_with_mt(t_data *data)
 	int	checked;
 
 	checked = 0;
-	pthread_mutex_lock(&data->threads_done_mutex);
-	data->threads_done = 0;
-	pthread_mutex_unlock(&data->threads_done_mutex);
+	__atomic_store_n(&data->threads_done, 0, __ATOMIC_SEQ_CST);
 	change_thread_state(data);
 	while (1)
 	{
-		pthread_mutex_lock(&data->threads_done_mutex);
-		checked = data->threads_done;
-		pthread_mutex_unlock(&data->threads_done_mutex);
+		checked = __atomic_load_n(&data->threads_done, __ATOMIC_SEQ_CST);
 		if (checked == data->threads_amount)
 			break ;
 		usleep(500);
 	}
-	pthread_mutex_lock(&data->threads_done_mutex);
-	data->threads_done = 0;
-	pthread_mutex_unlock(&data->threads_done_mutex);
+	__atomic_store_n(&data->threads_done, 0, __ATOMIC_SEQ_CST);
 	return (0);
 }
 
@@ -152,6 +136,7 @@ void	cleanup_data(t_data *data)
 		pthread_mutex_lock(&data->threads[i].active_mutex);
 		data->threads[i].shutdown = true;
 		data->threads[i].active = true;
+		pthread_cond_signal(&data->threads[i].active_cond);
 		pthread_mutex_unlock(&data->threads[i].active_mutex);
 		i++;
 	}
@@ -165,9 +150,8 @@ void	cleanup_data(t_data *data)
 	while (i < data->threads_amount)
 	{
 		pthread_mutex_destroy(&data->threads[i].active_mutex);
+		pthread_cond_destroy(&data->threads[i].active_cond);
 		i++;
 	}
-	pthread_mutex_destroy(&data->threads_done_mutex);
-	pthread_mutex_destroy(&data->pixel_mutex);
 	free(data->threads);
 }

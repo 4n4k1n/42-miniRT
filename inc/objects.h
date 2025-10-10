@@ -164,6 +164,7 @@ typedef struct s_thread
 	bool		active;
 	bool		shutdown;
 	pthread_mutex_t	active_mutex;
+	pthread_cond_t	active_cond;
 }	t_thread;
 
 typedef struct s_data
@@ -179,8 +180,6 @@ typedef struct s_data
 	int				threads_amount;
 	t_thread		*threads;
 	int				threads_done;
-	pthread_mutex_t	threads_done_mutex;
-	pthread_mutex_t	pixel_mutex;
 	mlx_t			*mlx;
 	mlx_image_t		*img;
 }	t_data;
