@@ -285,5 +285,5 @@ void	render(t_data *data)
 			i++;
 		}
 	}
-	printf("\n%.2f fps\n", 1000 / (double)(get_time_in_ms() - render_time));
+	printf("\n%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000 / (double)(get_time_in_ms() - render_time));
 }
