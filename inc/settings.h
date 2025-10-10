@@ -5,9 +5,11 @@
 // SCALE: image size multiblied by the scale(scale 1 is 1920x1080)
 // AA_MIN_SAMPLES: the minimum amount of rays per pixel (should be between 8 and 32)
 // MAX_DEPTH: the number of child rays that are created when there is an intersection (should be between 8 and 64)
+// SHADOW_SAMPLES: number of shadow rays per light for soft shadows (1 = hard shadows, 4-8 = soft)
 # define SCALE 0.5
 # define AA_MIN_SAMPLES 8
 # define MAX_DEPTH 16
+# define SHADOW_SAMPLES 4
 
 // for lume and color intensity(dont need to be modified normally)
 # define AA_VAR_EPS 0.0004

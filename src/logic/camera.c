@@ -80,12 +80,17 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 	t_light		*light;
 	t_vec3		light_dir;
 	t_vec3		to_light;
+	t_vec3		sample_point;
+	t_vec3		offset;
 	double		distance;
 	double		diffuse;
 	t_rgb		light_contrib;
 	t_rgb		total_light;
 	t_ray		shadow_ray;
 	t_hit_record	shadow_rec;
+	int			samples;
+	int			hits;
+	double		light_radius;
 
 	total_light.r = data->ambiente.color.r * data->ambiente.lighting;
 	total_light.g = data->ambiente.color.g * data->ambiente.lighting;
@@ -95,17 +100,35 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 	light = data->light_list->head;
 	while (light)
 	{
-		to_light = vec3_sub_inline(&light->cords, &rec->p);
-		distance = sqrt(vec3_dot_inline(&to_light, &to_light));
-		light_dir = vec3_divide_inline(&to_light, distance);
-		shadow_ray.origin = rec->p;
-		shadow_ray.direction = light_dir;
-		if (!world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))
+		hits = 0;
+		samples = 0;
+		light_radius = 0.5;
+		light_contrib = (t_rgb){0.0, 0.0, 0.0};
+		while (samples < SHADOW_SAMPLES)
 		{
-			diffuse = fmax(0.0, vec3_dot_inline(&rec->normal, &light_dir));
-			light_contrib.r = light->color.r * light->intensity * diffuse * 100.0;
-			light_contrib.g = light->color.g * light->intensity * diffuse * 100.0;
-			light_contrib.b = light->color.b * light->intensity * diffuse * 100.0;
+			offset = random_unit_vec3();
+			offset = vec3_multiply_inline(&offset, light_radius);
+			sample_point = vec3_add_inline(&light->cords, &offset);
+			to_light = vec3_sub_inline(&sample_point, &rec->p);
+			distance = sqrt(vec3_dot_inline(&to_light, &to_light));
+			light_dir = vec3_divide_inline(&to_light, distance);
+			shadow_ray.origin = rec->p;
+			shadow_ray.direction = light_dir;
+			if (!world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))
+			{
+				diffuse = fmax(0.0, vec3_dot_inline(&rec->normal, &light_dir));
+				light_contrib.r += light->color.r * light->intensity * diffuse * 100.0;
+				light_contrib.g += light->color.g * light->intensity * diffuse * 100.0;
+				light_contrib.b += light->color.b * light->intensity * diffuse * 100.0;
+				hits++;
+			}
+			samples++;
+		}
+		if (hits > 0)
+		{
+			light_contrib.r /= samples;
+			light_contrib.g /= samples;
+			light_contrib.b /= samples;
 			total_light = rgb_add_inline(total_light, light_contrib);
 		}
 		light = light->next;
