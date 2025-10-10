@@ -50,6 +50,7 @@ static void	print_lights(const t_light_list *lst)
 		print_vec3("pos=", cur->cords);
 		printf(" ");
 		print_rgb("color=", cur->color);
+		printf(" intensity=%.2f", cur->intensity);
 		printf("\n");
 		cur = cur->next;
 		i++;
