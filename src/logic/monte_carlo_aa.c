@@ -45,7 +45,7 @@ uint32_t	without_aa(t_data *data, int i, int j)
 	ray_direction = vec3_sub_inline(&pixel_sample, &data->camera.cords);
 	ray.origin = data->camera.cords;
 	ray.direction = ray_direction;
-	color = ray_color(&ray, data->objects, MAX_DEPTH);
+	color = ray_color(&ray, data, MAX_DEPTH);
 	return (rgb_to_uint32(&color));
 }
 
@@ -63,7 +63,7 @@ uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j)
 		aa->ray_direction = vec3_sub_inline(&aa->pixel_sample, &data->camera.cords);
 		aa->ray.origin = data->camera.cords;
 		aa->ray.direction = aa->ray_direction;
-		aa->sample = ray_color(&aa->ray, data->objects, MAX_DEPTH);
+		aa->sample = ray_color(&aa->ray, data, MAX_DEPTH);
 		aa->acc_r += aa->sample.r;
 		aa->acc_g += aa->sample.g;
 		aa->acc_b += aa->sample.b;

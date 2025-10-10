@@ -99,7 +99,7 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
  * If no hit: creates gradient background from white to blue
  * Formula for normal: N = (hit_point - sphere_center) / radius
  */
-t_rgb	ray_color(t_ray *initial_ray, t_obj_list *world, int max_depth)
+t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 {
 	t_ray			current_ray = *initial_ray;
 	t_rgb			final_color = (t_rgb){255.0, 255.0, 255.0};
@@ -109,7 +109,7 @@ t_rgb	ray_color(t_ray *initial_ray, t_obj_list *world, int max_depth)
 	depth = 0;
 	while (depth < max_depth)
 	{
-		if (world && world_hit(world, &current_ray, 0.001, INFINITY, &rec))
+		if (data->objects && world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec))
 		{
 			if (rec.mat)
 			{

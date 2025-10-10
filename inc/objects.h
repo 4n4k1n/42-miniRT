@@ -82,6 +82,7 @@ typedef struct s_light
 {
 	t_vec3			cords;
 	t_rgb			color;
+	double			intensity;
 	struct s_light	*next;
 }					t_light;
 

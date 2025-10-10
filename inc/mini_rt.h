@@ -19,7 +19,7 @@
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/libft.h"
 
-t_rgb		ray_color(t_ray *ray, t_obj_list *world, int depth);
+t_rgb		ray_color(t_ray *ray, t_data *data, int depth);
 uint32_t	rgb_to_uint32(t_rgb *color);
 void	init_camera(t_data *data);
 uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j);
