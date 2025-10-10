@@ -172,9 +172,11 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 {
 	t_ray			current_ray = *initial_ray;
-	t_rgb			final_color = (t_rgb){255.0, 255.0, 255.0};
+	t_rgb			final_color = (t_rgb){0.0, 0.0, 0.0};
+	t_rgb			throughput = (t_rgb){255.0, 255.0, 255.0};
 	t_hit_record	rec;
 	t_rgb			direct_light;
+	t_rgb			direct_contrib;
 	int				depth;
 
 	depth = 0;
@@ -189,24 +191,29 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 				t_rgb attenuation;
 				if (rec.mat->scatter(rec.mat, &current_ray, &rec, &attenuation, &scattered))
 				{
-					t_rgb surface_color = rgb_modulate_inline(attenuation, direct_light);
-					final_color = rgb_modulate_inline(final_color, surface_color);
+					direct_contrib = rgb_modulate_inline(throughput, direct_light);
+					direct_contrib = rgb_modulate_inline(direct_contrib, attenuation);
+					final_color = rgb_add_inline(final_color, direct_contrib);
+					throughput = rgb_modulate_inline(throughput, attenuation);
 					current_ray = scattered;
 				}
 				else
-					return (t_rgb){0.0, 0.0, 0.0};
+					return (final_color);
 			}
 			else
 			{
 				t_vec3 direction = random_on_hemisphere(&rec.normal);
-				// direction = vec3_add_inline(&rec.normal, &direction);
-				final_color = rgb_modulate_inline(final_color, direct_light);
-				final_color = rgb_multiply_inline(final_color, COLOR_INTENSITY);
+				direct_contrib = rgb_modulate_inline(throughput, direct_light);
+				final_color = rgb_add_inline(final_color, direct_contrib);
+				throughput = rgb_multiply_inline(throughput, COLOR_INTENSITY);
 				current_ray = (t_ray){rec.p, direction};
 			}
 		}
 		else
-			return (calculate_final_color(&final_color, &current_ray));
+		{
+			t_rgb sky = calculate_final_color(&throughput, &current_ray);
+			return (rgb_add_inline(final_color, sky));
+		}
 		depth++;
 	}
 	return (final_color);
