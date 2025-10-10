@@ -9,7 +9,7 @@ static int	lambertian_scatter(const t_material *self, const t_ray *r_in,
 	dir = random_on_hemisphere((t_vec3 *)&rec->normal);
 	scattered->origin = rec->p;
 	scattered->direction = dir;
-	scattered->direction = vec3_add_inline(&rec->normal, &scattered->direction);
+	// scattered->direction = vec3_add_inline(&rec->normal, &scattered->direction);
 	*attenuation = self->albedo;
 	return (1);
 }

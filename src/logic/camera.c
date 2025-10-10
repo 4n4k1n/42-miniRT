@@ -66,6 +66,53 @@ static inline t_rgb	rgb_modulate_inline(t_rgb a, t_rgb b)
 	return out;
 }
 
+static inline t_rgb	rgb_add_inline(t_rgb a, t_rgb b)
+{
+	t_rgb out;
+	out.r = fmin(a.r + b.r, 255.999);
+	out.g = fmin(a.g + b.g, 255.999);
+	out.b = fmin(a.b + b.b, 255.999);
+	return out;
+}
+
+static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
+{
+	t_light		*light;
+	t_vec3		light_dir;
+	t_vec3		to_light;
+	double		distance;
+	double		diffuse;
+	t_rgb		light_contrib;
+	t_rgb		total_light;
+	t_ray		shadow_ray;
+	t_hit_record	shadow_rec;
+
+	total_light.r = data->ambiente.color.r * data->ambiente.lighting;
+	total_light.g = data->ambiente.color.g * data->ambiente.lighting;
+	total_light.b = data->ambiente.color.b * data->ambiente.lighting;
+	if (!data->light_list)
+		return (total_light);
+	light = data->light_list->head;
+	while (light)
+	{
+		to_light = vec3_sub_inline(&light->cords, &rec->p);
+		distance = sqrt(vec3_dot_inline(&to_light, &to_light));
+		light_dir = vec3_divide_inline(&to_light, distance);
+		shadow_ray.origin = rec->p;
+		shadow_ray.direction = light_dir;
+		if (!world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))
+		{
+			diffuse = fmax(0.0, vec3_dot_inline(&rec->normal, &light_dir));
+			light_contrib.r = light->color.r * light->intensity * diffuse * 100.0;
+			light_contrib.g = light->color.g * light->intensity * diffuse * 100.0;
+			light_contrib.b = light->color.b * light->intensity * diffuse * 100.0;
+			total_light = rgb_add_inline(total_light, light_contrib);
+		}
+		light = light->next;
+	}
+	return (total_light);
+}
+
 static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 {
 	double	len;
@@ -104,6 +151,7 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 	t_ray			current_ray = *initial_ray;
 	t_rgb			final_color = (t_rgb){255.0, 255.0, 255.0};
 	t_hit_record	rec;
+	t_rgb			direct_light;
 	int				depth;
 
 	depth = 0;
@@ -111,13 +159,15 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 	{
 		if (data->objects && world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec))
 		{
+			direct_light = calculate_direct_lighting(data, &rec);
 			if (rec.mat)
 			{
 				t_ray scattered;
 				t_rgb attenuation;
 				if (rec.mat->scatter(rec.mat, &current_ray, &rec, &attenuation, &scattered))
 				{
-					final_color = rgb_modulate_inline(final_color, attenuation);
+					t_rgb surface_color = rgb_modulate_inline(attenuation, direct_light);
+					final_color = rgb_modulate_inline(final_color, surface_color);
 					current_ray = scattered;
 				}
 				else
@@ -126,7 +176,8 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 			else
 			{
 				t_vec3 direction = random_on_hemisphere(&rec.normal);
-				direction = vec3_add_inline(&rec.normal, &direction);
+				// direction = vec3_add_inline(&rec.normal, &direction);
+				final_color = rgb_modulate_inline(final_color, direct_light);
 				final_color = rgb_multiply_inline(final_color, COLOR_INTENSITY);
 				current_ray = (t_ray){rec.p, direction};
 			}
