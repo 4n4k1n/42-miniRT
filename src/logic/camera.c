@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/05 11:38:34 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/10 13:54:57 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 {
 	t_ray			current_ray = *initial_ray;
 	t_rgb			final_color = (t_rgb){0.0, 0.0, 0.0};
-	t_rgb			throughput = (t_rgb){255.0, 255.0, 255.0};
+	t_rgb			throughput = data->ambiente.color;
 	t_hit_record	rec;
 	t_rgb			direct_light;
 	t_rgb			direct_contrib;
