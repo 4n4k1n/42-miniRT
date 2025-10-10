@@ -15,7 +15,7 @@
 int	parse_material(char **tokens, int len, t_obj *o)
 {
 	if (len == 4)
-		o->data.sphere.mat = NULL;
+		o->data.sphere.mat = material_lambertian(o->data.sphere.rgb);
 	else if (len == 5)
 	{
 		if (tokens[4][0] == 'L')
