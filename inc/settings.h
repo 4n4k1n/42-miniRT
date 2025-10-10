@@ -26,4 +26,8 @@
 #  define ANTI_ALIASING 0
 # endif
 
+# ifndef MULTI_THREADING
+#  define MULTI_THREADING 1
+# endif
+
 #endif

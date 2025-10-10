@@ -5,6 +5,7 @@
 # include "../MLX42/include/MLX42/MLX42.h"
 
 typedef struct s_material t_material;
+typedef struct s_data	t_data;
 
 typedef struct s_vec3
 {
@@ -155,6 +156,15 @@ typedef struct s_camera
 	int		samples_per_pixel;
 }	t_camera;
 
+typedef struct s_thread
+{
+	size_t	id;
+	pthread_t	thread;
+	t_data		*data;
+	bool		active;
+	pthread_mutex_t	active_mutex;
+}	t_thread;
+
 typedef struct s_data
 {
 	bool			aa_state;
@@ -165,6 +175,10 @@ typedef struct s_data
 	t_ambient		ambiente;
 	int				height;
 	int				width;
+	int				threads_amount;
+	t_thread		*threads;
+	int				threads_done;
+	pthread_mutex_t	threads_done_mutex;
 	mlx_t			*mlx;
 	mlx_image_t		*img;
 }	t_data;

@@ -8,6 +8,8 @@
 # include <math.h>
 # include <fcntl.h>
 # include <sys/time.h>
+# include <threads.h>
+# include <pthread.h>
 # include "objects.h"
 # include "camera.h"
 # include "parsing.h"
@@ -22,7 +24,7 @@
 t_rgb		ray_color(t_ray *ray, t_data *data, int depth);
 uint32_t	rgb_to_uint32(t_rgb *color);
 void	init_camera(t_data *data);
-uint32_t	monte_carlo_aa(t_data *data, t_anti_aliasing *aa, int i, int j);
+uint32_t	monte_carlo_aa(t_data *data, int i, int j);
 uint32_t	without_aa(t_data *data, int i, int j);
 t_vec3	random_on_hemisphere(t_vec3 *normal);
 t_vec3	random_unit_vec3(void);
@@ -30,5 +32,9 @@ void	update_camera(t_data *data);
 void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up);
 void	key_hook(mlx_key_data_t keydata, void *param);
 int	get_time_in_ms(void);
+void	*thread_job(void *arg);
+int	render_with_mt(t_data *data);
+void	cleanup_data(t_data *data);
+int	init_threads(t_data *data);
 
 #endif
