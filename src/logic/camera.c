@@ -92,9 +92,9 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 	int			hits;
 	double		light_radius;
 
-	total_light.r = data->ambiente.color.r * data->ambiente.lighting;
-	total_light.g = data->ambiente.color.g * data->ambiente.lighting;
-	total_light.b = data->ambiente.color.b * data->ambiente.lighting;
+	total_light.r = (data->ambiente.color.r / 255.0) * data->ambiente.lighting * 255.0;
+	total_light.g = (data->ambiente.color.g / 255.0) * data->ambiente.lighting * 255.0;
+	total_light.b = (data->ambiente.color.b / 255.0) * data->ambiente.lighting * 255.0;
 	if (!data->light_list)
 		return (total_light);
 	light = data->light_list->head;
@@ -117,9 +117,9 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 			if (!world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))
 			{
 				diffuse = fmax(0.0, vec3_dot_inline(&rec->normal, &light_dir));
-				light_contrib.r += light->color.r * light->intensity * diffuse * 100.0;
-				light_contrib.g += light->color.g * light->intensity * diffuse * 100.0;
-				light_contrib.b += light->color.b * light->intensity * diffuse * 100.0;
+				light_contrib.r += (light->color.r / 255.0) * light->intensity * diffuse * 255.0 * 100.0;
+				light_contrib.g += (light->color.g / 255.0) * light->intensity * diffuse * 255.0 * 100.0;
+				light_contrib.b += (light->color.b / 255.0) * light->intensity * diffuse * 255.0 * 100.0;
 				hits++;
 			}
 			samples++;
