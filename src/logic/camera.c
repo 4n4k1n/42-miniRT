@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/10 13:54:57 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/10 16:35:36 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,19 +266,24 @@ void	render(t_data *data)
 
 	render_time = get_time_in_ms();
 	i = 0;
-	while (i < HEIGHT)
+	if (MULTI_THREADING)
+		render_with_mt(data);
+	else
 	{
-		j = 0;
-		while (j < WIDTH)
+		while (i < HEIGHT)
 		{
-			if (data->aa_state)
-				mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
-			else
-				mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
-			j++;
+			j = 0;
+			while (j < WIDTH)
+			{
+				if (data->aa_state)
+					mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, i, j));
+				else
+					mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
+				j++;
+			}
+			printf("%d\n", i);
+			i++;
 		}
-		printf("%d\n", i);
-		i++;
 	}
 	printf("\n%.2f fps\n", 1000 / (double)(get_time_in_ms() - render_time));
 }
