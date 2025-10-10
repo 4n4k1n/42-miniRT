@@ -23,7 +23,7 @@
 # define AA_MAX_SAMPLES (AA_MIN_SAMPLES * 8)
 
 # ifndef ANTI_ALIASING
-#  define ANTI_ALIASING 0
+#  define ANTI_ALIASING 1
 # endif
 
 # ifndef MULTI_THREADING
