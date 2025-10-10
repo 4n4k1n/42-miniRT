@@ -14,6 +14,7 @@
 // for lume and color intensity(dont need to be modified normally)
 # define AA_VAR_EPS 0.0004
 # define COLOR_INTENSITY 0.5
+# define LIGHT_MULTIPLIER 1.0
 
 // will be set automaticly(dont change them)
 # define WIDTH (1920 * SCALE)
