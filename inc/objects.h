@@ -170,6 +170,7 @@ typedef struct s_thread
 typedef struct s_data
 {
 	bool			aa_state;
+	bool			lights_on;
 	t_anti_aliasing	aa;
 	t_obj_list		*objects;
 	t_camera		camera;

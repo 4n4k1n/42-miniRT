@@ -27,7 +27,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		|| keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_A
 		|| keydata.key == MLX_KEY_D || keydata.key == MLX_KEY_SPACE || keydata.key == MLX_KEY_LEFT_SHIFT 
 		|| keydata.key == MLX_KEY_UP || keydata.key == MLX_KEY_DOWN 
-		|| keydata.key == MLX_KEY_LEFT || keydata.key == MLX_KEY_RIGHT || keydata.key == MLX_KEY_ESCAPE || keydata.key == MLX_KEY_R))
+		|| keydata.key == MLX_KEY_LEFT || keydata.key == MLX_KEY_RIGHT || keydata.key == MLX_KEY_ESCAPE || keydata.key == MLX_KEY_R || keydata.key == MLX_KEY_L))
 	{
 		if (keydata.key == MLX_KEY_ESCAPE)
 			return (mlx_close_window(data->mlx));
@@ -73,6 +73,8 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 			data->camera.yaw += 0.1;
 		else if (keydata.key == MLX_KEY_RIGHT)
 			data->camera.yaw -= 0.1;
+		else if (keydata.key == MLX_KEY_L)
+			data->lights_on = !data->lights_on;
 		update_camera(data);
 		render(data);
 	}

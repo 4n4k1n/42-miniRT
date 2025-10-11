@@ -65,6 +65,7 @@ void	*thread_job(void *arg)
 				mlx_put_pixel(thread->data->img, j, i, color);
 				j++;
 			}
+			printf("%d\n", i);
 			i += thread->data->threads_amount;
 		}
 		pthread_mutex_lock(&thread->active_mutex);

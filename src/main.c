@@ -113,6 +113,7 @@ int	main(int ac, char **av)
 {
 	t_data	data;
 
+	data.lights_on = false;
 	(void)ac;
     if (parse_scene(av[1], &data))
         return (1);

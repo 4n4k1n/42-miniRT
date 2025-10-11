@@ -95,7 +95,7 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 	total_light.r = (data->ambiente.color.r / 255.0) * data->ambiente.lighting * 255.0;
 	total_light.g = (data->ambiente.color.g / 255.0) * data->ambiente.lighting * 255.0;
 	total_light.b = (data->ambiente.color.b / 255.0) * data->ambiente.lighting * 255.0;
-	if (!data->light_list)
+	if (!data->lights_on || !data->light_list)
 		return (total_light);
 	light = data->light_list->head;
 	while (light)
