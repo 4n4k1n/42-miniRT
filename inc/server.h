@@ -16,7 +16,7 @@ typedef struct s_msg_header
     uint32_t payload_size;
 }   t_msg_header;
 
-typedef struct s_tile_msg
+typedef struct s_tile
 {
     uint32_t tile_id;
     uint32_t x;
@@ -27,5 +27,6 @@ typedef struct s_tile_msg
 
 int send_file(char *path, int *worker_fds, int worker_amount);
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
+void    send_tile_assignment(int socket_fd, t_tile *tile);
 
 #endif
