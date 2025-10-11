@@ -31,5 +31,6 @@ void    send_tile_assignment(int socket_fd, t_tile *tile);
 void    send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels);
 
 char *recive_scene_file(int socket_fd);
+t_tile  recive_tile_assignment(int socket_fd);
 
 #endif
