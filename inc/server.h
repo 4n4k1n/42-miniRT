@@ -45,5 +45,6 @@ t_msg_header    recive_header(int socket_fd);
 
 void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t tile_size);
 bool    queue_next_job(t_queue *queue, t_tile *tile);
+void    destroy_queue(t_queue *queue);
 
 #endif

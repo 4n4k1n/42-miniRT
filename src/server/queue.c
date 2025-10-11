@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 23:17:51 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/12 00:15:32 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/12 00:20:09 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,10 @@ bool    queue_next_job(t_queue *queue, t_tile *tile)
         return (true);
     }
     return (false);
+}
+
+void    destroy_queue(t_queue *queue)
+{
+    free(queue->tiles);
+    pthread_mutex_destroy(&queue->lock);
 }
