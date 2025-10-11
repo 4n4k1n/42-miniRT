@@ -30,4 +30,6 @@ void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
 void    send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels);
 
+char *recive_scene_file(int socket_fd);
+
 #endif
