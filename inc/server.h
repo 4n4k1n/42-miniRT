@@ -28,5 +28,6 @@ typedef struct s_tile
 int send_file(char *path, int *worker_fds, int worker_amount);
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
+void    send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels);
 
 #endif
