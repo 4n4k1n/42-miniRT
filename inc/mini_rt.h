@@ -12,6 +12,7 @@
 # include <pthread.h>
 # include <sys/socket.h>
 # include <sys/stat.h>
+# include <arpa/inet.h>
 # include "objects.h"
 # include "camera.h"
 # include "parsing.h"
@@ -19,6 +20,7 @@
 # include "hittable.h"
 # include "material.h"
 # include "settings.h"
+# include "server.h"
 
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/libft.h"
