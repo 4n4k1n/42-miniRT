@@ -26,5 +26,6 @@ typedef struct s_tile_msg
 }   t_tile;
 
 int send_file(char *path, int *worker_fds, int worker_amount);
+void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 
 #endif
