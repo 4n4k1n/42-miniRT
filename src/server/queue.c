@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 23:17:51 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/11 23:57:16 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/12 00:15:32 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,18 @@ void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t til
         }
         j++;
     }
+}
+
+bool    queue_next_job(t_queue *queue, t_tile *tile)
+{
+    pthread_mutex_lock(&queue->lock);
+    if (queue->current < queue->size)
+        queue->current++;
+    pthread_mutex_unlock(&queue->lock);
+    if (queue->current <= queue->size)
+    {
+        *tile = queue->tiles[queue->current - 1];
+        return (true);
+    }
+    return (false);
 }
