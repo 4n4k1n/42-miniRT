@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/10 13:54:57 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/10 17:33:20 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 	total_light.r = (data->ambiente.color.r / 255.0) * data->ambiente.lighting * 255.0;
 	total_light.g = (data->ambiente.color.g / 255.0) * data->ambiente.lighting * 255.0;
 	total_light.b = (data->ambiente.color.b / 255.0) * data->ambiente.lighting * 255.0;
-	if (!data->light_list)
+	if (!data->lights_on || !data->light_list)
 		return (total_light);
 	light = data->light_list->head;
 	while (light)
@@ -266,19 +266,24 @@ void	render(t_data *data)
 
 	render_time = get_time_in_ms();
 	i = 0;
-	while (i < HEIGHT)
+	if (MULTI_THREADING)
+		render_with_mt(data);
+	else
 	{
-		j = 0;
-		while (j < WIDTH)
+		while (i < HEIGHT)
 		{
-			if (data->aa_state)
-				mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, &data->aa, i, j));
-			else
-				mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
-			j++;
+			j = 0;
+			while (j < WIDTH)
+			{
+				if (data->aa_state)
+					mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, i, j));
+				else
+					mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
+				j++;
+			}
+			printf("%d\n", i);
+			i++;
 		}
-		printf("%d\n", i);
-		i++;
 	}
-	printf("\n%.2f fps\n", 1000 / (double)(get_time_in_ms() - render_time));
+	printf("\n%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000 / (double)(get_time_in_ms() - render_time));
 }

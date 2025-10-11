@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 18:52:57 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/30 11:28:13 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/10 16:57:38 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,8 @@ int	rt_error(const char *msg)
 {
 	if (msg)
 	{
-		write(2, "Error\n", 6);
-		write(2, msg, ft_strlen(msg));
-		write(2, "\n", 1);
+		if (write(2, "Error\n", 6) == -1 || write(2, msg, ft_strlen(msg)) == -1 || write(2, "\n", 1) == -1)
+			return (1);
 	}
 	return (1);
 }
