@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 12:45:19 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/11 12:47:02 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/11 12:57:52 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 int ft_error(char *msg, int error_code)
 {
-   ft_putstr_fd(msg, 2);
-   return (error_code);
+    perror(msg);
+    return (error_code);
 }
