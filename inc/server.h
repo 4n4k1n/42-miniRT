@@ -15,6 +15,7 @@
 # define MSG_WORKER_READY    4
 # define MSG_ERROR           5
 # define MSG_SCENE_FILE      6
+# define MSG_SHUTDOWN        7
 
 typedef struct s_msg_header
 {
@@ -61,7 +62,13 @@ typedef struct s_master
     bool            shutdown;
 }   t_master;
 
-int send_file(char *path, int *worker_fds, int worker_amount);
+typedef struct s_worker_context
+{
+    t_master    *master;
+    int         worker_socket;
+}   t_worker_context;
+
+int send_file(char *path, int socket_fd);
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
 void    send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels);

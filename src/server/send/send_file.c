@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 12:37:54 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/11 13:29:50 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/12 14:01:59 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,24 +34,19 @@ static char    *read_file(char *path, size_t *file_size)
     return (file_content);
 }
 
-int send_file(char *path, int *worker_fds, int worker_amount)
+int send_file(char *path, int socket_fd)
 {
     char *file_content;
-    int i;
     size_t  size;
     t_msg_header    header;
 
     file_content = read_file(path, &size);
     if (!file_content)
         return (1);
-    i = 0;
     header.msg_type = htonl(MSG_SCENE_FILE);
     header.payload_size = htonl(size);
-    while (i < worker_amount)
-    {
-        send(worker_fds[i], &header, sizeof(header), 0);
-        send(worker_fds[i], file_content, size + 1, 0);
-    }
+    send(socket_fd, &header, sizeof(header), 0);
+    send(socket_fd, file_content, size + 1, 0);
     free(file_content);
     return (0);
 }
