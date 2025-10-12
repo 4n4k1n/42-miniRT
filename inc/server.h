@@ -3,6 +3,10 @@
 
 # include "mini_rt.h"
 
+# ifndef MAX_WORKER
+#  define MAX_WORKER
+# endif
+
 # define MSG_SCENE_DATA      1
 # define MSG_RENDER_TILE     2
 # define MSG_TILE_COMPLETE   3
@@ -32,6 +36,26 @@ typedef struct s_queue
     size_t  current;
     pthread_mutex_t lock;
 }   t_queue;
+
+typedef struct s_worker
+{
+    int     socket_fd;
+    pthread_t   thread;
+    uint32_t    tiles_completed;
+    bool        is_active;
+}   t_worker;
+
+typedef struct s_master
+{
+    int socket_fd;
+    t_worker    *workers;
+    int         num_worker;
+    t_queue     *queue;
+    mlx_image_t *img;
+    pthread_mutex_t img_lock;
+    char            *scene_file;
+    bool            shutdown;
+}   t_master;
 
 int send_file(char *path, int *worker_fds, int worker_amount);
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
