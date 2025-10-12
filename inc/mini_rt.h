@@ -10,9 +10,6 @@
 # include <sys/time.h>
 # include <threads.h>
 # include <pthread.h>
-# include <sys/socket.h>
-# include <sys/stat.h>
-# include <arpa/inet.h>
 # include "objects.h"
 # include "camera.h"
 # include "parsing.h"
@@ -20,7 +17,6 @@
 # include "hittable.h"
 # include "material.h"
 # include "settings.h"
-# include "server.h"
 
 # include "../MLX42/include/MLX42/MLX42.h"
 # include "../libft/libft.h"
@@ -40,6 +36,5 @@ void	*thread_job(void *arg);
 int	render_with_mt(t_data *data);
 void	cleanup_data(t_data *data);
 int	init_threads(t_data *data);
-int ft_error(char *msg, int error_code);
 
 #endif
