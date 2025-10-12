@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:35:40 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/12 17:57:27 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/12 18:34:07 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,9 +161,8 @@ int run_worker(char *master_ip, uint32_t port)
         tile.width = ntohl(tile.width);
         tile.x = ntohl(tile.x);
         tile.y = ntohl(tile.y);
-        printf("Rendering tile %d (%dx%d at %d,%d)...\n",
-               tile.tile_id, tile.width, tile.height, tile.x, tile.y);
-        // render tile function will be here
+        printf("Rendering tile %d (%dx%d at %d,%d)...\n", tile.tile_id, tile.width, tile.height, tile.x, tile.y);
+        render_tile(&data, &tile);
         result.height = tile.height;
         result.tile_id = tile.tile_id;
         result.width = tile.width;
