@@ -6,13 +6,13 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 11:41:09 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/12 11:43:18 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/12 12:05:43 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-int steup_master(t_master *master, t_data *data, char *scene_file, uint32_t port)
+static int setup_master(t_master *master, t_data *data, char *scene_file, uint32_t port)
 {
     ft_memset(master, 0, sizeof(t_master));
     master->scene_file = scene_file;
@@ -31,4 +31,5 @@ int run_master(char *scene_file, uint32_t port)
     t_master    master;
     t_data      data;
 
+    setup_master(&master, &data, scene_file, port);
 }
