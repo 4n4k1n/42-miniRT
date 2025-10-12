@@ -7,6 +7,8 @@
 #  define MAX_WORKER
 # endif
 
+# define TILE_SIZE 64
+
 # define MSG_SCENE_DATA      1
 # define MSG_RENDER_TILE     2
 # define MSG_TILE_COMPLETE   3
@@ -48,9 +50,11 @@ typedef struct s_worker
 typedef struct s_master
 {
     int socket_fd;
+    pthread_t   accept_thread;
     t_worker    *workers;
     int         num_worker;
     t_queue     *queue;
+    mlx_t       *mlx;
     mlx_image_t *img;
     pthread_mutex_t img_lock;
     char            *scene_file;
@@ -70,5 +74,7 @@ t_msg_header    recive_header(int socket_fd);
 void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t tile_size);
 bool    queue_next_job(t_queue *queue, t_tile *tile);
 void    destroy_queue(t_queue *queue);
+
+int setup_listen_socket(uint32_t port);
 
 #endif
