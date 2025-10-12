@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:35:40 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/12 16:03:20 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/12 16:06:37 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void    *worker_thread_func(void *arg)
         send_tile_assignment(context->worker_socket, &tile);
         recive_tile_result(context->worker_socket, &result, &pixels);
         pthread_mutex_lock(&master->img_lock);
-        // copie tile to img
+        copy_tile_to_framebuffer(master->img, &result, pixels);
         pthread_mutex_unlock(&master->img_lock);
         free(pixels);
         printf("Tile %d completed (%d/%d)\n", result.tile_id, master->queue->current, master->queue->size);
