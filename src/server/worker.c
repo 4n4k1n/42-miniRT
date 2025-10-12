@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:35:40 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/12 16:23:39 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/12 17:57:27 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,4 +101,80 @@ void    *accept_worker_threads(void *arg)
         master->num_worker++;
     }
     return (NULL);
+}
+
+int run_worker(char *master_ip, uint32_t port)
+{
+    int master_socket;
+    struct sockaddr_in master_addr;
+    char *scene_content;
+    int scene_file_fd;
+    t_data  data;
+    uint32_t    tiles_rendered;
+    t_msg_header    header;
+    t_tile          tile;
+    uint32_t        *pixels;
+    t_tile          result;
+
+    master_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (master_socket < 0)
+        return (ft_error("socket", 1));
+    master_addr.sin_family = AF_INET;
+    master_addr.sin_port = htonl(port);
+    inet_pton(AF_INET, master_ip, &master_addr.sin_addr);
+    printf("Connecting to master %s:%d\n", master_ip, (int)port);
+    if (connect(master_socket, &master_addr, sizeof(master_addr)) < 0)
+        return (ft_error("connect", 1));
+    printf("Connected");
+    scene_content = recive_scene_file(master_socket);
+    if (!scene_content)
+    {
+        printf("failed to recive scene\n");
+        return (1);
+    }
+    scene_file_fd = open("scene.rt", O_WRONLY | O_CREAT | O_TRUNC, 0777);
+    if (scene_file_fd < 0)
+        return (ft_error("open", 1));
+    write(scene_file_fd, scene_content, ft_strlen(scene_content));
+    close(scene_file_fd);
+    free(scene_content);
+    parse_scene("scene.rt", &data);
+    send_header(master_socket, MSG_WORKER_READY, 0);
+    printf("ready to render\n");
+    tiles_rendered = 0;
+    while (true)
+    {
+        header = recive_header(master_socket);
+        if (header.msg_type == MSG_SHUTDOWN)
+        {
+            printf("recived shutdown\n");
+            break;
+        }
+        if (header.msg_type != MSG_RENDER_TILE)
+        {
+            printf("unexpected message type\n");
+            break;
+        }
+        tile = recive_tile_assignment(master_socket);
+        tile.height = ntohl(tile.height);
+        tile.tile_id = ntohl(tile.tile_id);
+        tile.width = ntohl(tile.width);
+        tile.x = ntohl(tile.x);
+        tile.y = ntohl(tile.y);
+        printf("Rendering tile %d (%dx%d at %d,%d)...\n",
+               tile.tile_id, tile.width, tile.height, tile.x, tile.y);
+        // render tile function will be here
+        result.height = tile.height;
+        result.tile_id = tile.tile_id;
+        result.width = tile.width;
+        result.x = tile.x;
+        result.y = tile.y;
+        send_tile_result(master_socket, &result, pixels);
+        tiles_rendered++;
+        printf("Tile %d completed (total: %d)\n", tile.tile_id, tiles_rendered);
+    }
+    printf("Worker shutting down. Total tiles rendered: %d\n", tiles_rendered);
+    close(master_socket);
+    free_scene(&data);
+    return (0);
 }
