@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:35:40 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/12 16:06:37 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/12 16:23:39 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,33 @@ void copy_tile_to_framebuffer(mlx_image_t *image, t_tile *result, uint32_t *pixe
         }
         y++;
     }
+}
+
+void    *accept_worker_threads(void *arg)
+{
+    t_master    *master;
+    int         worker_socket;
+    t_worker_context    *context;
+    pthread_t           thread;
+
+    while (!master->shutdown)
+    {
+        worker_socket = accept(master->socket_fd, NULL, NULL);
+        if (worker_socket < 0)
+            continue ;
+        if (master->num_worker >= MAX_WORKER)
+        {
+            close(worker_socket);
+            continue ;
+        }
+        context = malloc(sizeof(t_worker_context));
+        if (!context)
+            return (close(worker_socket), ft_error("malloc", 1), NULL);
+        context->master = master;
+        context->worker_socket = worker_socket;
+        pthread_create(&thread, NULL, worker_thread_func, context);
+        pthread_detach(thread);
+        master->num_worker++;
+    }
+    return (NULL);
 }
