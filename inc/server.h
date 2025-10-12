@@ -25,6 +25,14 @@ typedef struct s_tile
     uint32_t height;
 }   t_tile;
 
+typedef struct s_queue
+{
+    t_tile  *tiles;
+    size_t  size;
+    size_t  current;
+    pthread_mutex_t lock;
+}   t_queue;
+
 int send_file(char *path, int *worker_fds, int worker_amount);
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
@@ -34,5 +42,9 @@ char *recive_scene_file(int socket_fd);
 t_tile  recive_tile_assignment(int socket_fd);
 void    recive_tile_result(int socket_fd, t_tile *tile, uint32_t **pixels);
 t_msg_header    recive_header(int socket_fd);
+
+void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t tile_size);
+bool    queue_next_job(t_queue *queue, t_tile *tile);
+void    destroy_queue(t_queue *queue);
 
 #endif
