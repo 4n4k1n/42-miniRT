@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/12 18:31:37 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/13 21:11:08 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 	total_light.r = (data->ambiente.color.r / 255.0) * data->ambiente.lighting * 255.0;
 	total_light.g = (data->ambiente.color.g / 255.0) * data->ambiente.lighting * 255.0;
 	total_light.b = (data->ambiente.color.b / 255.0) * data->ambiente.lighting * 255.0;
-	if (!data->lights_on || !data->light_list)
+	if (!data->settings.light_state || !data->light_list)
 		return (total_light);
 	light = data->light_list->head;
 	while (light)
@@ -275,7 +275,7 @@ void	render(t_data *data)
 			j = 0;
 			while (j < WIDTH)
 			{
-				if (data->aa_state)
+				if (data->settings.aa_state)
 					mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, i, j));
 				else
 					mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
@@ -308,7 +308,7 @@ uint32_t *render_tile(t_data *data, t_tile *tile)
 			pixel_x = tile->x + j;
 			pixel_y = tile->y + i;
 
-			if (data->aa_state)
+			if (data->settings.aa_state)
 				pixels[i * tile->width + j] = monte_carlo_aa(data, pixel_y, pixel_x);
 			else
 				pixels[i * tile->width + j] = without_aa(data, pixel_y, pixel_x);

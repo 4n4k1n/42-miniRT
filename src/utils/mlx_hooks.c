@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_hooks.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/04 17:37:54 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/13 21:14:34 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 			return (mlx_close_window(data->mlx));
 		else if (keydata.key == MLX_KEY_R)
 		{
-			data->aa_state = !data->aa_state;
+			data->settings.aa_state = !data->settings.aa_state;
 			render(data);
 			return ;
 		}
@@ -74,7 +74,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		else if (keydata.key == MLX_KEY_RIGHT)
 			data->camera.yaw -= 0.1;
 		else if (keydata.key == MLX_KEY_L)
-			data->lights_on = !data->lights_on;
+			data->settings.light_state = !data->settings.light_state;
 		update_camera(data);
 		render(data);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   threads.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 14:10:56 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/10 18:21:33 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/13 21:15:14 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	*thread_job(void *arg)
 			j = 0;
 			while (j < WIDTH)
 			{
-				if (thread->data->aa_state)
+				if (thread->data->settings.aa_state)
 					color = monte_carlo_aa(thread->data, i, j);
 				else
 					color = without_aa(thread->data, i, j);

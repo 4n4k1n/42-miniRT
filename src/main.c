@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/10 17:32:33 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/13 21:09:00 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,12 +113,12 @@ int	main(int ac, char **av)
 {
 	t_data	data;
 
-	data.lights_on = false;
+	data.settings.light_state = false;
 	(void)ac;
     if (parse_scene(av[1], &data))
         return (1);
     print_scene(&data);
-    data.aa_state = ANTI_ALIASING;
+    data.settings.aa_state = ANTI_ALIASING;
 	data.camera.samples_per_pixel = AA_MAX_SAMPLES;
 	init_camera(&data);
 	// build_demo_world(&data);
