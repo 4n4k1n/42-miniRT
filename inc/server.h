@@ -79,6 +79,7 @@ char *recive_scene_file(int socket_fd);
 t_tile  recive_tile_assignment(int socket_fd);
 void    recive_tile_result(int socket_fd, t_tile *tile, uint32_t **pixels);
 t_msg_header    recive_header(int socket_fd);
+t_settings	recive_settings(int socket_fd);
 
 void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t tile_size);
 bool    queue_next_job(t_queue *queue, t_tile *tile);
