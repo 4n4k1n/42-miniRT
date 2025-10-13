@@ -15,6 +15,7 @@ static int	lambertian_scatter(const t_material *self, const t_ray *r_in,
 	bias = vec3_multiply_inline((t_vec3 *)&rec->normal, eps * sign);
 	scattered->origin = vec3_add_inline(&rec->p, &bias);
 	scattered->direction = dir;
+	// scattered->direction = vec3_add_inline(&rec->normal, &scattered->direction);
 	*attenuation = self->albedo;
 	return (1);
 }

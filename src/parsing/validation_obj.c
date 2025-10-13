@@ -3,14 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   validation_obj.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 10:36:19 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/30 11:32:14 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/05 12:21:58 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
+
+int	parse_material(char **tokens, int len, t_obj *o)
+{
+	if (len == 4)
+		o->data.sphere.mat = material_lambertian(o->data.sphere.rgb);
+	else if (len == 5)
+	{
+		if (tokens[4][0] == 'L')
+			o->data.sphere.mat = material_lambertian(o->data.sphere.rgb);
+		else if (tokens[4][0] == 'M')
+			o->data.sphere.mat = material_metal(o->data.sphere.rgb, 0);
+		else
+			return (1);
+	}
+	else
+		return (1);
+	return (0);
+}
 
 /**
  * Parses sphere object parameters from tokens
@@ -22,8 +40,10 @@
 int	parse_sphere(char **tokens, t_data *scene)
 {
 	t_obj	*o;
+	int		len;
 
-	if (ft_arrlen(tokens) != 4)
+	len = ft_arrlen(tokens);
+	if (len != 4 && len != 5)
 		return (rt_error("invalid sphere format"));
 	o = obj_new(SPHERE);
 	if (!o)
@@ -35,6 +55,8 @@ int	parse_sphere(char **tokens, t_data *scene)
 		return (free(o), rt_error("invalid sphere diameter"));
 	if (parse_rgb(tokens[3], &o->data.sphere.rgb))
 		return (free(o), rt_error("invalid sphere RGB"));
+	if (parse_material(tokens, len, o))
+		return (free(o), rt_error("invalid sphere material"));
 	if (obj_push(scene->objects, o))
 		return (free(o), rt_error("object push failed"));
 	return (0);

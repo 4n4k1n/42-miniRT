@@ -5,6 +5,7 @@
 # include "../MLX42/include/MLX42/MLX42.h"
 
 typedef struct s_material t_material;
+typedef struct s_data	t_data;
 
 typedef struct s_vec3
 {
@@ -46,6 +47,7 @@ typedef struct s_plane
 	t_vec3			cords;
 	t_vec3			norm;
 	t_rgb			rgb;
+	t_material		*mat;
 }					t_plane;
 
 typedef struct s_cylinder
@@ -55,7 +57,30 @@ typedef struct s_cylinder
 	double			diameter;
 	double			height;
 	t_rgb			rgb;
+	t_material		*mat;
 }					t_cylinder;
+
+typedef struct s_cyl_hit
+{
+	t_vec3	axis;
+	t_vec3	k;
+	t_vec3	point;
+	t_vec3	v;
+	t_vec3	axis_part;
+	t_vec3	outward;
+	double	axis_len;
+	double	radius;
+	double	half_h;
+	double	d_dot_a;
+	double	k_dot_a;
+	double	a;
+	double	h;
+	double	c;
+	double	disc;
+	double	root;
+	double	s;
+	double	len;
+}	t_cyl_hit;
 
 typedef union u_obj_data
 {
@@ -82,6 +107,7 @@ typedef struct s_light
 {
 	t_vec3			cords;
 	t_rgb			color;
+	double			intensity;
 	struct s_light	*next;
 }					t_light;
 
@@ -154,9 +180,21 @@ typedef struct s_camera
 	int		samples_per_pixel;
 }	t_camera;
 
+typedef struct s_thread
+{
+	size_t	id;
+	pthread_t	thread;
+	t_data		*data;
+	bool		active;
+	bool		shutdown;
+	pthread_mutex_t	active_mutex;
+	pthread_cond_t	active_cond;
+}	t_thread;
+
 typedef struct s_data
 {
 	bool			aa_state;
+	bool			lights_on;
 	t_anti_aliasing	aa;
 	t_obj_list		*objects;
 	t_camera		camera;
@@ -164,6 +202,9 @@ typedef struct s_data
 	t_ambient		ambiente;
 	int				height;
 	int				width;
+	int				threads_amount;
+	t_thread		*threads;
+	int				threads_done;
 	mlx_t			*mlx;
 	mlx_image_t		*img;
 }	t_data;

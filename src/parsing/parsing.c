@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 17:28:26 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/30 11:27:40 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/10 13:48:08 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 		free(line);
 		raw = get_next_line(fd);
 	}
-	if (!args->has_a || !args->has_c || !args->has_l)
+	if (!args->has_a || !args->has_c)
 		return (rt_error("missing elements"));
 	return (0);
 }

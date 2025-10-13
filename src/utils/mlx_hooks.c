@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_hooks.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/02 11:45:25 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/04 17:37:54 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		|| keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_A
 		|| keydata.key == MLX_KEY_D || keydata.key == MLX_KEY_SPACE || keydata.key == MLX_KEY_LEFT_SHIFT 
 		|| keydata.key == MLX_KEY_UP || keydata.key == MLX_KEY_DOWN 
-		|| keydata.key == MLX_KEY_LEFT || keydata.key == MLX_KEY_RIGHT || keydata.key == MLX_KEY_ESCAPE || keydata.key == MLX_KEY_R))
+		|| keydata.key == MLX_KEY_LEFT || keydata.key == MLX_KEY_RIGHT || keydata.key == MLX_KEY_ESCAPE || keydata.key == MLX_KEY_R || keydata.key == MLX_KEY_L))
 	{
 		if (keydata.key == MLX_KEY_ESCAPE)
-			mlx_close_window(data->mlx);
+			return (mlx_close_window(data->mlx));
 		else if (keydata.key == MLX_KEY_R)
 		{
 			data->aa_state = !data->aa_state;
@@ -73,6 +73,8 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 			data->camera.yaw += 0.1;
 		else if (keydata.key == MLX_KEY_RIGHT)
 			data->camera.yaw -= 0.1;
+		else if (keydata.key == MLX_KEY_L)
+			data->lights_on = !data->lights_on;
 		update_camera(data);
 		render(data);
 	}
