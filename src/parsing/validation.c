@@ -83,8 +83,6 @@ int	parse_light(char **tokens, t_data *scene, t_arg_check *args)
 	int		argc;
 	t_light	*ln;
 
-	if (args->has_l)
-		return (rt_error("duplicate light (L)"));
 	argc = (int)ft_arrlen(tokens);
 	if (argc != 3 && argc != 4)
 		return (rt_error("invalid light format"));
@@ -93,9 +91,9 @@ int	parse_light(char **tokens, t_data *scene, t_arg_check *args)
 		return (rt_error("malloc failed (light)"));
 	if (parse_vec3(tokens[1], &ln->cords))
 		return (free(ln), rt_error("invalid light position"));
-	if (parse_double(tokens[2], &ln->color.r))
+	if (parse_double(tokens[2], &ln->intensity))
 		return (free(ln), rt_error("invalid light brightness"));
-	if (!in_range_d(ln->color.r, 0.0, 1.0))
+	if (!in_range_d(ln->intensity, 0.0, 1.0))
 		return (free(ln), rt_error("light brightness out of range [0,1]"));
 	if (argc == 4)
 	{

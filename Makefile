@@ -1,7 +1,7 @@
 MAKEFLAGS += -s
 
 NAME	:= miniRT
-CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
+CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -march=native -mtune=native \
   -funroll-loops -fprefetch-loop-arrays -fpeel-loops -funswitch-loops -ftracer \
   -ftree-vectorize -ftree-slp-vectorize -ftree-loop-distribution -fivopts \
   -fgraphite-identity -floop-nest-optimize -floop-interchange -floop-strip-mine -floop-block -floop-unroll-and-jam \
@@ -16,7 +16,7 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fassociative-math -ffinite-math-only -fno-signed-zeros \
   -fipa-pta -fipa-cp-clone -fipa-sra -fipa-pure-const -fipa-reference \
   -fdevirtualize -fdevirtualize-speculatively \
-  -fno-stack-protector -fno-exceptions -fwhole-program
+  -fno-stack-protector -fno-exceptions -fwhole-program -pthread
 OBJ_DIR = objs
 CC = cc
 
@@ -52,7 +52,9 @@ SRC = src/main.c \
 		src/logic/metal.c \
 		src/logic/lambertian.c \
 		src/math/random_vec.c \
-		src/utils/mlx_hooks.c
+		src/utils/mlx_hooks.c \
+		src/parsing/debug.c \
+		src/utils/threads.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
@@ -104,7 +106,6 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 	$(MAKE) fclean -C $(LIBFT_DIR)
-	@rm -rf $(MLX42_DIR)
 
 re:
 	$(MAKE) fclean

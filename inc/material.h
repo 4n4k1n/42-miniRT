@@ -15,12 +15,19 @@ typedef int (*t_scatter_fn)(
 	struct s_ray* scattered
 );
 
+typedef enum e_material_type
+{
+	LAMBERTIAN,
+	METAL,
+	GLASS
+}	t_material_type;
+
 struct s_material
 {
 	t_scatter_fn	scatter;
 	struct s_rgb	albedo;
 	double			fuzz;
-	int				type;
+	t_material_type	type;
 };
 
 t_material*	material_lambertian(struct s_rgb albedo);
