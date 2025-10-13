@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   send_update.c                                      :+:      :+:    :+:   */
+/*   recive_update.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/13 18:36:16 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/13 18:47:57 by apregitz         ###   ########.fr       */
+/*   Created: 2025/10/13 18:51:58 by apregitz          #+#    #+#             */
+/*   Updated: 2025/10/13 18:55:32 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-void	send_update(int socket_fd, t_update *update)
+t_update	recive_update(int socket_fd)
 {
-	t_update	net_update;
-	
-	send_header(socket_fd, MSG_UPDATE, sizeof(t_update));
-	net_update.updated_varible = htonl(net_update.updated_varible);
-	send(socket_fd, &net_update, sizeof(t_update), 0);
+	t_msg_header	header;
+	t_update		update;
+
+	header = recive_header(socket_fd);
+	recv(socket_fd, &update, sizeof(t_update), 0);
+	update.updated_varible = ntohl(update.updated_varible);
+	return (update);
 }

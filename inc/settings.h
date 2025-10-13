@@ -17,8 +17,8 @@
 # define LIGHT_MULTIPLIER 1.0
 
 // will be set automaticly(dont change them)
-# define WIDTH (1920 * SCALE)
-# define HEIGHT (1080 * SCALE)
+# define WIDTH (1920 * (SCALE / 100))
+# define HEIGHT (1080 * (SCALE / 100))
 # define ASPECT_RATIO ((double)WIDTH / (double)HEIGHT)
 # define AA_MAX_SAMPLES (AA_MIN_SAMPLES * 8)
 
@@ -28,6 +28,10 @@
 
 # ifndef MULTI_THREADING
 #  define MULTI_THREADING 1
+# endif
+
+# ifndef BONUS
+#  define BONUS 0
 # endif
 
 #endif

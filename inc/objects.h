@@ -167,10 +167,20 @@ typedef struct s_thread
 	pthread_cond_t	active_cond;
 }	t_thread;
 
+typedef struct s_settings
+{
+	uint32_t	scale;
+	uint32_t	aa_state;
+	uint32_t	light_state;
+	uint32_t	min_samples;
+	uint32_t	max_samples;
+	uint32_t	shadow_samples;
+	uint32_t	depth;
+}	t_settings;
+
 typedef struct s_data
 {
-	bool			aa_state;
-	bool			lights_on;
+	t_settings		settings;
 	t_anti_aliasing	aa;
 	t_obj_list		*objects;
 	t_camera		camera;

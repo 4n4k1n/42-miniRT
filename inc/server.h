@@ -17,6 +17,7 @@
 # define MSG_SCENE_FILE      6
 # define MSG_SHUTDOWN        7
 # define MSG_SETTINGS        8
+# define MSG_UPDATE          9
 
 typedef struct s_msg_header
 {
@@ -69,17 +70,24 @@ typedef struct s_worker_context
     int         worker_socket;
 }   t_worker_context;
 
+typedef struct s_update
+{
+    uint32_t    updated_varible;
+}   t_update;
+
 int send_file(char *path, int socket_fd);
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
 void    send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels);
 void	send_settings(int socket_fd, t_settings *settings);
+void	send_update(int socket_fd, t_update *update);
 
 char *recive_scene_file(int socket_fd);
 t_tile  recive_tile_assignment(int socket_fd);
 void    recive_tile_result(int socket_fd, t_tile *tile, uint32_t **pixels);
 t_msg_header    recive_header(int socket_fd);
 t_settings	recive_settings(int socket_fd);
+t_update	recive_update(int socket_fd);
 
 void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t tile_size);
 bool    queue_next_job(t_queue *queue, t_tile *tile);
