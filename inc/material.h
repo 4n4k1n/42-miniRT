@@ -27,10 +27,12 @@ struct s_material
 	t_scatter_fn	scatter;
 	struct s_rgb	albedo;
 	double			fuzz;
-	t_material_type	type;
+	int				type;
+	double			refraction_index;
 };
 
 t_material*	material_lambertian(struct s_rgb albedo);
 t_material*	material_metal(struct s_rgb albedo, double fuzz);
+t_material*	material_dielectric(double refraction_index);
 
 #endif

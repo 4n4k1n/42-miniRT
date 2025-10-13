@@ -18,7 +18,7 @@ CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -march=native -mtune=native \
   -fdevirtualize -fdevirtualize-speculatively \
   -fno-stack-protector -fno-exceptions -fwhole-program -pthread
 OBJ_DIR = objs
-CC = cc
+CC = gcc
 
 SRC = src/main.c \
 		src/math/vec_add.c \
@@ -51,6 +51,7 @@ SRC = src/main.c \
 		src/logic/camera.c \
 		src/logic/metal.c \
 		src/logic/lambertian.c \
+		src/logic/dielectric.c \
 		src/math/random_vec.c \
 		src/utils/mlx_hooks.c \
 		src/parsing/debug.c \
