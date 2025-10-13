@@ -98,6 +98,10 @@ void	cleanup_objects(t_obj_list *objects)
 		next = current->next;
 		if (current->type == SPHERE && current->data.sphere.mat)
 			free(current->data.sphere.mat);
+		if (current->type == PLANE && current->data.plane.mat)
+			free(current->data.plane.mat);
+		if (current->type == CYLINDER && current->data.cylinder.mat)
+			free(current->data.cylinder.mat);
 		free(current);
 		current = next;
 	}
