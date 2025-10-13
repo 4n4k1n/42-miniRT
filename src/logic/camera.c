@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/10 17:33:20 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/12 18:31:37 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,4 +286,35 @@ void	render(t_data *data)
 		}
 	}
 	printf("\n%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000 / (double)(get_time_in_ms() - render_time));
+}
+
+uint32_t *render_tile(t_data *data, t_tile *tile)
+{
+	uint32_t    *pixels;
+	uint32_t    i;
+	uint32_t    j;
+	uint32_t	pixel_x;
+	uint32_t	pixel_y;
+
+	pixels = malloc(tile->height * tile->width * sizeof(uint32_t));
+	if (!pixels)
+		return (NULL);
+	i = 0;
+	while (i < tile->height)
+	{
+		j = 0;
+		while (j < tile->width)
+		{
+			pixel_x = tile->x + j;
+			pixel_y = tile->y + i;
+
+			if (data->aa_state)
+				pixels[i * tile->width + j] = monte_carlo_aa(data, pixel_y, pixel_x);
+			else
+				pixels[i * tile->width + j] = without_aa(data, pixel_y, pixel_x);
+			j++;
+		}
+		i++;
+	}
+	return (pixels);
 }
