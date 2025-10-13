@@ -16,6 +16,7 @@
 # define MSG_ERROR           5
 # define MSG_SCENE_FILE      6
 # define MSG_SHUTDOWN        7
+# define MSG_SETTINGS        8
 
 typedef struct s_msg_header
 {
@@ -72,6 +73,7 @@ int send_file(char *path, int socket_fd);
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
 void    send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels);
+void	send_settings(int socket_fd, t_settings *settings);
 
 char *recive_scene_file(int socket_fd);
 t_tile  recive_tile_assignment(int socket_fd);
