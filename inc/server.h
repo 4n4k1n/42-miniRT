@@ -4,7 +4,7 @@
 # include "mini_rt.h"
 
 # ifndef MAX_WORKER
-#  define MAX_WORKER
+#  define MAX_WORKER 16
 # endif
 
 # define TILE_SIZE 64
@@ -53,6 +53,7 @@ typedef struct s_worker
 typedef struct s_master
 {
     int socket_fd;
+    bool        start_render;
     pthread_t   accept_thread;
     t_worker    *workers;
     int         num_worker;
@@ -94,5 +95,12 @@ bool    queue_next_job(t_queue *queue, t_tile *tile);
 void    destroy_queue(t_queue *queue);
 
 int setup_listen_socket(uint32_t port);
+
+int run_master(char *scene_file, uint32_t port);
+int run_worker(char *master_ip, uint32_t port);
+
+void    *worker_thread_func(void *arg);
+void    *accept_worker_threads(void *arg);
+void    copy_tile_to_framebuffer(mlx_image_t *image, t_tile *result, uint32_t *pixels);
 
 #endif

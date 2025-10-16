@@ -16,7 +16,7 @@ CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -march=native -mtune=native \
   -fassociative-math -ffinite-math-only -fno-signed-zeros \
   -fipa-pta -fipa-cp-clone -fipa-sra -fipa-pure-const -fipa-reference \
   -fdevirtualize -fdevirtualize-speculatively \
-  -fno-stack-protector -fno-exceptions -fwhole-program -pthread
+  -fno-stack-protector -fno-exceptions -fwhole-program -pthread -fsanitize=address,undefined -g
 OBJ_DIR = objs
 CC = cc
 
@@ -52,7 +52,24 @@ SRC = src/main.c \
 		src/math/random_vec.c \
 		src/utils/mlx_hooks.c \
 		src/parsing/debug.c \
-		src/utils/threads.c
+		src/utils/threads.c \
+		src/utils/error.c \
+		src/server/master.c \
+		src/server/worker.c \
+		src/server/socket.c \
+		src/server/queue.c \
+		src/server/send/send_file.c \
+		src/server/send/send_header.c \
+		src/server/send/send_tile_assignment.c \
+		src/server/send/send_tile_result.c \
+		src/server/send/send_settings.c \
+		src/server/send/send_update.c \
+		src/server/recive/recive_header.c \
+		src/server/recive/recive_scene_file.c \
+		src/server/recive/recive_tile_assignment.c \
+		src/server/recive/recive_tile_result.c \
+		src/server/recive/recive_settings.c \
+		src/server/recive/recive_update.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
