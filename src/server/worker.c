@@ -20,15 +20,23 @@ void    *worker_thread_func(void *arg)
     t_tile              tile;
     t_tile              result;
     uint32_t            *pixels;
-    
+
+    context = (t_worker_context *)arg;
+    master = context->master;
     printf("Worker connected from socket: %d\n", context->worker_socket);
     send_file(master->scene_file, context->worker_socket);
     header = recive_header(context->worker_socket);
     if (header.msg_type != MSG_WORKER_READY)
-        return (close(context->worker_socket), NULL);
+        return (close(context->worker_socket), free(context), NULL);
+    printf("Worker %d ready, waiting for render signal...\n", context->worker_socket);
+    while (!master->start_render && !master->shutdown)
+        usleep(100000);
+    if (master->shutdown)
+        return (close(context->worker_socket), free(context), NULL);
+    printf("Worker %d starting render\n", context->worker_socket);
     while (!master->shutdown)
     {
-        if (!queue_next_job(&master->queue, &tile)) 
+        if (!queue_next_job(master->queue, &tile))
         {
             send_header(context->worker_socket, MSG_SHUTDOWN, 0);
             break ;
@@ -39,9 +47,10 @@ void    *worker_thread_func(void *arg)
         copy_tile_to_framebuffer(master->img, &result, pixels);
         pthread_mutex_unlock(&master->img_lock);
         free(pixels);
-        printf("Tile %d completed (%d/%d)\n", result.tile_id, master->queue->current, master->queue->size);
+        printf("Tile %d completed (%zu/%zu)\n", result.tile_id, master->queue->current, master->queue->size);
     }
     close(context->worker_socket);
+    free(context);
     return (NULL);
 }
 
@@ -81,6 +90,7 @@ void    *accept_worker_threads(void *arg)
     t_worker_context    *context;
     pthread_t           thread;
 
+    master = (t_master *)arg;
     while (!master->shutdown)
     {
         worker_socket = accept(master->socket_fd, NULL, NULL);
@@ -120,10 +130,10 @@ int run_worker(char *master_ip, uint32_t port)
     if (master_socket < 0)
         return (ft_error("socket", 1));
     master_addr.sin_family = AF_INET;
-    master_addr.sin_port = htonl(port);
+    master_addr.sin_port = htons(port);
     inet_pton(AF_INET, master_ip, &master_addr.sin_addr);
     printf("Connecting to master %s:%d\n", master_ip, (int)port);
-    if (connect(master_socket, &master_addr, sizeof(master_addr)) < 0)
+    if (connect(master_socket, (struct sockaddr *)&master_addr, sizeof(master_addr)) < 0)
         return (ft_error("connect", 1));
     printf("Connected");
     scene_content = recive_scene_file(master_socket);
@@ -162,13 +172,19 @@ int run_worker(char *master_ip, uint32_t port)
         tile.x = ntohl(tile.x);
         tile.y = ntohl(tile.y);
         printf("Rendering tile %d (%dx%d at %d,%d)...\n", tile.tile_id, tile.width, tile.height, tile.x, tile.y);
-        render_tile(&data, &tile);
+        pixels = render_tile(&data, &tile);
+        if (!pixels)
+        {
+            printf("Failed to render tile %d\n", tile.tile_id);
+            break;
+        }
         result.height = tile.height;
         result.tile_id = tile.tile_id;
         result.width = tile.width;
         result.x = tile.x;
         result.y = tile.y;
         send_tile_result(master_socket, &result, pixels);
+        free(pixels);
         tiles_rendered++;
         printf("Tile %d completed (total: %d)\n", tile.tile_id, tiles_rendered);
     }
