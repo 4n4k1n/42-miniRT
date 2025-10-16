@@ -16,7 +16,7 @@ void	send_settings(int socket_fd, t_settings *settings)
 {
 	t_settings	net_settings;
 
-	send_header(socket, MSG_SETTINGS, sizeof(t_settings));
+	send_header(socket_fd, MSG_SETTINGS, sizeof(t_settings));
 	net_settings.aa_state = htonl(settings->aa_state);
 	net_settings.depth = htonl(settings->depth);
 	net_settings.light_state = htonl(settings->light_state);
