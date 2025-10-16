@@ -45,9 +45,9 @@ void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t til
             else
                 queue->tiles[tile_id].height = tile_size;
             tile_id++;
-            i++; 
+            j++;
         }
-        j++;
+        i++;
     }
 }
 
