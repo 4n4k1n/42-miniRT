@@ -18,6 +18,8 @@ void    recive_tile_result(int socket_fd, t_tile *tile, uint32_t **pixels)
     uint32_t        pixel_bytes;
 
     header = recive_header(socket_fd);
+    if (header.msg_type != MSG_TILE_COMPLETE)
+        printf("Warning: unexpected message type %d\n", header.msg_type);
     recv(socket_fd, tile, sizeof(t_tile), MSG_WAITALL);
     tile->height = ntohl(tile->height);
     tile->tile_id = ntohl(tile->tile_id);

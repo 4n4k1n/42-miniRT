@@ -18,6 +18,8 @@ t_settings	recive_settings(int socket_fd)
 	t_settings		settings;
 
 	header = recive_header(socket_fd);
+	if (header.msg_type != MSG_SETTINGS)
+		printf("Warning: unexpected message type %d\n", header.msg_type);
 	recv(socket_fd, &settings, sizeof(t_settings), MSG_WAITALL);
 	settings.aa_state = ntohl(settings.aa_state);
 	settings.depth = ntohl(settings.depth);
