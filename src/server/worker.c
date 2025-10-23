@@ -166,11 +166,6 @@ int run_worker(char *master_ip, uint32_t port)
             break;
         }
         tile = recive_tile_assignment(master_socket);
-        tile.height = ntohl(tile.height);
-        tile.tile_id = ntohl(tile.tile_id);
-        tile.width = ntohl(tile.width);
-        tile.x = ntohl(tile.x);
-        tile.y = ntohl(tile.y);
         printf("Rendering tile %d (%dx%d at %d,%d)...\n", tile.tile_id, tile.width, tile.height, tile.x, tile.y);
         pixels = render_tile(&data, &tile);
         if (!pixels)
