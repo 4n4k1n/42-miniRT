@@ -53,16 +53,19 @@ void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t til
 
 bool    queue_next_job(t_queue *queue, t_tile *tile)
 {
+    bool    has_job;
+
     pthread_mutex_lock(&queue->lock);
     if (queue->current < queue->size)
-        queue->current++;
-    pthread_mutex_unlock(&queue->lock);
-    if (queue->current <= queue->size)
     {
-        *tile = queue->tiles[queue->current - 1];
-        return (true);
+        *tile = queue->tiles[queue->current];
+        queue->current++;
+        has_job = true;
     }
-    return (false);
+    else
+        has_job = false;
+    pthread_mutex_unlock(&queue->lock);
+    return (has_job);
 }
 
 void    destroy_queue(t_queue *queue)
