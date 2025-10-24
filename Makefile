@@ -58,12 +58,14 @@ SRC = src/main.c \
 		src/server/worker.c \
 		src/server/socket.c \
 		src/server/queue.c \
+		src/server/send/send_all.c \
 		src/server/send/send_file.c \
 		src/server/send/send_header.c \
 		src/server/send/send_tile_assignment.c \
 		src/server/send/send_tile_result.c \
 		src/server/send/send_settings.c \
 		src/server/send/send_update.c \
+		src/server/recive/recive_all.c \
 		src/server/recive/recive_header.c \
 		src/server/recive/recive_scene_file.c \
 		src/server/recive/recive_tile_assignment.c \

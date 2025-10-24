@@ -7,7 +7,7 @@
 #  define MAX_WORKER 16
 # endif
 
-# define TILE_SIZE 64
+# define TILE_SIZE 128
 
 # define MSG_SCENE_DATA      1
 # define MSG_RENDER_TILE     2
@@ -76,6 +76,8 @@ typedef struct s_update
     uint32_t    updated_varible;
 }   t_update;
 
+int send_all(int socket_fd, const void *buffer, size_t length);
+int recv_all(int socket_fd, void *buffer, size_t length);
 int send_file(char *path, int socket_fd);
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
