@@ -111,4 +111,6 @@ void    copy_tile_to_framebuffer(mlx_image_t *image, t_tile *result, uint32_t *p
 char *get_ip_address(void);
 char *get_public_ip(void);
 
+int	init_threads_worker(t_data *data);
+
 #endif

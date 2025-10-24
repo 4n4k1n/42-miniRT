@@ -6,6 +6,7 @@
 
 typedef struct s_material t_material;
 typedef struct s_data	t_data;
+typedef struct s_tile	t_tile;
 
 typedef struct s_vec3
 {
@@ -165,6 +166,7 @@ typedef struct s_thread
 	bool		shutdown;
 	pthread_mutex_t	active_mutex;
 	pthread_cond_t	active_cond;
+	t_tile		*tile;
 }	t_thread;
 
 typedef struct s_settings
@@ -180,6 +182,7 @@ typedef struct s_settings
 
 typedef struct s_data
 {
+	uint32_t	*pixels;
 	t_settings		settings;
 	t_anti_aliasing	aa;
 	t_obj_list		*objects;
