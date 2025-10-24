@@ -13,6 +13,24 @@
 #include "mini_rt.h"
 #include <ifaddrs.h>
 
+char *get_public_ip(void)
+{
+	FILE *fp;
+	static char ip[64];
+
+	fp = popen("curl -s -4 --max-time 2 ifconfig.me 2>/dev/null", "r");
+	if (!fp)
+		return (NULL);
+	if (fgets(ip, sizeof(ip), fp) == NULL)
+	{
+		pclose(fp);
+		return (NULL);
+	}
+	pclose(fp);
+	ip[ft_strlen(ip) - 1] = '\0';
+	return (ip);
+}
+
 char *get_ip_address(void)
 {
 	struct ifaddrs *ifaddr;
