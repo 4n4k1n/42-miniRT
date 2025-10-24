@@ -9,15 +9,18 @@
 
 # define TILE_SIZE 64
 
-# define MSG_SCENE_DATA      1
-# define MSG_RENDER_TILE     2
-# define MSG_TILE_COMPLETE   3
-# define MSG_WORKER_READY    4
-# define MSG_ERROR           5
-# define MSG_SCENE_FILE      6
-# define MSG_SHUTDOWN        7
-# define MSG_SETTINGS        8
-# define MSG_UPDATE          9
+typedef enum e_msg_types
+{
+    MSG_SCENE_DATA,
+    MSG_RENDER_TILE,
+    MSG_TILE_COMPLETE,
+    MSG_WORKER_READY,
+    MSG_ERROR,
+    MSG_SCENE_FILE,
+    MSG_SHUTDOWN,
+    MSG_SETTINGS,
+    MSG_UPDATE   
+}   t_msg_types;
 
 typedef struct s_msg_header
 {
