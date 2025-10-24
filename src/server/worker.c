@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:35:40 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/12 18:34:07 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/24 19:18:40 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,7 @@ int run_worker(char *master_ip, uint32_t port)
     data.settings.aa_state = ANTI_ALIASING;
     data.camera.samples_per_pixel = AA_MAX_SAMPLES;
     init_camera(&data);
+    init_threads_worker(&data);
     send_header(master_socket, MSG_WORKER_READY, 0);
     printf("ready to render\n");
     tiles_rendered = 0;
