@@ -44,9 +44,9 @@ int send_file(char *path, int socket_fd)
     if (!file_content)
         return (1);
     header.msg_type = htonl(MSG_SCENE_FILE);
-    header.payload_size = htonl(size);
-    send(socket_fd, &header, sizeof(header), 0);
-    send(socket_fd, file_content, size + 1, 0);
+    header.payload_size = htonl(size + 1);
+    send_all(socket_fd, &header, sizeof(header));
+    send_all(socket_fd, file_content, size + 1);
     free(file_content);
     return (0);
 }
