@@ -23,7 +23,7 @@ char *recive_scene_file(int socket_fd)
     contents = malloc(header.payload_size + 1);
     if (!contents)
         return (ft_error("malloc", 1), NULL);
-    recv(socket_fd, contents, header.payload_size, MSG_WAITALL);
+    recv_all(socket_fd, contents, header.payload_size);
     contents[header.payload_size] = '\0';
     return (contents);
 }

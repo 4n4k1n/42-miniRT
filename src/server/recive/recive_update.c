@@ -20,7 +20,7 @@ t_update	recive_update(int socket_fd)
 	header = recive_header(socket_fd);
 	if (header.msg_type != MSG_UPDATE)
 		printf("Warning: unexpected message type %d\n", header.msg_type);
-	recv(socket_fd, &update, sizeof(t_update), 0);
+	recv_all(socket_fd, &update, sizeof(t_update));
 	update.updated_varible = ntohl(update.updated_varible);
 	return (update);
 }

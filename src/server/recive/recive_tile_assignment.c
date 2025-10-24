@@ -16,7 +16,7 @@ t_tile  recive_tile_assignment(int socket_fd)
 {
     t_tile          tile;
 
-    recv(socket_fd, &tile, sizeof(t_tile), MSG_WAITALL);
+    recv_all(socket_fd, &tile, sizeof(t_tile));
     tile.height = ntohl(tile.height);
     tile.tile_id = ntohl(tile.tile_id);
     tile.width = ntohl(tile.width);
