@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 14:10:56 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/13 21:15:14 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/24 19:14:24 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,76 @@ void	*thread_job(void *arg)
 		__atomic_add_fetch(&thread->data->threads_done, 1, __ATOMIC_SEQ_CST);
 	}
 	return (NULL);
+}
+
+void	*thread_job_worker(void *arg)
+{
+	t_thread	*thread;
+	uint32_t	i;
+	uint32_t	j;
+	uint32_t	pixel_x;
+	uint32_t	pixel_y;
+
+	thread = (t_thread *)arg;
+	while (true)
+	{
+		if (ft_wait(thread))
+			break ;
+		i = thread->id;
+		while (i < thread->tile->height)
+		{
+			j = 0;
+			while (j < thread->tile->width)
+			{
+				pixel_x = thread->tile->x + j;
+				pixel_y = thread->tile->y + i;
+				if (thread->data->settings.aa_state)
+					thread->data->pixels[i * thread->tile->width + j] = monte_carlo_aa(thread->data, pixel_y, pixel_x);
+				else
+					thread->data->pixels[i * thread->tile->width + j] = without_aa(thread->data, pixel_y, pixel_x);
+				j++;
+			}
+			i += thread->data->threads_amount;
+		}
+		pthread_mutex_lock(&thread->active_mutex);
+		thread->active = !thread->active;
+		pthread_mutex_unlock(&thread->active_mutex);
+		__atomic_add_fetch(&thread->data->threads_done, 1, __ATOMIC_SEQ_CST);
+	}
+	return (NULL);
+}
+
+int	init_threads_worker(t_data *data)
+{
+	int	i;
+	data->threads_amount = sysconf(_SC_NPROCESSORS_ONLN);
+	data->threads = ft_calloc(data->threads_amount, sizeof(t_thread));
+	if (!data->threads)
+		return (1);
+	i = 0;
+	while (i < data->threads_amount)
+	{
+		pthread_mutex_init(&data->threads[i].active_mutex, NULL);
+		pthread_cond_init(&data->threads[i].active_cond, NULL);
+		i++;
+	}
+	i = 0;
+	while (i < data->threads_amount)
+	{
+		data->threads[i].data = data;
+		data->threads[i].id = i;
+		data->threads[i].active = false;
+		data->threads[i].shutdown = false;
+		if (pthread_create(&data->threads[i].thread, NULL,
+				thread_job_worker, &data->threads[i]) != 0)
+		{
+			while (i-- >= 0)
+				pthread_join(data->threads[i].thread, NULL);
+			return (1);
+		}
+		i++;
+	}
+	return (0);
 }
 
 int	init_threads(t_data *data)
