@@ -105,4 +105,6 @@ void    *worker_thread_func(void *arg);
 void    *accept_worker_threads(void *arg);
 void    copy_tile_to_framebuffer(mlx_image_t *image, t_tile *result, uint32_t *pixels);
 
+char *get_ip_address(void);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 11:41:09 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/12 13:24:17 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/24 15:26:49 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int run_master(char *scene_file, uint32_t port)
     printf("Resolution: %dx%d\n", (int)WIDTH, (int)HEIGHT);
     printf("Tile size: %d\n", TILE_SIZE);
     printf("Total tiles: %zu\n\n", master.queue->size);
+        printf("Master ip: %s\n", get_ip_address());
     printf("Waiting for workers to connect...\n");
     printf("Press ENTER to start rendering\n\n");
     prev_workers = 0;

@@ -58,6 +58,7 @@ SRC = src/main.c \
 		src/server/worker.c \
 		src/server/socket.c \
 		src/server/queue.c \
+		src/server/ip.c \
 		src/server/send/send_all.c \
 		src/server/send/send_file.c \
 		src/server/send/send_header.c \
