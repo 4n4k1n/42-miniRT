@@ -7,7 +7,7 @@
 #  define MAX_WORKER 16
 # endif
 
-# define TILE_SIZE 128
+# define TILE_SIZE 64
 
 # define MSG_SCENE_DATA      1
 # define MSG_RENDER_TILE     2
