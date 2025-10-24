@@ -148,7 +148,11 @@ int run_worker(char *master_ip, uint32_t port)
     write(scene_file_fd, scene_content, ft_strlen(scene_content));
     close(scene_file_fd);
     free(scene_content);
+    data.settings.light_state = false;
     parse_scene("scene.rt", &data);
+    data.settings.aa_state = ANTI_ALIASING;
+    data.camera.samples_per_pixel = AA_MAX_SAMPLES;
+    init_camera(&data);
     send_header(master_socket, MSG_WORKER_READY, 0);
     printf("ready to render\n");
     tiles_rendered = 0;
