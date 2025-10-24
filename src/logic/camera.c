@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/13 21:11:08 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/24 19:08:18 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,31 +290,44 @@ void	render(t_data *data)
 
 uint32_t *render_tile(t_data *data, t_tile *tile)
 {
-	uint32_t    *pixels;
 	uint32_t    i;
 	uint32_t    j;
 	uint32_t	pixel_x;
 	uint32_t	pixel_y;
+	int			thread_idx;
 
-	pixels = malloc(tile->height * tile->width * sizeof(uint32_t));
-	if (!pixels)
+	data->pixels = malloc(tile->height * tile->width * sizeof(uint32_t));
+	if (!data->pixels)
 		return (NULL);
-	i = 0;
-	while (i < tile->height)
+	if (MULTI_THREADING)
 	{
-		j = 0;
-		while (j < tile->width)
+		thread_idx = 0;
+		while (thread_idx < data->threads_amount)
 		{
-			pixel_x = tile->x + j;
-			pixel_y = tile->y + i;
-
-			if (data->settings.aa_state)
-				pixels[i * tile->width + j] = monte_carlo_aa(data, pixel_y, pixel_x);
-			else
-				pixels[i * tile->width + j] = without_aa(data, pixel_y, pixel_x);
-			j++;
+			data->threads[thread_idx].tile = tile;
+			thread_idx++;
 		}
-		i++;
+		render_with_mt(data);
 	}
-	return (pixels);
+	else
+	{
+		i = 0;
+		while (i < tile->height)
+		{
+			j = 0;
+			while (j < tile->width)
+			{
+				pixel_x = tile->x + j;
+				pixel_y = tile->y + i;
+
+				if (data->settings.aa_state)
+					data->pixels[i * tile->width + j] = monte_carlo_aa(data, pixel_y, pixel_x);
+				else
+					data->pixels[i * tile->width + j] = without_aa(data, pixel_y, pixel_x);
+				j++;
+			}
+			i++;
+		}
+	}
+	return (data->pixels);
 }
