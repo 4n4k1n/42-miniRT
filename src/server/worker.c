@@ -24,23 +24,27 @@ void    *worker_thread_func(void *arg)
     context = (t_worker_context *)arg;
     master = context->master;
     printf("Worker connected from socket: %d\n", context->worker_socket);
+    register_worker(master, context->worker_socket);
     send_file(master->scene_file, context->worker_socket);
     header = recive_header(context->worker_socket);
     if (header.msg_type != MSG_WORKER_READY)
+    {
+        unregister_worker(master, context->worker_socket);
         return (close(context->worker_socket), free(context), NULL);
+    }
     printf("Worker %d ready, waiting for render signal...\n", context->worker_socket);
     while (!master->start_render && !master->shutdown)
         usleep(100000);
     if (master->shutdown)
+    {
+        unregister_worker(master, context->worker_socket);
         return (close(context->worker_socket), free(context), NULL);
+    }
     printf("Worker %d starting render\n", context->worker_socket);
     while (!master->shutdown)
     {
         if (!queue_next_job(master->queue, &tile))
-        {
-            send_header(context->worker_socket, MSG_SHUTDOWN, 0);
             break ;
-        }
         send_tile_assignment(context->worker_socket, &tile);
         recive_tile_result(context->worker_socket, &result, &pixels);
         pthread_mutex_lock(&master->img_lock);
@@ -49,6 +53,11 @@ void    *worker_thread_func(void *arg)
         free(pixels);
         printf("Tile %d completed (%zu/%zu)\n", result.tile_id, master->queue->current, master->queue->size);
     }
+    printf("Worker %d finished rendering, staying online...\n", context->worker_socket);
+    while (!master->shutdown)
+        usleep(100000);
+    unregister_worker(master, context->worker_socket);
+    send_header(context->worker_socket, MSG_SHUTDOWN, 0);
     close(context->worker_socket);
     free(context);
     return (NULL);
@@ -165,9 +174,15 @@ int run_worker(char *master_ip, uint32_t port)
             printf("recived shutdown\n");
             break;
         }
+        if (header.msg_type == MSG_UPDATE)
+        {
+            recive_update(master_socket);
+            printf("Received update from master, staying online...\n");
+            continue;
+        }
         if (header.msg_type != MSG_RENDER_TILE)
         {
-            printf("unexpected message type\n");
+            printf("unexpected message type: %d\n", header.msg_type);
             break;
         }
         tile = recive_tile_assignment(master_socket);

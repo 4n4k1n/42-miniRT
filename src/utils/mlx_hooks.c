@@ -76,6 +76,9 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		else if (keydata.key == MLX_KEY_L)
 			data->settings.light_state = !data->settings.light_state;
 		update_camera(data);
-		render(data);
+		if (data->master)
+			broadcast_update(data->master, 1);
+		else
+			render(data);
 	}
 }

@@ -14,9 +14,12 @@
 
 static int setup_master(t_master *master, t_data *data, char *scene_file, uint32_t port)
 {
+    int i;
+
     ft_memset(master, 0, sizeof(t_master));
     master->scene_file = scene_file;
     master->start_render = false;
+    master->data = data;
     parse_scene(scene_file, data);
     master->queue = malloc(sizeof(t_queue));
     if (!master->queue)
@@ -30,6 +33,13 @@ static int setup_master(t_master *master, t_data *data, char *scene_file, uint32
         return (ft_error("mlx_new_image", 1));
     mlx_image_to_window(master->mlx, master->img, 0, 0);
     pthread_mutex_init(&master->img_lock, NULL);
+    pthread_mutex_init(&master->workers_lock, NULL);
+    i = 0;
+    while (i < MAX_WORKER)
+    {
+        master->worker_sockets[i] = -1;
+        i++;
+    }
     master->socket_fd = setup_listen_socket(port);
     if (master->socket_fd < 0)
         return (1);
@@ -55,6 +65,8 @@ int run_master(char *scene_file, uint32_t port)
     printf("Public IP: %s\n\n", get_public_ip());
     printf("Waiting for workers to connect...\n");
     printf("Press ENTER to start rendering\n\n");
+    data.master = &master;
+    mlx_key_hook(master.mlx, key_hook, &data);
     prev_workers = 0;
     while (1)
     {
