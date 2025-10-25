@@ -1,7 +1,7 @@
 MAKEFLAGS += -s
 
 NAME	:= miniRT
-CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -march=native -mtune=native \
+CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -funroll-loops -fprefetch-loop-arrays -fpeel-loops -funswitch-loops -ftracer \
   -ftree-vectorize -ftree-slp-vectorize -ftree-loop-distribution -fivopts \
   -fgraphite-identity -floop-nest-optimize -floop-interchange -floop-strip-mine -floop-block -floop-unroll-and-jam \
@@ -18,7 +18,7 @@ CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -march=native -mtune=native \
   -fdevirtualize -fdevirtualize-speculatively \
   -fno-stack-protector -fno-exceptions -fwhole-program -pthread
 OBJ_DIR = objs
-CC = cc
+CC = gcc
 
 SRC = src/main.c \
 		src/math/vec_add.c \
