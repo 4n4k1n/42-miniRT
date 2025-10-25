@@ -73,10 +73,12 @@ typedef struct s_master
 {
     int socket_fd;
     bool        start_render;
+    bool        restart_render;
     pthread_t   accept_thread;
     int         worker_sockets[MAX_WORKER];
     int         num_worker;
     pthread_mutex_t workers_lock;
+    pthread_mutex_t restart_lock;
     t_queue     *queue;
     mlx_t       *mlx;
     mlx_image_t *img;
@@ -91,6 +93,17 @@ typedef struct s_worker_context
     t_master    *master;
     int         worker_socket;
 }   t_worker_context;
+
+typedef struct s_camera_update
+{
+    double  x;
+    double  y;
+    double  z;
+    double  pitch;
+    double  yaw;
+    uint32_t aa_state;
+    uint32_t light_state;
+}   t_camera_update;
 
 typedef struct s_update
 {
@@ -115,6 +128,7 @@ t_update	recive_update(int socket_fd);
 
 void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t tile_size);
 bool    queue_next_job(t_queue *queue, t_tile *tile);
+void    reset_queue(t_queue *queue);
 void    destroy_queue(t_queue *queue);
 
 int setup_listen_socket(uint32_t port);
