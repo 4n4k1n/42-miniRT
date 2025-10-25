@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:00:01 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/10 17:32:33 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/13 21:09:00 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,23 +109,20 @@ void	cleanup_objects(t_obj_list *objects)
 }
 
 /**
- * Main entry point of the miniRT ray tracer
- * Initializes camera, creates demo world, sets up MLX window
- * Renders the scene and starts the main loop
+ * Runs the renderer in local mode (single machine)
+ * Initializes camera, sets up MLX window, renders the scene
  */
-int	main(int ac, char **av)
+static int	run_local(char *scene_file)
 {
 	t_data	data;
 
-	data.lights_on = false;
-	(void)ac;
-    if (parse_scene(av[1], &data))
+	data.settings.light_state = false;
+    if (parse_scene(scene_file, &data))
         return (1);
     print_scene(&data);
-    data.aa_state = ANTI_ALIASING;
+    data.settings.aa_state = ANTI_ALIASING;
 	data.camera.samples_per_pixel = AA_MAX_SAMPLES;
 	init_camera(&data);
-	// build_demo_world(&data);
 	mlx_set_setting(MLX_MAXIMIZED, false);
 	data.mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
 	if (!data.mlx)
@@ -142,4 +139,44 @@ int	main(int ac, char **av)
 	mlx_terminate(data.mlx);
     cleanup_data(&data);
 	return (0);
+}
+
+/**
+ * Main entry point of the miniRT ray tracer
+ * Supports three modes:
+ * - Local: ./miniRT scene.rt
+ * - Master: ./miniRT --master scene.rt [--port 9000]
+ * - Worker: ./miniRT --worker <master_ip> [--port 9000]
+ */
+int	main(int ac, char **av)
+{
+	uint32_t	port;
+
+	if (ac < 2)
+	{
+		printf("Usage:\n");
+		printf("  Local:  %s scene.rt\n", av[0]);
+		printf("  Master: %s --master scene.rt [--port 9000]\n", av[0]);
+		printf("  Worker: %s --worker <master_ip> [--port 9000]\n", av[0]);
+		return (1);
+	}
+	if (ft_strcmp(av[1], "--master") == 0)
+	{
+		if (ac < 3)
+			return (printf("Error: Scene file required\n"), 1);
+		port = 9000;
+		if (ac >= 5 && ft_strcmp(av[3], "--port") == 0)
+			port = ft_atoi(av[4]);
+		return (run_master(av[2], port));
+	}
+	else if (ft_strcmp(av[1], "--worker") == 0)
+	{
+		if (ac < 3)
+			return (printf("Error: Master IP required\n"), 1);
+		port = 9000;
+		if (ac >= 5 && ft_strcmp(av[3], "--port") == 0)
+			port = ft_atoi(av[4]);
+		return (run_worker(av[2], port));
+	}
+	return (run_local(av[1]));
 }

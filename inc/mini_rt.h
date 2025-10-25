@@ -13,6 +13,7 @@
 # include <sys/socket.h>
 # include <sys/stat.h>
 # include <arpa/inet.h>
+# include <netdb.h>
 # include "objects.h"
 # include "camera.h"
 # include "parsing.h"

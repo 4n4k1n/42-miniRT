@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/10 17:33:20 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/24 19:08:18 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 	total_light.r = (data->ambiente.color.r / 255.0) * data->ambiente.lighting * 255.0;
 	total_light.g = (data->ambiente.color.g / 255.0) * data->ambiente.lighting * 255.0;
 	total_light.b = (data->ambiente.color.b / 255.0) * data->ambiente.lighting * 255.0;
-	if (!data->lights_on || !data->light_list)
+	if (!data->settings.light_state || !data->light_list)
 		return (total_light);
 	light = data->light_list->head;
 	while (light)
@@ -275,7 +275,7 @@ void	render(t_data *data)
 			j = 0;
 			while (j < WIDTH)
 			{
-				if (data->aa_state)
+				if (data->settings.aa_state)
 					mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, i, j));
 				else
 					mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
@@ -286,4 +286,48 @@ void	render(t_data *data)
 		}
 	}
 	printf("\n%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000 / (double)(get_time_in_ms() - render_time));
+}
+
+uint32_t *render_tile(t_data *data, t_tile *tile)
+{
+	uint32_t    i;
+	uint32_t    j;
+	uint32_t	pixel_x;
+	uint32_t	pixel_y;
+	int			thread_idx;
+
+	data->pixels = malloc(tile->height * tile->width * sizeof(uint32_t));
+	if (!data->pixels)
+		return (NULL);
+	if (MULTI_THREADING)
+	{
+		thread_idx = 0;
+		while (thread_idx < data->threads_amount)
+		{
+			data->threads[thread_idx].tile = tile;
+			thread_idx++;
+		}
+		render_with_mt(data);
+	}
+	else
+	{
+		i = 0;
+		while (i < tile->height)
+		{
+			j = 0;
+			while (j < tile->width)
+			{
+				pixel_x = tile->x + j;
+				pixel_y = tile->y + i;
+
+				if (data->settings.aa_state)
+					data->pixels[i * tile->width + j] = monte_carlo_aa(data, pixel_y, pixel_x);
+				else
+					data->pixels[i * tile->width + j] = without_aa(data, pixel_y, pixel_x);
+				j++;
+			}
+			i++;
+		}
+	}
+	return (data->pixels);
 }

@@ -1,29 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   recive_scene_file.c                                :+:      :+:    :+:   */
+/*   send_update.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/11 22:07:35 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/11 22:14:58 by anakin           ###   ########.fr       */
+/*   Created: 2025/10/13 18:36:16 by apregitz          #+#    #+#             */
+/*   Updated: 2025/10/24 21:22:30 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-char *recive_scene_file(int socket_fd)
+void	send_update(int socket_fd, uint32_t update)
 {
-    t_msg_header    header;
-    char *contents;
-
-    header = recive_header(socket_fd);
-    if (header.msg_type != MSG_SCENE_FILE)
-        return (NULL);
-    contents = malloc(header.payload_size + 1);
-    if (!contents)
-        return (ft_error("malloc", 1), NULL);
-    recv_all(socket_fd, contents, header.payload_size);
-    contents[header.payload_size] = '\0';
-    return (contents);
+	t_update	net_update;
+	
+	send_header(socket_fd, MSG_UPDATE, sizeof(t_update));
+	net_update.updated_varible = htonl(update);
+	send_all(socket_fd, &net_update, sizeof(t_update));
 }

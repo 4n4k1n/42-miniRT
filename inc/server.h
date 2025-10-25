@@ -4,17 +4,39 @@
 # include "mini_rt.h"
 
 # ifndef MAX_WORKER
-#  define MAX_WORKER
+#  define MAX_WORKER 16
 # endif
 
 # define TILE_SIZE 64
 
-# define MSG_SCENE_DATA      1
-# define MSG_RENDER_TILE     2
-# define MSG_TILE_COMPLETE   3
-# define MSG_WORKER_READY    4
-# define MSG_ERROR           5
-# define MSG_SCENE_FILE      6
+typedef enum e_msg_types
+{
+    MSG_SCENE_DATA,
+    MSG_RENDER_TILE,
+    MSG_TILE_COMPLETE,
+    MSG_WORKER_READY,
+    MSG_ERROR,
+    MSG_SCENE_FILE,
+    MSG_SHUTDOWN,
+    MSG_SETTINGS,
+    MSG_UPDATE   
+}   t_msg_types;
+
+typedef enum e_updated_scene_type
+{
+    MOVE_FORWARD,
+    MOVE_BACKWARD,
+    MOVE_LEFT,
+    MOVE_RIGHT,
+    MOVE_UP,
+    MOVE_DOWN,
+    LOOK_UP,
+    LOOK_DOWN,
+    LOOK_LEFT,
+    LOOK_RIGHT,
+    UPDATE_LIGHT,
+    UPDATE_RENDERING
+}   t_updated_scene_type;
 
 typedef struct s_msg_header
 {
@@ -39,42 +61,91 @@ typedef struct s_queue
     pthread_mutex_t lock;
 }   t_queue;
 
-typedef struct s_worker
+typedef struct s_worker_info
 {
     int     socket_fd;
     pthread_t   thread;
     uint32_t    tiles_completed;
     bool        is_active;
-}   t_worker;
+}   t_worker_info;
 
 typedef struct s_master
 {
     int socket_fd;
+    bool        start_render;
+    bool        restart_render;
     pthread_t   accept_thread;
-    t_worker    *workers;
+    int         worker_sockets[MAX_WORKER];
     int         num_worker;
+    pthread_mutex_t workers_lock;
+    pthread_mutex_t restart_lock;
     t_queue     *queue;
     mlx_t       *mlx;
     mlx_image_t *img;
     pthread_mutex_t img_lock;
     char            *scene_file;
     bool            shutdown;
+    t_data      *data;
 }   t_master;
 
-int send_file(char *path, int *worker_fds, int worker_amount);
+typedef struct s_worker_context
+{
+    t_master    *master;
+    int         worker_socket;
+}   t_worker_context;
+
+typedef struct s_camera_update
+{
+    double  x;
+    double  y;
+    double  z;
+    double  pitch;
+    double  yaw;
+    uint32_t aa_state;
+    uint32_t light_state;
+}   t_camera_update;
+
+typedef struct s_update
+{
+    uint32_t    updated_varible;
+}   t_update;
+
+int send_all(int socket_fd, const void *buffer, size_t length);
+int recv_all(int socket_fd, void *buffer, size_t length);
+int send_file(char *path, int socket_fd);
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
 void    send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels);
+void	send_settings(int socket_fd, t_settings *settings);
+void	send_update(int socket_fd, uint32_t update);
 
 char *recive_scene_file(int socket_fd);
 t_tile  recive_tile_assignment(int socket_fd);
 void    recive_tile_result(int socket_fd, t_tile *tile, uint32_t **pixels);
 t_msg_header    recive_header(int socket_fd);
+t_settings	recive_settings(int socket_fd);
+t_update	recive_update(int socket_fd);
 
 void    init_queue(t_queue *queue, uint32_t width, uint32_t height, uint32_t tile_size);
 bool    queue_next_job(t_queue *queue, t_tile *tile);
+void    reset_queue(t_queue *queue);
 void    destroy_queue(t_queue *queue);
 
 int setup_listen_socket(uint32_t port);
+
+int run_master(char *scene_file, uint32_t port);
+int run_worker(char *master_ip, uint32_t port);
+
+void    *worker_thread_func(void *arg);
+void    *accept_worker_threads(void *arg);
+void    copy_tile_to_framebuffer(mlx_image_t *image, t_tile *result, uint32_t *pixels);
+void    broadcast_update(t_master *master, uint32_t update_value);
+void    register_worker(t_master *master, int socket_fd);
+void    unregister_worker(t_master *master, int socket_fd);
+
+char *get_ip_address(void);
+char *get_public_ip(void);
+
+int	init_threads_worker(t_data *data);
 
 #endif
