@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   worker.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:35:40 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/25 14:07:55 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/24 19:18:40 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,12 @@ void    *worker_thread_func(void *arg)
     t_tile              tile;
     t_tile              result;
     uint32_t            *pixels;
-    t_settings          settings;
 
     context = (t_worker_context *)arg;
     master = context->master;
     printf("Worker connected from socket: %d\n", context->worker_socket);
     register_worker(master, context->worker_socket);
     send_file(master->scene_file, context->worker_socket);
-    settings.aa_state = ANTI_ALIASING;
-    settings.depth = MAX_DEPTH;
-    settings.light_state = false;
-    settings.max_samples = AA_MAX_SAMPLES;
-    settings.min_samples = AA_MIN_SAMPLES;
-    settings.scale = SCALE;
-    settings.shadow_samples = SHADOW_SAMPLES;
-    send_settings(master->socket_fd, &settings);
     header = recive_header(context->worker_socket);
     if (header.msg_type != MSG_WORKER_READY)
     {
@@ -179,12 +170,12 @@ int run_worker(char *master_ip, uint32_t port)
     write(scene_file_fd, scene_content, ft_strlen(scene_content));
     close(scene_file_fd);
     free(scene_content);
+    data.settings.light_state = false;
     parse_scene("scene.rt", &data);
+    data.settings.aa_state = ANTI_ALIASING;
     data.camera.samples_per_pixel = AA_MAX_SAMPLES;
     init_camera(&data);
     init_threads_worker(&data);
-    data.settings = recive_settings(master_socket);
-    data.camera.samples_per_pixel = data.settings.min_samples;
     send_header(master_socket, MSG_WORKER_READY, 0);
     printf("ready to render\n");
     tiles_rendered = 0;
