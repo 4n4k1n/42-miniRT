@@ -22,6 +22,22 @@ typedef enum e_msg_types
     MSG_UPDATE   
 }   t_msg_types;
 
+typedef enum e_updated_scene_type
+{
+    MOVE_FORWARD,
+    MOVE_BACKWARD,
+    MOVE_LEFT,
+    MOVE_RIGHT,
+    MOVE_UP,
+    MOVE_DOWN,
+    LOOK_UP,
+    LOOK_DOWN,
+    LOOK_LEFT,
+    LOOK_RIGHT,
+    UPDATE_LIGHT,
+    UPDATE_RENDERING
+}   t_updated_scene_type;
+
 typedef struct s_msg_header
 {
     uint32_t msg_type; 
@@ -45,27 +61,29 @@ typedef struct s_queue
     pthread_mutex_t lock;
 }   t_queue;
 
-typedef struct s_worker
+typedef struct s_worker_info
 {
     int     socket_fd;
     pthread_t   thread;
     uint32_t    tiles_completed;
     bool        is_active;
-}   t_worker;
+}   t_worker_info;
 
 typedef struct s_master
 {
     int socket_fd;
     bool        start_render;
     pthread_t   accept_thread;
-    t_worker    *workers;
+    int         worker_sockets[MAX_WORKER];
     int         num_worker;
+    pthread_mutex_t workers_lock;
     t_queue     *queue;
     mlx_t       *mlx;
     mlx_image_t *img;
     pthread_mutex_t img_lock;
     char            *scene_file;
     bool            shutdown;
+    t_data      *data;
 }   t_master;
 
 typedef struct s_worker_context
@@ -86,7 +104,7 @@ void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
 void    send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels);
 void	send_settings(int socket_fd, t_settings *settings);
-void	send_update(int socket_fd, t_update *update);
+void	send_update(int socket_fd, uint32_t update);
 
 char *recive_scene_file(int socket_fd);
 t_tile  recive_tile_assignment(int socket_fd);
@@ -107,6 +125,9 @@ int run_worker(char *master_ip, uint32_t port);
 void    *worker_thread_func(void *arg);
 void    *accept_worker_threads(void *arg);
 void    copy_tile_to_framebuffer(mlx_image_t *image, t_tile *result, uint32_t *pixels);
+void    broadcast_update(t_master *master, uint32_t update_value);
+void    register_worker(t_master *master, int socket_fd);
+void    unregister_worker(t_master *master, int socket_fd);
 
 char *get_ip_address(void);
 char *get_public_ip(void);

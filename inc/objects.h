@@ -180,6 +180,8 @@ typedef struct s_settings
 	uint32_t	depth;
 }	t_settings;
 
+typedef struct s_master	t_master;
+
 typedef struct s_data
 {
 	uint32_t	*pixels;
@@ -196,6 +198,7 @@ typedef struct s_data
 	int				threads_done;
 	mlx_t			*mlx;
 	mlx_image_t		*img;
+	t_master		*master;
 }	t_data;
 
 #endif

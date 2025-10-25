@@ -16,7 +16,7 @@ CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -march=native -mtune=native \
   -fassociative-math -ffinite-math-only -fno-signed-zeros \
   -fipa-pta -fipa-cp-clone -fipa-sra -fipa-pure-const -fipa-reference \
   -fdevirtualize -fdevirtualize-speculatively \
-  -fno-stack-protector -fno-exceptions -fwhole-program -pthread -fsanitize=address,undefined -g
+  -fno-stack-protector -fno-exceptions -fwhole-program -pthread
 OBJ_DIR = objs
 CC = cc
 
@@ -59,6 +59,7 @@ SRC = src/main.c \
 		src/server/socket.c \
 		src/server/queue.c \
 		src/server/ip.c \
+		src/server/broadcast.c \
 		src/server/send/send_all.c \
 		src/server/send/send_file.c \
 		src/server/send/send_header.c \
