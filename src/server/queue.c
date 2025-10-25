@@ -68,6 +68,13 @@ bool    queue_next_job(t_queue *queue, t_tile *tile)
     return (has_job);
 }
 
+void    reset_queue(t_queue *queue)
+{
+    pthread_mutex_lock(&queue->lock);
+    queue->current = 0;
+    pthread_mutex_unlock(&queue->lock);
+}
+
 void    destroy_queue(t_queue *queue)
 {
     free(queue->tiles);
