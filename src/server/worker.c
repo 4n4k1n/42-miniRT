@@ -43,19 +43,32 @@ void    *worker_thread_func(void *arg)
     printf("Worker %d starting render\n", context->worker_socket);
     while (!master->shutdown)
     {
-        if (!queue_next_job(master->queue, &tile))
-            break ;
-        send_tile_assignment(context->worker_socket, &tile);
-        recive_tile_result(context->worker_socket, &result, &pixels);
-        pthread_mutex_lock(&master->img_lock);
-        copy_tile_to_framebuffer(master->img, &result, pixels);
-        pthread_mutex_unlock(&master->img_lock);
-        free(pixels);
-        printf("Tile %d completed (%zu/%zu)\n", result.tile_id, master->queue->current, master->queue->size);
+        while (!master->shutdown)
+        {
+            if (!queue_next_job(master->queue, &tile))
+                break ;
+            send_tile_assignment(context->worker_socket, &tile);
+            recive_tile_result(context->worker_socket, &result, &pixels);
+            pthread_mutex_lock(&master->img_lock);
+            copy_tile_to_framebuffer(master->img, &result, pixels);
+            pthread_mutex_unlock(&master->img_lock);
+            free(pixels);
+            printf("Tile %d completed (%zu/%zu)\n", result.tile_id, master->queue->current, master->queue->size);
+        }
+        printf("Worker %d finished rendering, waiting for updates...\n", context->worker_socket);
+        while (!master->shutdown)
+        {
+            pthread_mutex_lock(&master->restart_lock);
+            if (master->restart_render)
+            {
+                pthread_mutex_unlock(&master->restart_lock);
+                printf("Worker %d restarting render...\n", context->worker_socket);
+                break;
+            }
+            pthread_mutex_unlock(&master->restart_lock);
+            usleep(100000);
+        }
     }
-    printf("Worker %d finished rendering, staying online...\n", context->worker_socket);
-    while (!master->shutdown)
-        usleep(100000);
     unregister_worker(master, context->worker_socket);
     send_header(context->worker_socket, MSG_SHUTDOWN, 0);
     close(context->worker_socket);
@@ -176,8 +189,17 @@ int run_worker(char *master_ip, uint32_t port)
         }
         if (header.msg_type == MSG_UPDATE)
         {
-            recive_update(master_socket);
-            printf("Received update from master, staying online...\n");
+            t_camera_update cam_update;
+            recv_all(master_socket, &cam_update, sizeof(t_camera_update));
+            data.camera.cords.x = cam_update.x;
+            data.camera.cords.y = cam_update.y;
+            data.camera.cords.z = cam_update.z;
+            data.camera.pitch = cam_update.pitch;
+            data.camera.yaw = cam_update.yaw;
+            data.settings.aa_state = cam_update.aa_state;
+            data.settings.light_state = cam_update.light_state;
+            update_camera(&data);
+            printf("Received camera update from master, ready for new render...\n");
             continue;
         }
         if (header.msg_type != MSG_RENDER_TILE)

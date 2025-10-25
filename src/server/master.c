@@ -19,6 +19,7 @@ static int setup_master(t_master *master, t_data *data, char *scene_file, uint32
     ft_memset(master, 0, sizeof(t_master));
     master->scene_file = scene_file;
     master->start_render = false;
+    master->restart_render = false;
     master->data = data;
     parse_scene(scene_file, data);
     master->queue = malloc(sizeof(t_queue));
@@ -34,6 +35,7 @@ static int setup_master(t_master *master, t_data *data, char *scene_file, uint32
     mlx_image_to_window(master->mlx, master->img, 0, 0);
     pthread_mutex_init(&master->img_lock, NULL);
     pthread_mutex_init(&master->workers_lock, NULL);
+    pthread_mutex_init(&master->restart_lock, NULL);
     i = 0;
     while (i < MAX_WORKER)
     {
