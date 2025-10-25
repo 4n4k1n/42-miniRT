@@ -8,6 +8,8 @@ else
     exit 1
 fi
 
-make -C ~/miniRT
+cd ~/miniRT
+git checkout 60-multi-server-rendering
+make
 ~/miniRT/miniRT --worker $ip_address
 rm -rf ~/miniRT
