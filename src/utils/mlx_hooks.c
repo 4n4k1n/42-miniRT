@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/26 15:18:59 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/26 18:17:39 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		else if (keydata.key == MLX_KEY_L)
 			data->settings.light_state = !data->settings.light_state;
 		update_camera(data);
-		if (data->master)
+		if (data->master && BONUS)
 			broadcast_update(data->master, 1);
 		else
 			render(data);

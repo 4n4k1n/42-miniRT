@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 18:33:27 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/26 19:02:36 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,11 +202,9 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 			}
 			else
 			{
-				t_vec3 direction = random_on_hemisphere(&rec.normal);
-				direct_contrib = rgb_modulate_inline(throughput, direct_light);
+				direct_contrib = rgb_modulate_inline(direct_light, rec.rgb);
 				final_color = rgb_add_inline(final_color, direct_contrib);
-				throughput = rgb_multiply_inline(throughput, COLOR_INTENSITY);
-				current_ray = (t_ray){rec.p, direction};
+				return (final_color);
 			}
 		}
 		else
