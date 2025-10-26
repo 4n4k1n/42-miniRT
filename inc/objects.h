@@ -6,6 +6,7 @@
 
 typedef struct s_material t_material;
 typedef struct s_data	t_data;
+typedef struct s_tile	t_tile;
 
 typedef struct s_vec3
 {
@@ -189,12 +190,26 @@ typedef struct s_thread
 	bool		shutdown;
 	pthread_mutex_t	active_mutex;
 	pthread_cond_t	active_cond;
+	t_tile		*tile;
 }	t_thread;
+
+typedef struct s_settings
+{
+	uint32_t	scale;
+	uint32_t	aa_state;
+	uint32_t	light_state;
+	uint32_t	min_samples;
+	uint32_t	max_samples;
+	uint32_t	shadow_samples;
+	uint32_t	depth;
+}	t_settings;
+
+typedef struct s_master	t_master;
 
 typedef struct s_data
 {
-	bool			aa_state;
-	bool			lights_on;
+	uint32_t	*pixels;
+	t_settings		settings;
 	t_anti_aliasing	aa;
 	t_obj_list		*objects;
 	t_camera		camera;
@@ -207,6 +222,7 @@ typedef struct s_data
 	int				threads_done;
 	mlx_t			*mlx;
 	mlx_image_t		*img;
+	t_master		*master;
 }	t_data;
 
 #endif

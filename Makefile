@@ -1,7 +1,7 @@
 MAKEFLAGS += -s
 
 NAME	:= miniRT
-CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -march=native -mtune=native \
+CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -funroll-loops -fprefetch-loop-arrays -fpeel-loops -funswitch-loops -ftracer \
   -ftree-vectorize -ftree-slp-vectorize -ftree-loop-distribution -fivopts \
   -fgraphite-identity -floop-nest-optimize -floop-interchange -floop-strip-mine -floop-block -floop-unroll-and-jam \
@@ -56,7 +56,28 @@ SRC = src/main.c \
 		src/math/random_vec.c \
 		src/utils/mlx_hooks.c \
 		src/parsing/debug.c \
-		src/utils/threads.c
+		src/utils/threads.c \
+		src/utils/error.c \
+		src/server/master.c \
+		src/server/worker.c \
+		src/server/socket.c \
+		src/server/queue.c \
+		src/server/ip.c \
+		src/server/broadcast.c \
+		src/server/send/send_all.c \
+		src/server/send/send_file.c \
+		src/server/send/send_header.c \
+		src/server/send/send_tile_assignment.c \
+		src/server/send/send_tile_result.c \
+		src/server/send/send_settings.c \
+		src/server/send/send_update.c \
+		src/server/recive/recive_all.c \
+		src/server/recive/recive_header.c \
+		src/server/recive/recive_scene_file.c \
+		src/server/recive/recive_tile_assignment.c \
+		src/server/recive/recive_tile_result.c \
+		src/server/recive/recive_settings.c \
+		src/server/recive/recive_update.c
 
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 

@@ -25,8 +25,8 @@ int setup_listen_socket(uint32_t port)
     setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htonl(port);
-    if (bind(socket_fd, &addr, sizeof(addr)) < 0)
+    addr.sin_port = htons(port);
+    if (bind(socket_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
         return (ft_error("bind", 1));
     if (listen(socket_fd, 128) < 0)
         return (ft_error("listen", 1));

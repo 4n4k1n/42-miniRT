@@ -15,8 +15,8 @@
 void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload)
 {
     t_msg_header    header;
-    
+
     header.msg_type = htonl(msg_type);
     header.payload_size = htonl(payload);
-    send(socket_fd, &header, sizeof(header), 0);
+    send_all(socket_fd, &header, sizeof(header));
 }

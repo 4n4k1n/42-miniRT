@@ -42,6 +42,12 @@ static void	free_objects(t_obj_list *lst)
 	while (cur)
 	{
 		nx = cur->next;
+		if (cur->type == SPHERE && cur->data.sphere.mat)
+			free(cur->data.sphere.mat);
+		if (cur->type == PLANE && cur->data.plane.mat)
+			free(cur->data.plane.mat);
+		if (cur->type == CYLINDER && cur->data.cylinder.mat)
+			free(cur->data.cylinder.mat);
 		free(cur);
 		cur = nx;
 	}

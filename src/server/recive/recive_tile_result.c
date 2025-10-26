@@ -16,17 +16,28 @@ void    recive_tile_result(int socket_fd, t_tile *tile, uint32_t **pixels)
 {
     t_msg_header    header;
     uint32_t        pixel_bytes;
+    uint32_t        pixel_count;
+    uint32_t        i;
 
     header = recive_header(socket_fd);
-    recv(socket_fd, tile, sizeof(t_tile), MSG_WAITALL);
+    if (header.msg_type != MSG_TILE_COMPLETE)
+        printf("Warning: unexpected message type %d\n", header.msg_type);
+    recv_all(socket_fd, tile, sizeof(t_tile));
     tile->height = ntohl(tile->height);
     tile->tile_id = ntohl(tile->tile_id);
     tile->width = ntohl(tile->width);
     tile->x = ntohl(tile->x);
     tile->y = ntohl(tile->y);
-    pixel_bytes = tile->width * tile->height * sizeof(uint32_t);
+    pixel_count = tile->width * tile->height;
+    pixel_bytes = pixel_count * sizeof(uint32_t);
     *pixels = malloc(pixel_bytes);
     if (!(*pixels))
         return ;
-    recv(socket_fd, *pixels, pixel_bytes, MSG_WAITALL);
+    recv_all(socket_fd, *pixels, pixel_bytes);
+    i = 0;
+    while (i < pixel_count)
+    {
+        (*pixels)[i] = ntohl((*pixels)[i]);
+        i++;
+    }
 }

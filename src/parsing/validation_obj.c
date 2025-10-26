@@ -40,7 +40,11 @@ int	parse_sphere(char **tokens, t_data *scene)
 	if (parse_material(tokens, len, o))
 		return (free(o), rt_error("invalid sphere material"));
 	if (obj_push(scene->objects, o))
+	{
+		if (o->data.sphere.mat)
+			free(o->data.sphere.mat);
 		return (free(o), rt_error("object push failed"));
+	}
 	return (0);
 }
 
