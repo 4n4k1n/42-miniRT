@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vec_add.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 13:32:23 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/30 17:12:32 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/26 10:42:35 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,12 @@
  * Formula: dst = dst + src for each component
  * Returns pointer to modified destination
  */
-t_vec3	*vec3_add(t_vec3 *dst, t_vec3 *src)
+inline t_vec3	vec3_add(const t_vec3 a, const t_vec3 b)
 {
-	dst->x += src->x;
-	dst->y += src->y;
-	dst->z += src->z;
-	return (dst);
+	return ((t_vec3){a.x + b.x, a.y + b.y, a.z + b.z});
 }
 
-/**
- * Adds two vectors, returns new vector
- * Formula: new_vec = dst + src for each component
- * Inline version for performance
- */
-inline t_vec3	vec3_add_inline(const t_vec3 *dst, const t_vec3 *src)
+inline t_vec3	vec3_add_ptr(const t_vec3 *a, const t_vec3 *b)
 {
-	t_vec3	new;
-
-	new.x = dst->x + src->x;
-	new.y = dst->y + src->y;
-	new.z = dst->z + src->z;
-	return (new);
+	return ((t_vec3){a->x + b->x, a->y + b->y, a->z + b->z});
 }

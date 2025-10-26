@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vec_init.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 18:34:21 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/29 19:49:22 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/26 10:30:32 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,7 @@
  * Sets x, y, z components to given values
  * Returns new vector by value
  */
-inline t_vec3	vec3_init_inline(double x, double y, double z)
+inline t_vec3	vec3_init(const double x, const double y, const double z)
 {
-	t_vec3	new;
-	
-	new.x = x;
-	new.y = y;
-	new.z = z;
-	return (new);
+	return ((t_vec3){x, y, z});
 }

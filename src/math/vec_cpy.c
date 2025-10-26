@@ -3,34 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   vec_cpy.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 15:26:16 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/30 17:14:04 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/26 10:44:45 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Copies vector components from source to destination
- * Modifies destination vector with source values
- * Returns pointer to destination vector
- */
-t_vec3	*vec3_cpy(t_vec3 *dst, t_vec3 *src)
-{
-	dst->x = src->x;
-	dst->y = src->y;
-	dst->z = src->z;
-	return (dst);
-}
-
-/**
  * Creates a copy of a vector
  * Returns new vector with same values
  * Inline version for performance
  */
-inline t_vec3	vec3_cpy_inline(const t_vec3 *vec)
+inline t_vec3	vec3_cpy(const t_vec3 vec)
+{
+	return (vec);
+}
+
+inline t_vec3	vec3_cpy_ptr(const t_vec3 *vec)
 {
 	return (*vec);
 }

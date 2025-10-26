@@ -2,7 +2,10 @@
 
 t_vec3	vec3_reflect_inline(const t_vec3 *v, const t_vec3 *n)
 {
-	const double d = 2.0 * vec3_dot_inline(v, n);
-	t_vec3 twice_n = vec3_multiply_inline(n, d);
-	return vec3_sub_inline(v, &twice_n);
+	double d;
+	t_vec3 twice_n;
+
+	d = 2.0 * vec3_dot_ptr(v, n);
+	twice_n = vec3_multiply_ptr(n, d);
+	return (vec3_sub_ptr(v, &twice_n));
 }

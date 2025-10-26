@@ -30,7 +30,3 @@ inline double random_double_range(double min, double max)
 {
 	return min + (max - min) * random_double();
 }
-
-/*
-		Haha muessen wir bestimmt nicht umschreiben
-*/

@@ -3,39 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   vec_multiply.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 14:16:31 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/30 17:12:56 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/26 10:47:46 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Multiplies vector by scalar, modifying original vector
- * Formula: vec = vec * t for each component
- * Returns pointer to modified vector
- */
-t_vec3	*vec3_multiply(t_vec3 *vec, double t)
-{
-	vec->x *= t;
-	vec->y *= t;
-	vec->z *= t;
-	return (vec);
-}
-
-/**
  * Multiplies vector by scalar, returns new vector
  * Formula: new_vec = vec * t for each component
  * Inline version for performance
  */
-inline t_vec3	vec3_multiply_inline(const t_vec3 *vec, double t)
+inline t_vec3	vec3_multiply(const t_vec3 a, double t)
 {
-	t_vec3	new;
+	return ((t_vec3){a.x * t, a.y * t, a.z * t});
+}
 
-	new.x = vec->x * t;
-	new.y = vec->y * t;
-	new.z = vec->z * t;
-	return (new);
+inline t_vec3	vec3_multiply_ptr(const t_vec3 *a, double t)
+{
+	return ((t_vec3){a->x * t, a->y * t, a->z * t});
 }
