@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 13:42:42 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/26 19:02:36 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,9 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 			if (!world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))
 			{
 				diffuse = fmax(0.0, vec3_dot(rec->normal, light_dir));
-				light_contrib.r += (light->color.r / 255.0) * light->intensity * diffuse * 255.0 * 100.0;
-				light_contrib.g += (light->color.g / 255.0) * light->intensity * diffuse * 255.0 * 100.0;
-				light_contrib.b += (light->color.b / 255.0) * light->intensity * diffuse * 255.0 * 100.0;
+				light_contrib.r += (light->color.r / 255.0) * light->intensity * diffuse * 255.0;
+				light_contrib.g += (light->color.g / 255.0) * light->intensity * diffuse * 255.0;
+				light_contrib.b += (light->color.b / 255.0) * light->intensity * diffuse * 255.0;
 				hits++;
 			}
 			samples++;
@@ -143,8 +143,8 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 	double	a;
 	t_vec3	temp1;
 	t_vec3	temp2;
-	t_vec3			color_a = (t_vec3){1.0, 1.0, 1.0};
-	t_vec3			color_b = (t_vec3){0.5, 0.7, 1.0};
+	t_vec3			color_a = (t_vec3){0.0, 0.0, 0.0};
+	t_vec3			color_b = (t_vec3){0.0, 0.0, 0.0};
 	t_vec3			result;
 	t_rgb			sky_color;
 
@@ -202,11 +202,9 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 			}
 			else
 			{
-				t_vec3 direction = random_on_hemisphere(&rec.normal);
-				direct_contrib = rgb_modulate_inline(throughput, direct_light);
+				direct_contrib = rgb_modulate_inline(direct_light, rec.rgb);
 				final_color = rgb_add_inline(final_color, direct_contrib);
-				throughput = rgb_multiply_inline(throughput, COLOR_INTENSITY);
-				current_ray = (t_ray){rec.p, direction};
+				return (final_color);
 			}
 		}
 		else

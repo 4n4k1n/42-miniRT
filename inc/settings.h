@@ -6,7 +6,7 @@
 // AA_MIN_SAMPLES: the minimum amount of rays per pixel (should be between 8 and 32)
 // MAX_DEPTH: the number of child rays that are created when there is an intersection (should be between 8 and 64)
 // SHADOW_SAMPLES: number of shadow rays per light for soft shadows (1 = hard shadows, 4-8 = soft)
-# define SCALE 100
+# define SCALE 50
 # define AA_MIN_SAMPLES 16
 # define MAX_DEPTH 32
 # define SHADOW_SAMPLES 4
@@ -17,8 +17,8 @@
 # define LIGHT_MULTIPLIER 1.0
 
 // will be set automaticly(dont change them)
-# define WIDTH (1920 * (float)(SCALE / 100))
-# define HEIGHT (1080 * (float)(SCALE / 100))
+# define WIDTH (1920 * (float)((float)SCALE / 100))
+# define HEIGHT (1080 * (float)((float)SCALE / 100))
 # define ASPECT_RATIO ((double)WIDTH / (double)HEIGHT)
 # define AA_MAX_SAMPLES (AA_MIN_SAMPLES * 8)
 
