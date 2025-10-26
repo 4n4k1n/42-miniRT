@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/24 19:08:18 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/26 13:42:42 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up
 	forward->x = cos(data->camera.pitch) * cos(data->camera.yaw);
 	forward->y = sin(data->camera.pitch);
 	forward->z = cos(data->camera.pitch) * sin(data->camera.yaw);
-	*up = vec3_init_inline(0.0, 1.0, 0.0);
-	*right = vec3_cross_inline(forward, up);
-	*right = vec3_divide_inline(right, vec3_sqrt(right));
-	*up = vec3_cross_inline(right, forward);
-	*up = vec3_divide_inline(up, vec3_sqrt(up));
+	*up = vec3_init(0.0, 1.0, 0.0);
+	*right = vec3_cross_ptr(forward, up);
+	*right = vec3_divide(*right, vec3_sqrt_ptr(right));
+	*up = vec3_cross_ptr(right, forward);
+	*up = vec3_divide(*up, vec3_sqrt_ptr(up));
 }
 
 void	update_camera(t_data *data)
@@ -33,20 +33,20 @@ void	update_camera(t_data *data)
 
 	get_camera_vectors(data, &forward, &right, &up);
 	
-	data->camera.viewport_u = vec3_multiply_inline(&right, data->camera.viewport_width);
-	data->camera.viewport_v = vec3_multiply_inline(&up, -data->camera.viewport_height);
-	data->camera.pixel_delta_u = vec3_divide_inline(&data->camera.viewport_u, WIDTH);
-	data->camera.pixel_delta_v = vec3_divide_inline(&data->camera.viewport_v, HEIGHT);
+	data->camera.viewport_u = vec3_multiply(right, data->camera.viewport_width);
+	data->camera.viewport_v = vec3_multiply(up, -data->camera.viewport_height);
+	data->camera.pixel_delta_u = vec3_divide(data->camera.viewport_u, WIDTH);
+	data->camera.pixel_delta_v = vec3_divide(data->camera.viewport_v, HEIGHT);
 	
-	tmp.t1 = vec3_multiply_inline(&forward, data->camera.foc);
-	tmp.t2 = vec3_sub_inline(&data->camera.cords, &tmp.t1);
-	tmp.t3 = vec3_divide_inline(&data->camera.viewport_u, 2.0);
-	tmp.t4 = vec3_sub_inline(&tmp.t2, &tmp.t3);
-	tmp.t5 = vec3_divide_inline(&data->camera.viewport_v, 2.0);
-	data->camera.viewport_upper_left = vec3_sub_inline(&tmp.t4, &tmp.t5);
-	tmp.t6 = vec3_add_inline(&data->camera.pixel_delta_u, &data->camera.pixel_delta_v);
-	tmp.t7 = vec3_multiply_inline(&tmp.t6, 0.5);
-	data->camera.pixel00_loc = vec3_add_inline(&data->camera.viewport_upper_left, &tmp.t7);
+	tmp.t1 = vec3_multiply(forward, data->camera.foc);
+	tmp.t2 = vec3_sub(data->camera.cords, tmp.t1);
+	tmp.t3 = vec3_divide(data->camera.viewport_u, 2.0);
+	tmp.t4 = vec3_sub(tmp.t2, tmp.t3);
+	tmp.t5 = vec3_divide(data->camera.viewport_v, 2.0);
+	data->camera.viewport_upper_left = vec3_sub(tmp.t4, tmp.t5);
+	tmp.t6 = vec3_add(data->camera.pixel_delta_u, data->camera.pixel_delta_v);
+	tmp.t7 = vec3_multiply(tmp.t6, 0.5);
+	data->camera.pixel00_loc = vec3_add(data->camera.viewport_upper_left, tmp.t7);
 }
 
 static inline t_rgb	rgb_multiply_inline(t_rgb color, double t)
@@ -107,16 +107,16 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 		while (samples < SHADOW_SAMPLES)
 		{
 			offset = random_unit_vec3();
-			offset = vec3_multiply_inline(&offset, light_radius);
-			sample_point = vec3_add_inline(&light->cords, &offset);
-			to_light = vec3_sub_inline(&sample_point, &rec->p);
-			distance = sqrt(vec3_dot_inline(&to_light, &to_light));
-			light_dir = vec3_divide_inline(&to_light, distance);
+			offset = vec3_multiply(offset, light_radius);
+			sample_point = vec3_add(light->cords, offset);
+			to_light = vec3_sub(sample_point, rec->p);
+			distance = sqrt(vec3_dot(to_light, to_light));
+			light_dir = vec3_divide(to_light, distance);
 			shadow_ray.origin = rec->p;
 			shadow_ray.direction = light_dir;
 			if (!world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))
 			{
-				diffuse = fmax(0.0, vec3_dot_inline(&rec->normal, &light_dir));
+				diffuse = fmax(0.0, vec3_dot(rec->normal, light_dir));
 				light_contrib.r += (light->color.r / 255.0) * light->intensity * diffuse * 255.0 * 100.0;
 				light_contrib.g += (light->color.g / 255.0) * light->intensity * diffuse * 255.0 * 100.0;
 				light_contrib.b += (light->color.b / 255.0) * light->intensity * diffuse * 255.0 * 100.0;
@@ -148,15 +148,15 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 	t_vec3			result;
 	t_rgb			sky_color;
 
-	len = sqrt(vec3_dot_inline(&current_ray->direction, &current_ray->direction));
+	len = sqrt(vec3_dot(current_ray->direction, current_ray->direction));
 	if (len != 0.0)
-		unit_direction = vec3_divide_inline(&current_ray->direction, len);
+		unit_direction = vec3_divide(current_ray->direction, len);
 	else
-		unit_direction = vec3_cpy_inline(&current_ray->direction);
+		unit_direction = vec3_cpy(current_ray->direction);
 	a = 0.5 * (unit_direction.y + 1.0);
-	temp1 = vec3_multiply_inline(&color_a, 1.0 - a);
-	temp2 = vec3_multiply_inline(&color_b, a);
-	result = vec3_add_inline(&temp1, &temp2);
+	temp1 = vec3_multiply(color_a, 1.0 - a);
+	temp2 = vec3_multiply(color_b, a);
+	result = vec3_add(temp1, temp2);
 	sky_color.r = fmin(fmax(result.x, 0.0), 1.0) * 255.999;
 	sky_color.g = fmin(fmax(result.y, 0.0), 1.0) * 255.999;
 	sky_color.b = fmin(fmax(result.z, 0.0), 1.0) * 255.999;
@@ -246,7 +246,7 @@ void	init_camera(t_data *data)
 	data->camera.foc = 1.0;
 	data->camera.viewport_height = 2.0;
 	data->camera.viewport_width = data->camera.viewport_height * ASPECT_RATIO;
-	data->camera.cords = vec3_init_inline(0.0, 0.0, 0.0);
+	data->camera.cords = vec3_init(0.0, 0.0, 0.0);
 	data->camera.pitch = 0.0;
 	data->camera.yaw = 0.0;
 	update_camera(data);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hit_sphere.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:32:34 by apregitz          #+#    #+#             */
-/*   Updated: 2025/09/30 17:10:42 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/26 15:04:14 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ int	hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin, double tmax, t_hit_
 	t_vec3			tmp;
 	t_vec3			outward_normal;
 
-	oc = vec3_sub_inline(&s->cords, &r->origin);
-	a = vec3_dot_inline(&r->direction, &r->direction);
-	h = vec3_dot_inline(&r->direction, &oc);
-	c = vec3_dot_inline(&oc, &oc) - radius * radius;
+	oc = vec3_sub(s->cords, r->origin);
+	a = vec3_dot(r->direction, r->direction);
+	h = vec3_dot(r->direction, oc);
+	c = vec3_dot(oc, oc) - radius * radius;
 
 	discriminant = h * h - a * c;
 	if (discriminant < 0.0)
@@ -49,10 +49,10 @@ int	hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin, double tmax, t_hit_
 	}
 
 	rec->t = root;
-	tmp = vec3_multiply_inline(&r->direction, rec->t);
-	rec->p = vec3_add_inline(&r->origin, &tmp);
-	outward_normal = vec3_sub_inline(&rec->p, &s->cords);
-	outward_normal = vec3_divide_inline(&outward_normal, radius); // unit for sphere
+	tmp = vec3_multiply(r->direction, rec->t);
+	rec->p = vec3_add(r->origin, tmp);
+	outward_normal = vec3_sub(rec->p, s->cords);
+	outward_normal = vec3_divide(outward_normal, radius); // unit for sphere
 	set_face_normal(rec, r, &outward_normal);
 	rec->mat = s->mat;
 	return (1);

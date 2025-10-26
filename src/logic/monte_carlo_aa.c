@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monte_carlo_aa.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 01:06:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/10 15:31:28 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/26 15:15:22 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ uint32_t	without_aa(t_data *data, int i, int j)
 	t_ray	ray;
 	t_rgb	color;
 
-	temp_u = vec3_multiply_inline(&data->camera.pixel_delta_u, j);
-	temp_v = vec3_multiply_inline(&data->camera.pixel_delta_v, i);
-	temp_offset = vec3_add_inline(&temp_u, &temp_v);
-	pixel_sample = vec3_add_inline(&data->camera.pixel00_loc, &temp_offset);
-	ray_direction = vec3_sub_inline(&pixel_sample, &data->camera.cords);
+	temp_u = vec3_multiply(data->camera.pixel_delta_u, j);
+	temp_v = vec3_multiply(data->camera.pixel_delta_v, i);
+	temp_offset = vec3_add(temp_u, temp_v);
+	pixel_sample = vec3_add(data->camera.pixel00_loc, temp_offset);
+	ray_direction = vec3_sub(pixel_sample, data->camera.cords);
 	ray.origin = data->camera.cords;
 	ray.direction = ray_direction;
 	color = ray_color(&ray, data, MAX_DEPTH);
@@ -57,11 +57,11 @@ uint32_t	monte_carlo_aa(t_data *data, int i, int j)
 	{
 		aa.off_u = random_double() - 0.5;
 		aa.off_v = random_double() - 0.5;
-		aa.temp_u = vec3_multiply_inline(&data->camera.pixel_delta_u, j + aa.off_u);
-		aa.temp_v = vec3_multiply_inline(&data->camera.pixel_delta_v, i + aa.off_v);
-		aa.temp_offset = vec3_add_inline(&aa.temp_u, &aa.temp_v);
-		aa.pixel_sample = vec3_add_inline(&data->camera.pixel00_loc, &aa.temp_offset);
-		aa.ray_direction = vec3_sub_inline(&aa.pixel_sample, &data->camera.cords);
+		aa.temp_u = vec3_multiply(data->camera.pixel_delta_u, j + aa.off_u);
+		aa.temp_v = vec3_multiply(data->camera.pixel_delta_v, i + aa.off_v);
+		aa.temp_offset = vec3_add(aa.temp_u, aa.temp_v);
+		aa.pixel_sample = vec3_add(data->camera.pixel00_loc, aa.temp_offset);
+		aa.ray_direction = vec3_sub(aa.pixel_sample, data->camera.cords);
 		aa.ray.origin = data->camera.cords;
 		aa.ray.direction = aa.ray_direction;
 		aa.sample = ray_color(&aa.ray, data, MAX_DEPTH);

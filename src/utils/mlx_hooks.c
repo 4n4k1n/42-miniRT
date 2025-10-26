@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/13 21:14:34 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/26 15:18:59 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,23 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 			get_camera_vectors(data, &forward, &right, &up);
 			if (keydata.key == MLX_KEY_W)
 			{
-				move_vec = vec3_multiply_inline(&forward, -0.2);
-				data->camera.cords = vec3_add_inline(&data->camera.cords, &move_vec);
+				move_vec = vec3_multiply(forward, -0.2);
+				data->camera.cords = vec3_add(data->camera.cords, move_vec);
 			}
 			else if (keydata.key == MLX_KEY_S)
 			{
-				move_vec = vec3_multiply_inline(&forward, 0.2);
-				data->camera.cords = vec3_add_inline(&data->camera.cords, &move_vec);
+				move_vec = vec3_multiply(forward, 0.2);
+				data->camera.cords = vec3_add(data->camera.cords, move_vec);
 			}
 			else if (keydata.key == MLX_KEY_A)
 			{
-				move_vec = vec3_multiply_inline(&right, -0.2);
-				data->camera.cords = vec3_add_inline(&data->camera.cords, &move_vec);
+				move_vec = vec3_multiply(right, -0.2);
+				data->camera.cords = vec3_add(data->camera.cords, move_vec);
 			}
 			else if (keydata.key == MLX_KEY_D)
 			{
-				move_vec = vec3_multiply_inline(&right, 0.2);
-				data->camera.cords = vec3_add_inline(&data->camera.cords, &move_vec);
+				move_vec = vec3_multiply(right, 0.2);
+				data->camera.cords = vec3_add(data->camera.cords, move_vec);
 			}
 		}
 		else if (keydata.key == MLX_KEY_SPACE)

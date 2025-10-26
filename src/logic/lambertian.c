@@ -11,9 +11,9 @@ static int	lambertian_scatter(const t_material *self, const t_ray *r_in,
 	(void)r_in;
 	dir = random_on_hemisphere((t_vec3 *)&rec->normal);
 	eps = 1e-4;
-	sign = vec3_dot_inline(&dir, (t_vec3 *)&rec->normal) > 0.0 ? 1.0 : -1.0;
-	bias = vec3_multiply_inline((t_vec3 *)&rec->normal, eps * sign);
-	scattered->origin = vec3_add_inline(&rec->p, &bias);
+	sign = vec3_dot(dir, (t_vec3)rec->normal) > 0.0 ? 1.0 : -1.0;
+	bias = vec3_multiply((t_vec3)rec->normal, eps * sign);
+	scattered->origin = vec3_add(rec->p, bias);
 	scattered->direction = dir;
 	// scattered->direction = vec3_add_inline(&rec->normal, &scattered->direction);
 	*attenuation = self->albedo;

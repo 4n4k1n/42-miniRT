@@ -14,26 +14,26 @@ static int	metal_scatter(const t_material *self, const t_ray *r_in,
 	t_vec3	bias;
 
 	in_dir = r_in->direction;
-	len = vec3_sqrt(&in_dir);
+	len = vec3_sqrt(in_dir);
 	if (len != 0.0)
-		in_dir = vec3_divide_inline(&in_dir, len);
+		in_dir = vec3_divide(in_dir, len);
 	reflected = vec3_reflect_inline(&in_dir, &rec->normal);
-	rlen = vec3_sqrt(&reflected);
+	rlen = vec3_sqrt(reflected);
 	if (rlen != 0.0)
-		reflected = vec3_divide_inline(&reflected, rlen);
+		reflected = vec3_divide(reflected, rlen);
 	if (self->fuzz > 0.0)
 	{
 		rnd = random_on_hemisphere((t_vec3 *)&rec->normal);
-		fuzz_off = vec3_multiply_inline(&rnd, self->fuzz);
-		reflected = vec3_add_inline(&reflected, &fuzz_off);
+		fuzz_off = vec3_multiply(rnd, self->fuzz);
+		reflected = vec3_add(reflected, fuzz_off);
 	}
 	eps = 1e-4;
-	sign = vec3_dot_inline(&reflected, &rec->normal) > 0.0 ? 1.0 : -1.0;
-	bias = vec3_multiply_inline((t_vec3 *)&rec->normal, eps * sign);
-	scattered->origin = vec3_add_inline(&rec->p, &bias);
+	sign = vec3_dot(reflected, rec->normal) > 0.0 ? 1.0 : -1.0;
+	bias = vec3_multiply((t_vec3)rec->normal, eps * sign);
+	scattered->origin = vec3_add(rec->p, bias);
 	scattered->direction = reflected;
 	*attenuation = self->albedo;
-	return (vec3_dot_inline(&scattered->direction, &rec->normal) > 0.0);
+	return (vec3_dot(scattered->direction, rec->normal) > 0.0);
 }
 
 t_material	*material_metal(t_rgb albedo, double fuzz)

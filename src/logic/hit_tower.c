@@ -8,10 +8,10 @@
 static int	cyl_valid_axis(const t_cylinder *cyl, t_cyl_hit *ch)
 {
 	ch->axis = cyl->norm;
-	ch->axis_len = vec3_sqrt(&ch->axis);
+	ch->axis_len = vec3_sqrt(ch->axis);
 	if (ch->axis_len == 0.0)
 		return (0);
-	ch->axis = vec3_divide_inline(&ch->axis, ch->axis_len);
+	ch->axis = vec3_divide(ch->axis, ch->axis_len);
 	return (1);
 }
 
@@ -41,8 +41,8 @@ static int	cyl_select_root(t_cyl_hit *ch, t_ray *r, double tmin, double tmax)
 		if (fabs(ch->s) > ch->half_h)
 			return (0);
 	}
-	ch->point = vec3_multiply_inline(&r->direction, ch->root);
-	ch->point = vec3_add_inline(&r->origin, &ch->point);
+	ch->point = vec3_multiply(r->direction, ch->root);
+	ch->point = vec3_add(r->origin, ch->point);
 	return (1);
 }
 
@@ -64,26 +64,26 @@ static int	cyl_cap_hit(const t_cylinder *cyl, t_ray *r,
 	double	dist2;
 
 	sign = top ? 1.0 : -1.0;
-	center = vec3_multiply_inline(&ch->axis, ch->half_h * sign);
-	center = vec3_add_inline(&cyl->cords, &center);
-	denom = vec3_dot_inline(&r->direction, &ch->axis) * sign;
+	center = vec3_multiply(ch->axis, ch->half_h * sign);
+	center = vec3_add(cyl->cords, center);
+	denom = vec3_dot(r->direction, ch->axis) * sign;
 	if (fabs(denom) < 1e-9)
 		return (0);
-	tmp = vec3_sub_inline(&center, &r->origin);
-	t = vec3_dot_inline(&tmp, &ch->axis) * sign / denom;
+	tmp = vec3_sub(center, r->origin);
+	t = vec3_dot(tmp, ch->axis) * sign / denom;
 	if (t <= 0.0)
 		return (0);
-	cp = vec3_multiply_inline(&r->direction, t);
-	cp = vec3_add_inline(&r->origin, &cp);
-	tmp = vec3_sub_inline(&cp, &center);
-	dist2 = vec3_dot_inline(&tmp, &tmp);
+	cp = vec3_multiply(r->direction, t);
+	cp = vec3_add(r->origin, cp);
+	tmp = vec3_sub(cp, center);
+	dist2 = vec3_dot(tmp, tmp);
 	if (dist2 > ch->radius * ch->radius)
 		return (0);
 	ch->root = t;
 	ch->point = cp;
 	ch->outward = ch->axis;
 	if (!top)
-		ch->outward = vec3_multiply_inline(&ch->outward, -1.0);
+		ch->outward = vec3_multiply(ch->outward, -1.0);
 	return (1);
 }
 
@@ -112,28 +112,28 @@ int	hit_cylinder_obj(const t_cylinder *cyl, t_ray *r,
 		return (0);
 	ch.radius = cyl->diameter * 0.5;
 	ch.half_h = cyl->height * 0.5;
-	ch.k = vec3_sub_inline(&r->origin, &cyl->cords);
-	ch.d_dot_a = vec3_dot_inline(&r->direction, &ch.axis);
-	ch.k_dot_a = vec3_dot_inline(&ch.k, &ch.axis);
-	ch.a = vec3_dot_inline(&r->direction, &r->direction)
+	ch.k = vec3_sub(r->origin, cyl->cords);
+	ch.d_dot_a = vec3_dot(r->direction, ch.axis);
+	ch.k_dot_a = vec3_dot(ch.k, ch.axis);
+	ch.a = vec3_dot(r->direction, r->direction)
 		- ch.d_dot_a * ch.d_dot_a;
 	has_side = 0;
 	if (ch.a != 0.0)
 	{
-		ch.h = vec3_dot_inline(&r->direction, &ch.k)
+		ch.h = vec3_dot(r->direction, ch.k)
 			- ch.d_dot_a * ch.k_dot_a;
-		ch.c = vec3_dot_inline(&ch.k, &ch.k) - ch.k_dot_a * ch.k_dot_a
+		ch.c = vec3_dot(ch.k, ch.k) - ch.k_dot_a * ch.k_dot_a
 			- ch.radius * ch.radius;
 		ch.disc = ch.h * ch.h - ch.a * ch.c;
 		if (ch.disc >= 0.0 && cyl_select_root(&ch, r, tmin, tmax))
 		{
-			ch.v = vec3_sub_inline(&ch.point, &cyl->cords);
-			ch.axis_part = vec3_multiply_inline(&ch.axis,
-					vec3_dot_inline(&ch.v, &ch.axis));
-			ch.outward = vec3_sub_inline(&ch.v, &ch.axis_part);
-			ch.len = vec3_sqrt(&ch.outward);
+			ch.v = vec3_sub(ch.point, cyl->cords);
+			ch.axis_part = vec3_multiply(ch.axis,
+					vec3_dot(ch.v, ch.axis));
+			ch.outward = vec3_sub(ch.v, ch.axis_part);
+			ch.len = vec3_sqrt(ch.outward);
 			if (ch.len != 0.0)
-				ch.outward = vec3_divide_inline(&ch.outward, ch.len);
+				ch.outward = vec3_divide(ch.outward, ch.len);
 			side_t = ch.root;
 			side_p = ch.point;
 			side_n = ch.outward;
