@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 12:00:52 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 13:30:31 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/26 15:16:35 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_vec3	random_unit_vec3(void)
 	while (true)
 	{
 		randomize_vec3(&vec, -1.0, 1.0);
-		lensq = vec3_dot_inline(&vec, &vec);
+		lensq = vec3_dot(vec, vec);
 		if (lensq > 1e-160 && lensq <= 1)
 			return (vec3_divide(vec, sqrt(lensq)));
 	}

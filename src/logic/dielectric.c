@@ -20,17 +20,17 @@ static t_vec3	vec3_refract_inline(const t_vec3 *uv, const t_vec3 *n, double etai
 	double	parallel_scale;
 	t_vec3	r_out_parallel;
 
-	neg_uv = vec3_multiply_inline((t_vec3 *)uv, -1.0);
-	cos_theta = fmin(vec3_dot_inline(&neg_uv, (t_vec3 *)n), 1.0);
-	term1 = vec3_multiply_inline((t_vec3 *)n, cos_theta);
-	uv_plus = vec3_add_inline((t_vec3 *)uv, &term1);
-	r_out_perp = vec3_multiply_inline(&uv_plus, etai_over_etat);
-	k = 1.0 - vec3_dot_inline(&r_out_perp, &r_out_perp);
+	neg_uv = vec3_multiply_ptr((t_vec3 *)uv, -1.0);
+	cos_theta = fmin(vec3_dot_ptr(&neg_uv, (t_vec3 *)n), 1.0);
+	term1 = vec3_multiply_ptr((t_vec3 *)n, cos_theta);
+	uv_plus = vec3_add_ptr((t_vec3 *)uv, &term1);
+	r_out_perp = vec3_multiply(uv_plus, etai_over_etat);
+	k = 1.0 - vec3_dot(r_out_perp, r_out_perp);
 	if (k < 0.0)
 		k = 0.0;
 	parallel_scale = -sqrt(k);
-	r_out_parallel = vec3_multiply_inline((t_vec3 *)n, parallel_scale);
-	return (vec3_add_inline(&r_out_perp, &r_out_parallel));
+	r_out_parallel = vec3_multiply_ptr((t_vec3 *)n, parallel_scale);
+	return (vec3_add(r_out_perp, r_out_parallel));
 }
 
 static int	dielectric_scatter(const t_material *self, const t_ray *r_in,
@@ -51,12 +51,12 @@ static int	dielectric_scatter(const t_material *self, const t_ray *r_in,
 	t_vec3	bias;
 
 	dir = r_in->direction;
-	len = vec3_sqrt(&dir);
+	len = vec3_sqrt(dir);
 	if (len != 0.0)
-		dir = vec3_divide_inline(&dir, len);
+		dir = vec3_divide(dir, len);
 	ri = rec->front_face ? (1.0 / self->refraction_index) : self->refraction_index;
-	neg_dir = vec3_multiply_inline(&dir, -1.0);
-	cos_theta = fmin(vec3_dot_inline(&neg_dir, (t_vec3 *)&rec->normal), 1.0);
+	neg_dir = vec3_multiply(dir, -1.0);
+	cos_theta = fmin(vec3_dot(neg_dir, (t_vec3)rec->normal), 1.0);
 	sin_theta_sq = 1.0 - cos_theta * cos_theta;
 	sin_theta = sin_theta_sq > 0.0 ? sqrt(sin_theta_sq) : 0.0;
 	cannot_refract = (ri * sin_theta) > 1.0;
@@ -66,9 +66,9 @@ static int	dielectric_scatter(const t_material *self, const t_ray *r_in,
 	else
 		direction = vec3_refract_inline(&dir, (t_vec3 *)&rec->normal, ri);
 	eps = 1e-4;
-	sign = vec3_dot_inline(&direction, (t_vec3 *)&rec->normal) > 0.0 ? 1.0 : -1.0;
-	bias = vec3_multiply_inline((t_vec3 *)&rec->normal, eps * sign);
-	scattered->origin = vec3_add_inline(&rec->p, &bias);
+	sign = vec3_dot(direction, (t_vec3)rec->normal) > 0.0 ? 1.0 : -1.0;
+	bias = vec3_multiply((t_vec3)rec->normal, eps * sign);
+	scattered->origin = vec3_add(rec->p, bias);
 	scattered->direction = direction;
 	attenuation->r = 255.0;
 	attenuation->g = 255.0;
