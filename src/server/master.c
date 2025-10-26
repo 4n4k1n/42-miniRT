@@ -21,17 +21,30 @@ static int setup_master(t_master *master, t_data *data, char *scene_file, uint32
     master->start_render = false;
     master->restart_render = false;
     master->data = data;
-    parse_scene(scene_file, data);
+    if (parse_scene(scene_file, data))
+        return (ft_error("parse_scene", 1));
     master->queue = malloc(sizeof(t_queue));
     if (!master->queue)
+    {
+        free_scene(data);
         return (ft_error("malloc", 1));
+    }
     init_queue(master->queue, WIDTH, HEIGHT, TILE_SIZE);
     master->mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
     if (!master->mlx)
+    {
+        free(master->queue);
+        free_scene(data);
         return (ft_error("mlx_init", 1));
+    }
     master->img = mlx_new_image(master->mlx, WIDTH, HEIGHT);
     if (!master->img)
+    {
+        mlx_terminate(master->mlx);
+        free(master->queue);
+        free_scene(data);
         return (ft_error("mlx_new_image", 1));
+    }
     mlx_image_to_window(master->mlx, master->img, 0, 0);
     pthread_mutex_init(&master->img_lock, NULL);
     pthread_mutex_init(&master->workers_lock, NULL);
@@ -44,7 +57,15 @@ static int setup_master(t_master *master, t_data *data, char *scene_file, uint32
     }
     master->socket_fd = setup_listen_socket(port);
     if (master->socket_fd < 0)
+    {
+        pthread_mutex_destroy(&master->img_lock);
+        pthread_mutex_destroy(&master->workers_lock);
+        pthread_mutex_destroy(&master->restart_lock);
+        mlx_terminate(master->mlx);
+        free(master->queue);
+        free_scene(data);
         return (1);
+    }
     pthread_create(&master->accept_thread, NULL, accept_worker_threads, master);
     return (0);
 }
@@ -101,6 +122,9 @@ int run_master(char *scene_file, uint32_t port)
     pthread_join(master.accept_thread, NULL);
     destroy_queue(master.queue);
     free(master.queue);
+    pthread_mutex_destroy(&master.img_lock);
+    pthread_mutex_destroy(&master.workers_lock);
+    pthread_mutex_destroy(&master.restart_lock);
     mlx_terminate(master.mlx);
     free_scene(&data);
     return (0);

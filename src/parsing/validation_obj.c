@@ -15,13 +15,25 @@
 int	parse_material(char **tokens, int len, t_obj *o)
 {
 	if (len == 4)
+	{
 		o->data.sphere.mat = material_lambertian(o->data.sphere.rgb);
+		if (!o->data.sphere.mat)
+			return (1);
+	}
 	else if (len == 5)
 	{
 		if (tokens[4][0] == 'L')
+		{
 			o->data.sphere.mat = material_lambertian(o->data.sphere.rgb);
+			if (!o->data.sphere.mat)
+				return (1);
+		}
 		else if (tokens[4][0] == 'M')
+		{
 			o->data.sphere.mat = material_metal(o->data.sphere.rgb, 0);
+			if (!o->data.sphere.mat)
+				return (1);
+		}
 		else
 			return (1);
 	}
@@ -58,7 +70,11 @@ int	parse_sphere(char **tokens, t_data *scene)
 	if (parse_material(tokens, len, o))
 		return (free(o), rt_error("invalid sphere material"));
 	if (obj_push(scene->objects, o))
+	{
+		if (o->data.sphere.mat)
+			free(o->data.sphere.mat);
 		return (free(o), rt_error("object push failed"));
+	}
 	return (0);
 }
 
