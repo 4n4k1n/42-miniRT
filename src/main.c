@@ -108,6 +108,23 @@ void	cleanup_objects(t_obj_list *objects)
 	free(objects);
 }
 
+void	cleanup_lights(t_light_list *lights)
+{
+	t_light	*current;
+	t_light	*next;
+
+	if (!lights)
+		return ;
+	current = lights->head;
+	while (current)
+	{
+		next = current->next;
+		free(current);
+		current = next;
+	}
+	free(lights);
+}
+
 /**
  * Runs the renderer in local mode (single machine)
  * Initializes camera, sets up MLX window, renders the scene
@@ -126,15 +143,25 @@ static int	run_local(char *scene_file)
 	mlx_set_setting(MLX_MAXIMIZED, false);
 	data.mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
 	if (!data.mlx)
+	{
+		cleanup_objects(data.objects);
+		cleanup_lights(data.light_list);
 		return (1);
+	}
 	data.img = mlx_new_image(data.mlx, WIDTH, HEIGHT);
 	if (!data.img || (mlx_image_to_window(data.mlx, data.img, 0, 0) < 0))
+	{
+		cleanup_objects(data.objects);
+		cleanup_lights(data.light_list);
+		mlx_terminate(data.mlx);
 		return (1);
+	}
     init_threads(&data);
 	mlx_key_hook(data.mlx, key_hook, &data);
 	render(&data);
 	mlx_loop(data.mlx);
 	cleanup_objects(data.objects);
+	cleanup_lights(data.light_list);
 	mlx_delete_image(data.mlx, data.img);
 	mlx_terminate(data.mlx);
     cleanup_data(&data);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   worker.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:35:40 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/25 14:46:53 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/26 10:01:42 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,7 @@ int run_worker(char *master_ip, uint32_t port)
     t_tile          tile;
     uint32_t        *pixels;
     t_tile          result;
+    t_camera_update cam_update;
 
     master_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (master_socket < 0)
@@ -165,18 +166,26 @@ int run_worker(char *master_ip, uint32_t port)
     inet_pton(AF_INET, master_ip, &master_addr.sin_addr);
     printf("Connecting to master %s:%d\n", master_ip, (int)port);
     if (connect(master_socket, (struct sockaddr *)&master_addr, sizeof(master_addr)) < 0)
+    {
+        close(master_socket);
         return (ft_error("connect", 1));
+    }
     printf("Connected");
     data.settings = recive_settings(master_socket);
     scene_content = recive_scene_file(master_socket);
     if (!scene_content)
     {
         printf("failed to recive scene\n");
+        close(master_socket);
         return (1);
     }
     scene_file_fd = open("scene.rt", O_WRONLY | O_CREAT | O_TRUNC, 0777);
     if (scene_file_fd < 0)
+    {
+        free(scene_content);
+        close(master_socket);
         return (ft_error("open", 1));
+    }
     write(scene_file_fd, scene_content, ft_strlen(scene_content));
     close(scene_file_fd);
     free(scene_content);
@@ -197,7 +206,6 @@ int run_worker(char *master_ip, uint32_t port)
         }
         if (header.msg_type == MSG_UPDATE)
         {
-            t_camera_update cam_update;
             recv_all(master_socket, &cam_update, sizeof(t_camera_update));
             data.camera.cords.x = cam_update.x;
             data.camera.cords.y = cam_update.y;
@@ -234,6 +242,7 @@ int run_worker(char *master_ip, uint32_t port)
         printf("Tile %d completed (total: %d)\n", tile.tile_id, tiles_rendered);
     }
     printf("Worker shutting down. Total tiles rendered: %d\n", tiles_rendered);
+    cleanup_data(&data);
     close(master_socket);
     free_scene(&data);
     return (0);
