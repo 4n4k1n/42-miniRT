@@ -15,6 +15,7 @@ int		rt_error(const char *msg);
 void	free_scene(t_data *scene);
 
 // Parsing
+int		parse_material(char **tokens, int len, t_obj *o);
 int		parse_scene(const char *path, t_data *scene);
 int		parse_ambient(char **tokens, t_data *scene, t_arg_check *args);
 int		parse_camera(char **tokens, t_data *scene, t_arg_check *args);

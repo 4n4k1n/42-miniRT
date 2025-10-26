@@ -12,36 +12,6 @@
 
 #include "mini_rt.h"
 
-int	parse_material(char **tokens, int len, t_obj *o)
-{
-	if (len == 4)
-	{
-		o->data.sphere.mat = material_lambertian(o->data.sphere.rgb);
-		if (!o->data.sphere.mat)
-			return (1);
-	}
-	else if (len == 5)
-	{
-		if (tokens[4][0] == 'L')
-		{
-			o->data.sphere.mat = material_lambertian(o->data.sphere.rgb);
-			if (!o->data.sphere.mat)
-				return (1);
-		}
-		else if (tokens[4][0] == 'M')
-		{
-			o->data.sphere.mat = material_metal(o->data.sphere.rgb, 0);
-			if (!o->data.sphere.mat)
-				return (1);
-		}
-		else
-			return (1);
-	}
-	else
-		return (1);
-	return (0);
-}
-
 /**
  * Parses sphere object parameters from tokens
  * Format: sp <x,y,z> <diameter> <r,g,b>
@@ -88,8 +58,10 @@ int	parse_sphere(char **tokens, t_data *scene)
 int	parse_plane(char **tokens, t_data *scene)
 {
 	t_obj	*o;
+	int		len;
 
-	if (ft_arrlen(tokens) != 4)
+	len = ft_arrlen(tokens);
+	if (len != 4 && len != 5)
 		return (rt_error("invalid plane format"));
 	o = obj_new(PLANE);
 	if (!o)
@@ -102,6 +74,8 @@ int	parse_plane(char **tokens, t_data *scene)
 		return (free(o), rt_error("invalid plane normal"));
 	if (parse_rgb(tokens[3], &o->data.plane.rgb))
 		return (free(o), rt_error("invalid plane RGB"));
+	if (parse_material(tokens, len, o))
+		return (free(o), rt_error("invalid plane material"));
 	if (obj_push(scene->objects, o))
 		return (free(o), rt_error("object push failed"));
 	return (0);
@@ -117,8 +91,10 @@ int	parse_plane(char **tokens, t_data *scene)
 int	parse_cylinder(char **tokens, t_data *scene)
 {
 	t_obj	*o;
+	int		len;
 
-	if (ft_arrlen(tokens) != 6)
+	len = ft_arrlen(tokens);
+	if (len != 6 && len != 7)
 		return (rt_error("invalid cylinder format"));
 	o = obj_new(CYLINDER);
 	if (!o)
@@ -137,6 +113,8 @@ int	parse_cylinder(char **tokens, t_data *scene)
 		return (free(o), rt_error("invalid cylinder height"));
 	if (parse_rgb(tokens[5], &o->data.cylinder.rgb))
 		return (free(o), rt_error("invalid cylinder RGB"));
+	if (parse_material(tokens, len, o))
+		return (free(o), rt_error("invalid cylinder material"));
 	if (obj_push(scene->objects, o))
 		return (free(o), rt_error("object push failed"));
 	return (0);

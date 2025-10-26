@@ -41,6 +41,7 @@ SRC = src/main.c \
 		src/parsing/parsing.c \
 		src/parsing/utils.c \
 		src/parsing/validation_obj.c \
+		src/parsing/validation_mat.c \
 		src/parsing/validation.c \
 		src/parsing/validators.c \
 		src/logic/hit_sphere.c \
