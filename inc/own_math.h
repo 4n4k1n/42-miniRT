@@ -3,39 +3,37 @@
 
 # include "objects.h"
 
-// member operations
-t_vec3	*vec3_add_member(t_vec3 *dst, t_vec3 *src);
-t_vec3	*vec3_sub_member(t_vec3 *dst, t_vec3 *src);
-t_vec3	*vec3_overload_member(t_vec3 *vec);
-t_vec3	*vec3_multiply(t_vec3 *vec, double t);
-t_vec3	*vec3_divide(t_vec3 *vec, double t);
-double	vec3_squared(const t_vec3 *vec);
-double	vec3_sqrt(const t_vec3 *vec);
+t_vec3	vec3_add(const t_vec3 a, const t_vec3 b);
+t_vec3	vec3_add_ptr(const t_vec3 *a, const t_vec3 *b);
 
-// external operations
-t_vec3	*vec3_add(t_vec3 *dst, t_vec3 *src);
-t_vec3	vec3_add_inline(const t_vec3 *dst, const t_vec3 *src);
+t_vec3	vec3_sub(const t_vec3 a, const t_vec3 b);
+t_vec3	vec3_sub_ptr(const t_vec3 *a, const t_vec3 *b);
 
-t_vec3	*vec3_sub(t_vec3 *dst, t_vec3 *src);
-t_vec3	vec3_sub_inline(const t_vec3 *dst, const t_vec3 *src);
+t_vec3	vec3_multiply(const t_vec3 a, double t);
+t_vec3	vec3_multiply_ptr(const t_vec3 *a, double t);
 
-t_vec3	*vec3_cpy(t_vec3 *dst, t_vec3 *src);
-t_vec3	vec3_cpy_inline(const t_vec3 *vec);
+t_vec3	vec3_divide(const t_vec3 a, const double t);
+t_vec3	vec3_divide_ptr(const t_vec3 *a, const double t);
 
-t_vec3	*vec3_overload(t_vec3 *vec);
-t_vec3	vec3_overload_inline(const t_vec3 *vec);
+double	vec3_dot(const t_vec3 a, const t_vec3 b);
+double	vec3_dot_ptr(const t_vec3 *a, const t_vec3 *b);
 
-t_vec3	*vec3_multiply(t_vec3 *vec, double t);
-t_vec3	vec3_multiply_inline(const t_vec3 *vec, double t);
+t_vec3	vec3_cross(const t_vec3 a, const t_vec3 b);
+t_vec3	vec3_cross_ptr(const t_vec3 *a, const t_vec3 *b);
 
-t_vec3	*vec3_divide(t_vec3 *vec, double t);
-t_vec3	vec3_divide_inline(const t_vec3 *vec, double t);
+t_vec3	vec3_overload(const t_vec3 a);
+t_vec3	vec3_overload_ptr(const t_vec3 *a);
 
-t_vec3	vec3_cross_inline(const t_vec3 *a, const t_vec3 *b);
+t_vec3	vec3_cpy(const t_vec3 vec);
+t_vec3	vec3_cpy_ptr(const t_vec3 *vec);
 
-double	vec3_dot_inline(const t_vec3 *a, const t_vec3 *b);
+double	vec3_sqrt(const t_vec3 vec);
+double	vec3_sqrt_ptr(const t_vec3 *vec);
 
-t_vec3	vec3_init_inline(double x, double y, double z);
+double	vec3_squared(const t_vec3 vec);
+double	vec3_squared_ptr(const t_vec3 *vec);
+
+inline t_vec3	vec3_init(const double x, const double y, const double z);
 
 t_vec3	vec3_reflect_inline(const t_vec3 *v, const t_vec3 *n);
 int		vec3_near_zero(const t_vec3 *v);
