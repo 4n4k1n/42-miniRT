@@ -1,0 +1,34 @@
+# Room with 6 planes, 2 spheres, and ceiling light
+
+# Ambient lighting
+A 0.2 255,255,255
+
+# Camera positioned in the room, looking forward
+C 0,1,8 0,0,-1 70
+
+# Light at the ceiling
+L 0,3.8,0 0.7
+
+# Floor (grey)
+pl 0,-2,0 0,1,0 150,150,150
+
+# Ceiling (white)
+pl 0,4,0 0,-1,0 240,240,240
+
+# Back wall (light blue)
+pl 0,0,-5 0,0,1 173,216,230
+
+# Front wall (behind camera, won't see much)
+pl 0,0,10 0,0,-1 200,200,200
+
+# Left wall (red)
+pl -5,0,0 1,0,0 220,100,100
+
+# Right wall (green)
+pl 5,0,0 -1,0,0 100,220,100
+
+# Sphere 1 - metallic gold sphere on the left
+sp -2,0,-2 1.5 255,215,0 M
+
+# Sphere 2 - lambertian blue sphere on the right
+sp 2,-0.5,-1 2.0 100,149,237 L
