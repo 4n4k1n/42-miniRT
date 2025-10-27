@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 19:02:36 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/27 10:32:55 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,84 +248,4 @@ void	init_camera(t_data *data)
 	data->camera.pitch = 0.0;
 	data->camera.yaw = 0.0;
 	update_camera(data);
-}
-
-
-/**
- * Main rendering loop that processes all pixels in the image
- * Iterates through each pixel, calculates its color, and draws it
- * Converts color values from [0,1] range to [0,255] for display
- */
-void	render(t_data *data)
-{
-	int		i;
-	int		j;
-	int	render_time;
-
-	render_time = get_time_in_ms();
-	i = 0;
-	if (MULTI_THREADING)
-		render_with_mt(data);
-	else
-	{
-		while (i < HEIGHT)
-		{
-			j = 0;
-			while (j < WIDTH)
-			{
-				if (data->settings.aa_state)
-					mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, i, j));
-				else
-					mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
-				j++;
-			}
-			printf("%d\n", i);
-			i++;
-		}
-	}
-	printf("\n%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000 / (double)(get_time_in_ms() - render_time));
-}
-
-uint32_t *render_tile(t_data *data, t_tile *tile)
-{
-	uint32_t    i;
-	uint32_t    j;
-	uint32_t	pixel_x;
-	uint32_t	pixel_y;
-	int			thread_idx;
-
-	data->pixels = malloc(tile->height * tile->width * sizeof(uint32_t));
-	if (!data->pixels)
-		return (NULL);
-	if (MULTI_THREADING)
-	{
-		thread_idx = 0;
-		while (thread_idx < data->threads_amount)
-		{
-			data->threads[thread_idx].tile = tile;
-			thread_idx++;
-		}
-		render_with_mt(data);
-	}
-	else
-	{
-		i = 0;
-		while (i < tile->height)
-		{
-			j = 0;
-			while (j < tile->width)
-			{
-				pixel_x = tile->x + j;
-				pixel_y = tile->y + i;
-
-				if (data->settings.aa_state)
-					data->pixels[i * tile->width + j] = monte_carlo_aa(data, pixel_y, pixel_x);
-				else
-					data->pixels[i * tile->width + j] = without_aa(data, pixel_y, pixel_x);
-				j++;
-			}
-			i++;
-		}
-	}
-	return (data->pixels);
 }

@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 01:06:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/26 15:15:22 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/27 10:33:55 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,27 +26,6 @@ static void	init_aa(t_anti_aliasing *aa)
 	ft_memset(aa, 0, sizeof(t_anti_aliasing));
 	aa->min_spp = AA_MIN_SAMPLES;
 	aa->max_spp = AA_MAX_SAMPLES;
-}
-
-uint32_t	without_aa(t_data *data, int i, int j)
-{
-	t_vec3	temp_u;
-	t_vec3	temp_v;
-	t_vec3	temp_offset;
-	t_vec3	pixel_sample;
-	t_vec3	ray_direction;
-	t_ray	ray;
-	t_rgb	color;
-
-	temp_u = vec3_multiply(data->camera.pixel_delta_u, j);
-	temp_v = vec3_multiply(data->camera.pixel_delta_v, i);
-	temp_offset = vec3_add(temp_u, temp_v);
-	pixel_sample = vec3_add(data->camera.pixel00_loc, temp_offset);
-	ray_direction = vec3_sub(pixel_sample, data->camera.cords);
-	ray.origin = data->camera.cords;
-	ray.direction = ray_direction;
-	color = ray_color(&ray, data, MAX_DEPTH);
-	return (rgb_to_uint32(&color));
 }
 
 uint32_t	monte_carlo_aa(t_data *data, int i, int j)
