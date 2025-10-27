@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_cpy.c                                          :+:      :+:    :+:   */
+/*   rgb_modulate.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/29 15:26:16 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 10:44:45 by anakin           ###   ########.fr       */
+/*   Created: 2025/10/27 10:56:46 by anakin            #+#    #+#             */
+/*   Updated: 2025/10/27 11:01:25 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-/**
- * Creates a copy of a vector
- * Returns new vector with same values
- * Inline version for performance
- */
-inline t_vec3	vec3_cpy(const t_vec3 vec)
+inline t_rgb	rgb_modulate(const t_rgb a, const t_rgb b)
 {
-	return (vec);
+	return ((t_rgb){(a.r * b.r) / 255.999, (a.g * b.g) / 255.999, (a.b * b.b) / 255.999});
 }

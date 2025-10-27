@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_cpy.c                                          :+:      :+:    :+:   */
+/*   rgb_multiply.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/29 15:26:16 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 10:44:45 by anakin           ###   ########.fr       */
+/*   Created: 2025/10/27 10:57:00 by anakin            #+#    #+#             */
+/*   Updated: 2025/10/27 11:03:38 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-/**
- * Creates a copy of a vector
- * Returns new vector with same values
- * Inline version for performance
- */
-inline t_vec3	vec3_cpy(const t_vec3 vec)
+inline t_rgb	rgb_multiply(const t_rgb color, const double t)
 {
-	return (vec);
+	return ((t_rgb){color.r * t, color.g * t, color.b * t});
 }

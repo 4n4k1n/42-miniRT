@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/27 12:06:02 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/27 11:39:22 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,8 @@ void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up
 	forward->y = sin(data->camera.pitch);
 	forward->z = cos(data->camera.pitch) * sin(data->camera.yaw);
 	*up = vec3_init(0.0, 1.0, 0.0);
-	*right = vec3_cross_ptr(forward, up);
-	*right = vec3_divide(*right, vec3_sqrt_ptr(right));
-	*up = vec3_cross_ptr(right, forward);
-	*up = vec3_divide(*up, vec3_sqrt_ptr(up));
+	*right = vec3_normalize(vec3_cross(*forward, *up));
+	*up = vec3_normalize(vec3_cross(*right, *forward));
 }
 
 void	update_camera(t_data *data)
@@ -47,174 +45,6 @@ void	update_camera(t_data *data)
 	tmp.t6 = vec3_add(data->camera.pixel_delta_u, data->camera.pixel_delta_v);
 	tmp.t7 = vec3_multiply(tmp.t6, 0.5);
 	data->camera.pixel00_loc = vec3_add(data->camera.viewport_upper_left, tmp.t7);
-}
-
-static inline t_rgb	rgb_multiply_inline(t_rgb color, double t)
-{
-	color.r *= t;
-	color.g *= t;
-	color.b *= t;
-	return (color);
-}
-
-static inline t_rgb	rgb_modulate_inline(t_rgb a, t_rgb b)
-{
-	t_rgb out;
-	out.r = (a.r * b.r) / 255.999;
-	out.g = (a.g * b.g) / 255.999;
-	out.b = (a.b * b.b) / 255.999;
-	return out;
-}
-
-static inline t_rgb	rgb_add_inline(t_rgb a, t_rgb b)
-{
-	t_rgb out;
-	out.r = fmin(a.r + b.r, 255.999);
-	out.g = fmin(a.g + b.g, 255.999);
-	out.b = fmin(a.b + b.b, 255.999);
-	return out;
-}
-
-static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
-{
-	t_light		*light;
-	t_vec3		light_dir;
-	t_vec3		to_light;
-	t_vec3		sample_point;
-	t_vec3		offset;
-	double		distance;
-	double		diffuse;
-	t_rgb		light_contrib;
-	t_rgb		total_light;
-	t_ray		shadow_ray;
-	t_hit_record	shadow_rec;
-	int			samples;
-	int			hits;
-	double		light_radius;
-
-	total_light.r = (data->ambiente.color.r / 255.0) * data->ambiente.lighting * 255.0;
-	total_light.g = (data->ambiente.color.g / 255.0) * data->ambiente.lighting * 255.0;
-	total_light.b = (data->ambiente.color.b / 255.0) * data->ambiente.lighting * 255.0;
-	if (!data->settings.light_state || !data->light_list)
-		return (total_light);
-	light = data->light_list->head;
-	while (light)
-	{
-		hits = 0;
-		samples = 0;
-		light_radius = 0.5;
-		light_contrib = (t_rgb){0.0, 0.0, 0.0};
-		while (samples < SHADOW_SAMPLES)
-		{
-			offset = random_unit_vec3();
-			offset = vec3_multiply(offset, light_radius);
-			sample_point = vec3_add(light->cords, offset);
-			to_light = vec3_sub(sample_point, rec->p);
-			distance = sqrt(vec3_dot(to_light, to_light));
-			light_dir = vec3_divide(to_light, distance);
-			shadow_ray.origin = rec->p;
-			shadow_ray.direction = light_dir;
-			if (!world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))
-			{
-				diffuse = fmax(0.0, vec3_dot(rec->normal, light_dir));
-				light_contrib.r += (light->color.r / 255.0) * light->intensity * diffuse * 255.0;
-				light_contrib.g += (light->color.g / 255.0) * light->intensity * diffuse * 255.0;
-				light_contrib.b += (light->color.b / 255.0) * light->intensity * diffuse * 255.0;
-				hits++;
-			}
-			samples++;
-		}
-		if (hits > 0)
-		{
-			light_contrib.r /= samples;
-			light_contrib.g /= samples;
-			light_contrib.b /= samples;
-			total_light = rgb_add_inline(total_light, light_contrib);
-		}
-		light = light->next;
-	}
-	return (total_light);
-}
-
-static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
-{
-	double	len;
-	t_vec3	unit_direction;
-	double	a;
-	t_vec3	temp1;
-	t_vec3	temp2;
-	t_vec3			color_a = (t_vec3){0.0, 0.0, 0.0};
-	t_vec3			color_b = (t_vec3){0.0, 0.0, 0.0};
-	t_vec3			result;
-	t_rgb			sky_color;
-
-	len = sqrt(vec3_dot(current_ray->direction, current_ray->direction));
-	if (len != 0.0)
-		unit_direction = vec3_divide(current_ray->direction, len);
-	else
-		unit_direction = vec3_cpy(current_ray->direction);
-	a = 0.5 * (unit_direction.y + 1.0);
-	temp1 = vec3_multiply(color_a, 1.0 - a);
-	temp2 = vec3_multiply(color_b, a);
-	result = vec3_add(temp1, temp2);
-	sky_color.r = fmin(fmax(result.x, 0.0), 1.0) * 255.999;
-	sky_color.g = fmin(fmax(result.y, 0.0), 1.0) * 255.999;
-	sky_color.b = fmin(fmax(result.z, 0.0), 1.0) * 255.999;
-	return (rgb_modulate_inline(*final, sky_color));
-}
-
-/**
- * Determines the color for a ray by checking sphere intersection
- * If ray hits sphere: calculates surface normal and converts to color
- * If no hit: creates gradient background from white to blue
- * Formula for normal: N = (hit_point - sphere_center) / radius
- */
-t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
-{
-	t_ray			current_ray = *initial_ray;
-	t_rgb			final_color = (t_rgb){0.0, 0.0, 0.0};
-	t_rgb			throughput = data->ambiente.color;
-	t_hit_record	rec;
-	t_rgb			direct_light;
-	t_rgb			direct_contrib;
-	int				depth;
-
-	depth = 0;
-	while (depth < max_depth)
-	{
-		if (data->objects && world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec))
-		{
-			direct_light = calculate_direct_lighting(data, &rec);
-			if (rec.mat)
-			{
-				t_ray scattered;
-				t_rgb attenuation;
-				if (rec.mat->scatter(rec.mat, &current_ray, &rec, &attenuation, &scattered))
-				{
-					direct_contrib = rgb_modulate_inline(throughput, direct_light);
-					direct_contrib = rgb_modulate_inline(direct_contrib, attenuation);
-					final_color = rgb_add_inline(final_color, direct_contrib);
-					throughput = rgb_modulate_inline(throughput, attenuation);
-					current_ray = scattered;
-				}
-				else
-					return (final_color);
-			}
-			else
-			{
-				direct_contrib = rgb_modulate_inline(direct_light, rec.rgb);
-				final_color = rgb_add_inline(final_color, direct_contrib);
-				return (final_color);
-			}
-		}
-		else
-		{
-			t_rgb sky = calculate_final_color(&throughput, &current_ray);
-			return (rgb_add_inline(final_color, sky));
-		}
-		depth++;
-	}
-	return (final_color);
 }
 
 /**
@@ -248,84 +78,4 @@ void	init_camera(t_data *data)
 	data->camera.pitch = 0.0;
 	data->camera.yaw = 0.0;
 	update_camera(data);
-}
-
-
-/**
- * Main rendering loop that processes all pixels in the image
- * Iterates through each pixel, calculates its color, and draws it
- * Converts color values from [0,1] range to [0,255] for display
- */
-void	render(t_data *data)
-{
-	int		i;
-	int		j;
-	int	render_time;
-
-	render_time = get_time_in_ms();
-	i = 0;
-	if (MULTI_THREADING)
-		render_with_mt(data);
-	else
-	{
-		while (i < HEIGHT)
-		{
-			j = 0;
-			while (j < WIDTH)
-			{
-				if (data->settings.aa_state)
-					mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, i, j));
-				else
-					mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
-				j++;
-			}
-			printf("%d\n", i);
-			i++;
-		}
-	}
-	printf("\n%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000 / (double)(get_time_in_ms() - render_time));
-}
-
-uint32_t *render_tile(t_data *data, t_tile *tile)
-{
-	uint32_t    i;
-	uint32_t    j;
-	uint32_t	pixel_x;
-	uint32_t	pixel_y;
-	int			thread_idx;
-
-	data->pixels = malloc(tile->height * tile->width * sizeof(uint32_t));
-	if (!data->pixels)
-		return (NULL);
-	if (MULTI_THREADING)
-	{
-		thread_idx = 0;
-		while (thread_idx < data->threads_amount)
-		{
-			data->threads[thread_idx].tile = tile;
-			thread_idx++;
-		}
-		render_with_mt(data);
-	}
-	else
-	{
-		i = 0;
-		while (i < tile->height)
-		{
-			j = 0;
-			while (j < tile->width)
-			{
-				pixel_x = tile->x + j;
-				pixel_y = tile->y + i;
-
-				if (data->settings.aa_state)
-					data->pixels[i * tile->width + j] = monte_carlo_aa(data, pixel_y, pixel_x);
-				else
-					data->pixels[i * tile->width + j] = without_aa(data, pixel_y, pixel_x);
-				j++;
-			}
-			i++;
-		}
-	}
-	return (data->pixels);
 }

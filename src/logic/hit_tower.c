@@ -7,11 +7,10 @@
  */
 static int	cyl_valid_axis(const t_cylinder *cyl, t_cyl_hit *ch)
 {
-	ch->axis = cyl->norm;
-	ch->axis_len = vec3_sqrt(ch->axis);
+	ch->axis_len = vec3_sqrt(cyl->norm);
 	if (ch->axis_len == 0.0)
 		return (0);
-	ch->axis = vec3_divide(ch->axis, ch->axis_len);
+	ch->axis = vec3_normalize(cyl->norm);
 	return (1);
 }
 
@@ -131,9 +130,7 @@ int	hit_cylinder_obj(const t_cylinder *cyl, t_ray *r,
 			ch.axis_part = vec3_multiply(ch.axis,
 					vec3_dot(ch.v, ch.axis));
 			ch.outward = vec3_sub(ch.v, ch.axis_part);
-			ch.len = vec3_sqrt(ch.outward);
-			if (ch.len != 0.0)
-				ch.outward = vec3_divide(ch.outward, ch.len);
+			ch.outward = vec3_normalize(ch.outward);
 			side_t = ch.root;
 			side_p = ch.point;
 			side_n = ch.outward;

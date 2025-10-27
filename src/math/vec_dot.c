@@ -21,8 +21,3 @@ inline double	vec3_dot(const t_vec3 a, const t_vec3 b)
 {
 	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }
-
-inline double	vec3_dot_ptr(const t_vec3 *a, const t_vec3 *b)
-{
-	return (a->x * b->x + a->y * b->y + a->z * b->z);
-}

@@ -21,8 +21,3 @@ inline t_vec3	vec3_multiply(const t_vec3 a, double t)
 {
 	return ((t_vec3){a.x * t, a.y * t, a.z * t});
 }
-
-inline t_vec3	vec3_multiply_ptr(const t_vec3 *a, double t)
-{
-	return ((t_vec3){a->x * t, a->y * t, a->z * t});
-}
