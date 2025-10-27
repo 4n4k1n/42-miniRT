@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/27 11:38:39 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/27 14:17:49 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,8 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 	{
 		if (data->objects && world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec))
 		{
-			direct_light = calculate_direct_lighting(data, &rec);
+			if (depth == 0)
+				direct_light = calculate_direct_lighting(data, &rec);
 			if (rec.mat)
 			{
 				t_ray scattered;
