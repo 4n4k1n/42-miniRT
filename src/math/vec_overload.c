@@ -21,8 +21,3 @@ inline t_vec3	vec3_overload(const t_vec3 a)
 {
 	return ((t_vec3){-a.x, -a.y, -a.z});
 }
-
-inline t_vec3	vec3_overload_ptr(const t_vec3 *a)
-{
-	return ((t_vec3){-a->x, -a->y, -a->z});
-}

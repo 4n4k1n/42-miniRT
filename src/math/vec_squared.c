@@ -21,8 +21,3 @@ inline double	vec3_squared(const t_vec3 vec)
 {
 	return (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 }
-
-inline double	vec3_squared_ptr(const t_vec3 *vec)
-{
-	return (vec->x * vec->x + vec->y * vec->y + vec->z * vec->z);
-}

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vec_reflect.c                                      :+:      :+:    :+:   */
+/*   surface_bias.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,15 +13,18 @@
 #include "mini_rt.h"
 
 /**
- * Reflects vector v across surface normal n
- * Formula: r = v - 2(v·n)n
+ * Applies a small bias to surface point to prevent shadow acne
+ * Offsets point slightly along normal in direction of the scattered ray
+ * Prevents self-intersection artifacts in ray tracing
  */
-t_vec3	vec3_reflect(const t_vec3 v, const t_vec3 n)
+t_vec3	apply_surface_bias(t_vec3 point, t_vec3 direction, t_vec3 normal)
 {
-	double	d;
-	t_vec3	twice_n;
+	double	eps;
+	double	sign;
+	t_vec3	bias;
 
-	d = 2.0 * vec3_dot(v, n);
-	twice_n = vec3_multiply(n, d);
-	return (vec3_sub(v, twice_n));
+	eps = 1e-4;
+	sign = vec3_dot(direction, normal) > 0.0 ? 1.0 : -1.0;
+	bias = vec3_multiply(normal, eps * sign);
+	return (vec3_add(point, bias));
 }

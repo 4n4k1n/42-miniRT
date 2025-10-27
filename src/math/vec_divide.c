@@ -21,8 +21,3 @@ inline t_vec3	vec3_divide(const t_vec3 a, const double t)
 {
 	return ((t_vec3){a.x / t, a.y / t, a.z / t});
 }
-
-inline t_vec3	vec3_divide_ptr(const t_vec3 *a, const double t)
-{
-	return ((t_vec3){a->x / t, a->y / t, a->z / t});
-}
