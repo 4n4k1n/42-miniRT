@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   hit_pyramids.c                                     :+:      :+:    :+:   */
+/*   hit_pyramid.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 11:31:15 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/27 11:31:36 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/27 14:48:04 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ static void	build_basis(t_vec3 up, t_vec3 *right, t_vec3 *fwd)
 		t = (t_vec3){0.0, 1.0, 0.0};
 	else
 		t = (t_vec3){1.0, 0.0, 0.0};
-	*right = norm_or_zero(vec3_cross_ptr(&up, &t));
-	*fwd = vec3_cross_ptr(right, &up);
+	*right = norm_or_zero(vec3_cross(up, t));
+	*fwd = vec3_cross(*right, up);
 }
 
 static int	tri_hit(t_ray *r, t_vec3 v0, t_vec3 v1, t_vec3 v2, double *t, t_vec3 *n)
@@ -48,8 +48,8 @@ static int	tri_hit(t_ray *r, t_vec3 v0, t_vec3 v1, t_vec3 v2, double *t, t_vec3 
 
 	e1 = vec3_sub(v1, v0);
 	e2 = vec3_sub(v2, v0);
-	*n = norm_or_zero(vec3_cross_ptr(&e1, &e2));
-	p = vec3_cross_ptr(&r->direction, &e2);
+	*n = norm_or_zero(vec3_cross(e1, e2));
+	p = vec3_cross(r->direction, e2);
 	det = vec3_dot(e1, p);
 	if (fabs(det) < 1e-8)
 		return (0);
@@ -58,7 +58,7 @@ static int	tri_hit(t_ray *r, t_vec3 v0, t_vec3 v1, t_vec3 v2, double *t, t_vec3 
 	u = tmp * vec3_dot(tvec, p);
 	if (u < 0.0 || u > 1.0)
 		return (0);
-	q = vec3_cross_ptr(&tvec, &e1);
+	q = vec3_cross(tvec, e1);
 	v = tmp * vec3_dot(r->direction, q);
 	if (v < 0.0 || u + v > 1.0)
 		return (0);
