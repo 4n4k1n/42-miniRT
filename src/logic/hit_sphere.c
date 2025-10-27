@@ -54,6 +54,7 @@ int	hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin, double tmax, t_hit_
 	outward_normal = vec3_sub(rec->p, s->cords);
 	outward_normal = vec3_divide(outward_normal, radius); // unit for sphere
 	set_face_normal(rec, r, &outward_normal);
+	rec->rgb = s->rgb;
 	rec->mat = s->mat;
 	return (1);
 }

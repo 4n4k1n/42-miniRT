@@ -97,8 +97,8 @@ int	parse_material(char **tokens, int len, t_obj *o)
 	has_mat = (len == base_len + 1);
 	if (!has_mat)
 	{
-		*out = material_lambertian(albedo);
-		return (*out == NULL);
+		*out = NULL;
+		return (0);
 	}
 	mat_idx = base_len;
 	mstr = tokens[mat_idx];
