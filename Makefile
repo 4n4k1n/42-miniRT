@@ -1,7 +1,22 @@
 MAKEFLAGS += -s
 
 NAME	:= miniRT
-CFLAGS	:= -Wall -Wextra -fsanitize=address -g -O0
+CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
+  -funroll-loops -fprefetch-loop-arrays -fpeel-loops -funswitch-loops -ftracer \
+  -ftree-vectorize -ftree-slp-vectorize -ftree-loop-distribution -fivopts \
+  -fgraphite-identity -floop-nest-optimize -floop-interchange -floop-strip-mine -floop-block -floop-unroll-and-jam \
+  -fstrict-aliasing -fweb -frename-registers -fira-loop-pressure -fira-region=all -fira-hoist-pressure \
+  -fsched-pressure -fsched-spec -fsched-spec-load \
+  -falign-functions=32 -falign-loops=32 -falign-jumps=32 \
+  -freorder-blocks -freorder-blocks-and-partition -freorder-functions \
+  -fdata-sections -ffunction-sections -Wl,--gc-sections \
+  -fno-plt -fno-semantic-interposition \
+  -fomit-frame-pointer -fmerge-all-constants \
+  -ffast-math -fno-math-errno -fno-trapping-math -freciprocal-math \
+  -fassociative-math -ffinite-math-only -fno-signed-zeros \
+  -fipa-pta -fipa-cp-clone -fipa-sra -fipa-pure-const -fipa-reference \
+  -fdevirtualize -fdevirtualize-speculatively \
+  -fno-stack-protector -fno-exceptions -fwhole-program -pthread
 OBJ_DIR = objs
 CC = gcc
 
