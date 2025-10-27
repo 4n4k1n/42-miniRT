@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 17:28:26 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/10 13:48:08 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/27 12:01:44 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ static int	dispatch_line(char **tokens, t_data *scene, t_arg_check *args)
 		return (parse_plane(tokens, scene));
 	else if (ft_strcmp(tokens[0], "cy") == 0)
 		return (parse_cylinder(tokens, scene));
+	else if (ft_strcmp(tokens[0], "py") == 0)
+		return (parse_pyramid(tokens, scene));
 	return (rt_error("invalid identifier"));
 }
 

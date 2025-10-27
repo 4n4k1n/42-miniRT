@@ -102,6 +102,17 @@ static void	print_object_one(const t_obj *o, size_t idx)
 		print_rgb("rgb=", o->data.cylinder.rgb);
 		printf("\n");
 	}
+	else if (o->type == PYRAMID)
+	{
+		printf("  [%zu] py: ", idx);
+		print_vec3("center=", o->data.pyramid.cords);
+		printf(" ");
+		print_vec3("axis=", o->data.pyramid.norm);
+		printf(" base=%.6f h=%.6f ", o->data.pyramid.base,
+			o->data.pyramid.height);
+		print_rgb("rgb=", o->data.pyramid.rgb);
+		printf("\n");
+	}
 }
 
 static void	print_objects(const t_obj_list *lst)
