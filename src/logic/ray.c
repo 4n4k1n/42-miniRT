@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/27 14:17:49 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/27 14:33:46 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,16 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 	double	a;
 	t_vec3	temp1;
 	t_vec3	temp2;
-	t_vec3			color_a = (t_vec3){0.0, 0.0, 0.0};
-	t_vec3			color_b = (t_vec3){0.0, 0.0, 0.0};
+	t_vec3			color_a = (t_vec3){1.0, 1.0, 1.0};
+	t_vec3			color_b = (t_vec3){0.5, 0.7, 1.0};
 	t_vec3			result;
 	t_rgb			sky_color;
 
+	if (!SKY)
+	{
+		color_a = vec3_init(0.0, 0.0, 0.0);
+		color_b = vec3_init(0.0, 0.0, 0.0);
+	}
 	len = sqrt(vec3_dot(current_ray->direction, current_ray->direction));
 	if (len != 0.0)
 		unit_direction = vec3_divide(current_ray->direction, len);
