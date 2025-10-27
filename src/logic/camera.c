@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
 /*   Updated: 2025/10/27 11:39:22 by anakin           ###   ########.fr       */
@@ -30,12 +30,12 @@ void	update_camera(t_data *data)
 	t_vec3 up;
 
 	get_camera_vectors(data, &forward, &right, &up);
-	
+
 	data->camera.viewport_u = vec3_multiply(right, data->camera.viewport_width);
 	data->camera.viewport_v = vec3_multiply(up, -data->camera.viewport_height);
 	data->camera.pixel_delta_u = vec3_divide(data->camera.viewport_u, WIDTH);
 	data->camera.pixel_delta_v = vec3_divide(data->camera.viewport_v, HEIGHT);
-	
+
 	tmp.t1 = vec3_multiply(forward, data->camera.foc);
 	tmp.t2 = vec3_sub(data->camera.cords, tmp.t1);
 	tmp.t3 = vec3_divide(data->camera.viewport_u, 2.0);

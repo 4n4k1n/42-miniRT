@@ -26,6 +26,13 @@ static int	mat_base_for_obj(t_obj *o, int *base_len, t_rgb *albedo,
 		*outp = &o->data.cylinder.mat;
 		return (0);
 	}
+	if (o->type == PYRAMID)
+	{
+		*base_len = 6;
+		*albedo = o->data.cylinder.rgb;
+		*outp = &o->data.pyramid.mat;
+		return (0);
+	}
 	return (1);
 }
 
