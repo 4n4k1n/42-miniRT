@@ -42,4 +42,8 @@ void	random_seed(unsigned int seed);
 double	random_double(void);
 double	random_double_range(double min, double max);
 
+t_rgb	rgb_add(const t_rgb a, const t_rgb b);
+t_rgb	rgb_modulate(const t_rgb a, const t_rgb b);
+t_rgb	rgb_multiply(const t_rgb color, const double t);
+
 #endif
