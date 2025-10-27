@@ -9,12 +9,12 @@ void	set_face_normal(t_hit_record *rec, const t_ray *r, const t_vec3 *outw)
 {
 	double	dotv;
 
-	dotv = vec3_dot_ptr((t_vec3 *)&r->direction, (t_vec3 *)outw);
+	dotv = vec3_dot(r->direction, *outw);
 	rec->front_face = (dotv < 0.0);
 	if (rec->front_face)
 		rec->normal = *outw;
 	else
-		rec->normal = vec3_overload_ptr((t_vec3 *)outw);
+		rec->normal = vec3_overload(*outw);
 }
 
 /**

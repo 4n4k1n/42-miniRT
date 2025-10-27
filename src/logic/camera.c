@@ -18,10 +18,8 @@ void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up
 	forward->y = sin(data->camera.pitch);
 	forward->z = cos(data->camera.pitch) * sin(data->camera.yaw);
 	*up = vec3_init(0.0, 1.0, 0.0);
-	*right = vec3_cross_ptr(forward, up);
-	*right = vec3_divide(*right, vec3_sqrt_ptr(right));
-	*up = vec3_cross_ptr(right, forward);
-	*up = vec3_divide(*up, vec3_sqrt_ptr(up));
+	*right = vec3_normalize(vec3_cross(*forward, *up));
+	*up = vec3_normalize(vec3_cross(*right, *forward));
 }
 
 void	update_camera(t_data *data)

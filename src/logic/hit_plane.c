@@ -3,7 +3,6 @@
 int	hit_plane_obj(const t_plane *pl, t_ray *r, double tmin, double tmax, t_hit_record *rec)
 {
 	t_vec3		n;
-	double		len;
 	double		denom;
 	t_vec3		p0l0;
 	double		t;
@@ -11,11 +10,7 @@ int	hit_plane_obj(const t_plane *pl, t_ray *r, double tmin, double tmax, t_hit_r
 
 	if (!pl || !rec || !r)
 		return (0);
-	n = pl->norm;
-	len = sqrt(vec3_dot(n, n));
-	if (len == 0.0)
-		return (0);
-	n = vec3_divide(n, len);
+	n = vec3_normalize(pl->norm);
 	denom = vec3_dot(r->direction, n);
 	if (fabs(denom) < 1e-8)
 		return (0);
