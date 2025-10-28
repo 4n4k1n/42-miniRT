@@ -33,6 +33,13 @@ static int	mat_base_for_obj(t_obj *o, int *base_len, t_rgb *albedo,
 		*outp = &o->data.pyramid.mat;
 		return (0);
 	}
+	if (o->type == CONE)
+	{
+		*base_len = 6;
+		*albedo = o->data.cone.rgb;
+		*outp = &o->data.cone.mat;
+		return (0);
+	}
 	return (1);
 }
 

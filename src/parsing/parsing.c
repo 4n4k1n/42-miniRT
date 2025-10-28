@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 17:28:26 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/27 12:01:44 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/28 10:59:46 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ static int	dispatch_line(char **tokens, t_data *scene, t_arg_check *args)
 		return (parse_cylinder(tokens, scene));
 	else if (ft_strcmp(tokens[0], "py") == 0)
 		return (parse_pyramid(tokens, scene));
+	else if (ft_strcmp(tokens[0], "co") == 0)
+		return (parse_cone(tokens, scene));
 	return (rt_error("invalid identifier"));
 }
 
