@@ -40,6 +40,13 @@ static int	mat_base_for_obj(t_obj *o, int *base_len, t_rgb *albedo,
 		*outp = &o->data.cone.mat;
 		return (0);
 	}
+	if (o->type == TRIANGLE)
+	{
+		*base_len = 5;
+		*albedo = o->data.triangle.rgb;
+		*outp = &o->data.triangle.mat;
+		return (0);
+	}
 	return (1);
 }
 
