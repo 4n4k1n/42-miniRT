@@ -6,10 +6,11 @@
 // AA_MIN_SAMPLES: the minimum amount of rays per pixel (should be between 8 and 32)
 // MAX_DEPTH: the number of child rays that are created when there is an intersection (should be between 8 and 64)
 // SHADOW_SAMPLES: number of shadow rays per light for soft shadows (1 = hard shadows, 4-8 = soft)
-# define SCALE 50
-# define AA_MIN_SAMPLES 8
-# define MAX_DEPTH 8
-# define SHADOW_SAMPLES 1
+// USE_BVH: enable BVH acceleration structure (1 = enabled, 0 = disabled for testing)
+# define SCALE 70
+# define AA_MIN_SAMPLES 32
+# define MAX_DEPTH 64
+# define SHADOW_SAMPLES 4
 
 // for lume and color intensity(dont need to be modified normally)
 # define AA_VAR_EPS 0.0004
@@ -28,6 +29,10 @@
 
 # ifndef MULTI_THREADING
 #  define MULTI_THREADING 1
+# endif
+
+# ifndef USE_BVH
+#  define USE_BVH 1
 # endif
 
 # ifndef BONUS

@@ -104,6 +104,21 @@ typedef struct s_obj_list
 	size_t			size;
 }					t_obj_list;
 
+typedef struct s_aabb
+{
+	t_vec3			min;
+	t_vec3			max;
+}					t_aabb;
+
+typedef struct s_bvh_node
+{
+	t_aabb					box;
+	struct s_bvh_node		*left;
+	struct s_bvh_node		*right;
+	t_obj					**objects;
+	int						obj_count;
+}					t_bvh_node;
+
 typedef struct s_light
 {
 	t_vec3			cords;
@@ -208,10 +223,11 @@ typedef struct s_master	t_master;
 
 typedef struct s_data
 {
-	uint32_t	*pixels;
+	uint32_t		*pixels;
 	t_settings		settings;
 	t_anti_aliasing	aa;
 	t_obj_list		*objects;
+	t_bvh_node		*bvh_root;
 	t_camera		camera;
 	t_light_list	*light_list;
 	t_ambient		ambiente;
