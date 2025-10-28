@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 10:36:19 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/27 11:27:13 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/28 11:03:07 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,5 +153,36 @@ int	parse_pyramid(char **tokens, t_data *scene)
 			free(o->data.pyramid.mat);
 		return (free(o), rt_error("obj push failed"));
 	}
+	return (0);
+}
+
+int	parse_cone(char **tokens, t_data *scene)
+{
+	int		len;
+	t_obj	*o;
+
+	len = ft_arrlen(tokens);
+	if (len < 6)
+		return (rt_error("invalid cone format"));
+	o = obj_new(CONE);
+	if (!o)
+		return (rt_error("malloc failed (cone)"));
+	if (!parse_vec3(tokens[1], &o->data.cone.cords)
+		|| !parse_vec3(tokens[2], &o->data.cone.norm)
+		|| !parse_double(tokens[3], &o->data.cone.diameter)
+		|| !parse_double(tokens[4], &o->data.cone.height)
+		|| !parse_rgb(tokens[5], &o->data.cone.rgb))
+		return (rt_error("invalid cone parameters"));
+	if (!vec_non_zero(o->data.cone.norm)
+		|| !in_range_d(o->data.cone.diameter, 0.0, 1e9)
+		|| !in_range_d(o->data.cone.height, 0.0, 1e9)
+		|| !vec_in_range(&o->data.cone.cords, -1e9, 1e9)
+		|| !vec_in_range(&o->data.cone.norm, -1.0, 1.0))
+		return (rt_error("invalid cone parameters"));
+	o->data.cone.norm = vec3_normalize(o->data.cone.norm);
+	if (len > 6 && parse_material(tokens + 6, len - 6, o) != 0)
+		return (rt_error("invalid cone material"));
+	if (obj_push(scene->objects, o) != 0)
+		return (rt_error("obj push failed"));
 	return (0);
 }

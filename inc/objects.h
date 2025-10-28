@@ -33,7 +33,8 @@ typedef enum e_obj_type
 	SPHERE,
 	PLANE,
 	CYLINDER,
-	PYRAMID
+	PYRAMID,
+	CONE
 }					t_obj_type;
 
 typedef struct s_sphere
@@ -110,6 +111,7 @@ typedef union u_obj_data
 	t_plane			plane;
 	t_cylinder		cylinder;
 	t_pyramid		pyramid;
+	t_cone			cone;
 }					t_obj_data;
 
 typedef struct s_obj
