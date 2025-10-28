@@ -34,7 +34,8 @@ typedef enum e_obj_type
 	PLANE,
 	CYLINDER,
 	PYRAMID,
-	CONE
+	CONE,
+	TRIANGLE
 }					t_obj_type;
 
 typedef struct s_sphere
@@ -83,6 +84,15 @@ typedef struct s_pyramid
 	t_material	*mat;
 }				t_pyramid;
 
+typedef struct s_triangle
+{
+	t_vec3		v0;
+	t_vec3		v1;
+	t_vec3		v2;
+	t_rgb		rgb;
+	t_material	*mat;
+}				t_triangle;
+
 typedef struct s_cyl_hit
 {
 	t_vec3	axis;
@@ -105,6 +115,17 @@ typedef struct s_cyl_hit
 	double	len;
 }	t_cyl_hit;
 
+typedef struct s_tri_calc
+{
+	t_vec3	e1;
+	t_vec3	e2;
+	t_vec3	p;
+	t_vec3	tvec;
+	double	det;
+	double	u;
+	double	v;
+}	t_tri_calc;
+
 typedef union u_obj_data
 {
 	t_sphere		sphere;
@@ -112,6 +133,7 @@ typedef union u_obj_data
 	t_cylinder		cylinder;
 	t_pyramid		pyramid;
 	t_cone			cone;
+	t_triangle		triangle;
 }					t_obj_data;
 
 typedef struct s_obj

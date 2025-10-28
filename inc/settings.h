@@ -6,7 +6,8 @@
 // AA_MIN_SAMPLES: the minimum amount of rays per pixel (should be between 8 and 32)
 // MAX_DEPTH: the number of child rays that are created when there is an intersection (should be between 8 and 64)
 // SHADOW_SAMPLES: number of shadow rays per light for soft shadows (1 = hard shadows, 4-8 = soft)
-# define SCALE 100
+# define SCALE 70
+
 # define AA_MIN_SAMPLES 8
 # define MAX_DEPTH 8
 # define SHADOW_SAMPLES 2

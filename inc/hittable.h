@@ -23,6 +23,10 @@ int			hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin, \
 				double tmax, t_hit_record *rec);
 int			hit_cone_obj(const t_cone *co, t_ray *r, double tmin, \
 				double tmax, t_hit_record *rec);
+int			hit_triangle_obj(const t_triangle *tri, t_ray *r, double tmin, \
+				double tmax, t_hit_record *rec);
+int			hit_triangle_test(const t_triangle *tri, t_ray *r, double tmin, \
+				double tmax, t_hit_record *rec, t_tri_calc calc);
 void		set_face_normal(t_hit_record *rec, const t_ray *r, \
 				const t_vec3 *outw);
 int			hittable_hit(const t_obj *o, t_ray *r, double min, \
@@ -40,6 +44,7 @@ t_vec3		aabb_centroid(const t_aabb *box);
 t_aabb		get_sphere_bounds(const t_sphere *s);
 t_aabb		get_plane_bounds(const t_plane *p);
 t_aabb		get_cylinder_bounds(const t_cylinder *c);
+t_aabb		get_triangle_bounds(const t_triangle *t);
 t_aabb		get_object_bounds(const t_obj *obj);
 t_bvh_node	*build_bvh(t_obj_list *list);
 int			bvh_hit(t_bvh_node *node, t_ray *r, double tmin, \
