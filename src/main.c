@@ -102,6 +102,8 @@ void	cleanup_objects(t_obj_list *objects)
 			free(current->data.plane.mat);
 		if (current->type == CYLINDER && current->data.cylinder.mat)
 			free(current->data.cylinder.mat);
+		if (current->type == TRIANGLE && current->data.triangle.mat)
+			free(current->data.triangle.mat);
 		free(current);
 		current = next;
 	}

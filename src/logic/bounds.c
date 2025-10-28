@@ -13,6 +13,23 @@
 #include "mini_rt.h"
 
 /**
+ * Calculates bounding box for triangle
+ * Creates box containing all three vertices
+ */
+t_aabb	get_triangle_bounds(const t_triangle *tri)
+{
+	t_aabb	box;
+
+	box.min.x = fmin(fmin(tri->v0.x, tri->v1.x), tri->v2.x);
+	box.min.y = fmin(fmin(tri->v0.y, tri->v1.y), tri->v2.y);
+	box.min.z = fmin(fmin(tri->v0.z, tri->v1.z), tri->v2.z);
+	box.max.x = fmax(fmax(tri->v0.x, tri->v1.x), tri->v2.x);
+	box.max.y = fmax(fmax(tri->v0.y, tri->v1.y), tri->v2.y);
+	box.max.z = fmax(fmax(tri->v0.z, tri->v1.z), tri->v2.z);
+	return (box);
+}
+
+/**
  * Calculates axis-aligned bounding box for sphere
  */
 t_aabb	get_sphere_bounds(const t_sphere *s)
@@ -103,5 +120,7 @@ t_aabb	get_object_bounds(const t_obj *obj)
 		return (get_plane_bounds(&obj->data.plane));
 	else if (obj->type == CYLINDER)
 		return (get_cylinder_bounds(&obj->data.cylinder));
+	else if (obj->type == TRIANGLE)
+		return (get_triangle_bounds(&obj->data.triangle));
 	return ((t_aabb){{0, 0, 0}, {0, 0, 0}});
 }

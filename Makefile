@@ -54,6 +54,7 @@ SRC = src/main.c \
 		src/logic/hit_tower.c \
 		src/logic/hit_pyramid.c \
 		src/logic/hit_cone.c \
+		src/logic/hit_triangle.c \
 		src/logic/hittable.c \
 		src/logic/aabb.c \
 		src/logic/bounds.c \

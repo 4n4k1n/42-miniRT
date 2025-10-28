@@ -30,11 +30,21 @@ static char	*trim_and_strip(char *s)
 {
 	char	*hash;
 	char	*out;
+	char	*p;
 
 	hash = ft_strchr(s, '#');
 	if (hash)
 		*hash = '\0';
 	out = ft_strtrim(s, " \t\r\n");
+	if (!out)
+		return (NULL);
+	p = out;
+	while (*p)
+	{
+		if (*p == '\t')
+			*p = ' ';
+		p++;
+	}
 	return (out);
 }
 
@@ -88,6 +98,8 @@ static int	dispatch_line(char **tokens, t_data *scene, t_arg_check *args)
 		return (parse_pyramid(tokens, scene));
 	else if (ft_strcmp(tokens[0], "co") == 0)
 		return (parse_cone(tokens, scene));
+	else if (ft_strcmp(tokens[0], "tr") == 0)
+		return (parse_triangle(tokens, scene));
 	return (rt_error("invalid identifier"));
 }
 
