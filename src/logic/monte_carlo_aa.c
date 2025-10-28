@@ -62,14 +62,13 @@ uint32_t	monte_carlo_aa(t_data *data, int i, int j)
 			if (aa.var <= AA_VAR_EPS)
 				break;
 		}
-		aa.inv_n = 1.0 / aa.n;
-		aa.rbyte = (256.0 * clamp((aa.acc_r * aa.inv_n) / 255.999, 0.0, 0.999));
-		aa.gbyte = (256.0 * clamp((aa.acc_g * aa.inv_n) / 255.999, 0.0, 0.999));
-		aa.bbyte = (256.0 * clamp((aa.acc_b * aa.inv_n) / 255.999, 0.0, 0.999));
-		aa.color.r = aa.rbyte;
-		aa.color.g = aa.gbyte;
-		aa.color.b = aa.bbyte;
-		aa.packed = rgb_to_uint32(&aa.color);
 	}
-	return (aa.packed);
+	aa.inv_n = 1.0 / aa.n;
+	aa.rbyte = (256.0 * clamp((aa.acc_r * aa.inv_n) / 255.999, 0.0, 0.999));
+	aa.gbyte = (256.0 * clamp((aa.acc_g * aa.inv_n) / 255.999, 0.0, 0.999));
+	aa.bbyte = (256.0 * clamp((aa.acc_b * aa.inv_n) / 255.999, 0.0, 0.999));
+	aa.color.r = aa.rbyte;
+	aa.color.g = aa.gbyte;
+	aa.color.b = aa.bbyte;
+	return (rgb_to_uint32(&aa.color));
 }
