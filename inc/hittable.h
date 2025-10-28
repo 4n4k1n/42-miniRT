@@ -19,6 +19,10 @@ int			hit_plane_obj(const t_plane *pl, t_ray *r, double tmin, \
 				double tmax, t_hit_record *rec);
 int			hit_cylinder_obj(const t_cylinder *cyl, t_ray *r, double tmin, \
 				double tmax, t_hit_record *rec);
+int			hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin, \
+				double tmax, t_hit_record *rec);
+int			hit_cone_obj(const t_cone *co, t_ray *r, double tmin, \
+				double tmax, t_hit_record *rec);
 void		set_face_normal(t_hit_record *rec, const t_ray *r, \
 				const t_vec3 *outw);
 int			hittable_hit(const t_obj *o, t_ray *r, double min, \
