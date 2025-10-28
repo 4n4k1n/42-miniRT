@@ -134,10 +134,16 @@ static int	run_local(char *scene_file)
 	t_data	data;
 
 	data.settings.light_state = false;
-    if (parse_scene(scene_file, &data))
-        return (1);
-    print_scene(&data);
-    data.settings.aa_state = ANTI_ALIASING;
+	data.bvh_root = NULL;
+	if (parse_scene(scene_file, &data))
+		return (1);
+	print_scene(&data);
+	if (USE_BVH && data.objects && data.objects->size > 0)
+	{
+		data.bvh_root = build_bvh(data.objects);
+		printf("BVH built with %zu objects\n", data.objects->size);
+	}
+	data.settings.aa_state = ANTI_ALIASING;
 	data.camera.samples_per_pixel = AA_MAX_SAMPLES;
 	init_camera(&data);
 	mlx_set_setting(MLX_MAXIMIZED, false);
@@ -160,11 +166,13 @@ static int	run_local(char *scene_file)
 	mlx_key_hook(data.mlx, key_hook, &data);
 	render(&data);
 	mlx_loop(data.mlx);
+	if (data.bvh_root)
+		free_bvh(data.bvh_root);
 	cleanup_objects(data.objects);
 	cleanup_lights(data.light_list);
 	mlx_delete_image(data.mlx, data.img);
 	mlx_terminate(data.mlx);
-    cleanup_data(&data);
+	cleanup_data(&data);
 	return (0);
 }
 

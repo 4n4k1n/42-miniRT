@@ -55,6 +55,11 @@ SRC = src/main.c \
 		src/logic/hit_pyramid.c \
 		src/logic/hit_cone.c \
 		src/logic/hittable.c \
+		src/logic/aabb.c \
+		src/logic/bounds.c \
+		src/logic/bvh_build.c \
+		src/logic/bvh_hit.c \
+		src/logic/bvh_cleanup.c \
 		src/logic/ray.c \
 		src/logic/render.c \
 		src/logic/monte_carlo_aa.c \

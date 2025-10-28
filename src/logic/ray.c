@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/27 14:33:46 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/27 12:21:13 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,14 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 			offset = vec3_multiply(offset, light_radius);
 			sample_point = vec3_add(light->cords, offset);
 			to_light = vec3_sub(sample_point, rec->p);
-			distance = sqrt(vec3_dot(to_light, to_light));
-			light_dir = vec3_divide(to_light, distance);
+			distance = vec3_sqrt(to_light);
+			light_dir = vec3_normalize(to_light);
 			shadow_ray.origin = rec->p;
 			shadow_ray.direction = light_dir;
-			if (!world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))
+			if (!((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root, \
+					&shadow_ray, 0.001, distance - 0.001, &shadow_rec)) || \
+					(!USE_BVH && data->objects && world_hit(data->objects, \
+					&shadow_ray, 0.001, distance - 0.001, &shadow_rec))))
 			{
 				diffuse = fmax(0.0, vec3_dot(rec->normal, light_dir));
 				light_contrib.r += (light->color.r / 255.0) * light->intensity * diffuse * 255.0;
@@ -75,7 +78,6 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 
 static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 {
-	double	len;
 	t_vec3	unit_direction;
 	double	a;
 	t_vec3	temp1;
@@ -90,11 +92,7 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 		color_a = vec3_init(0.0, 0.0, 0.0);
 		color_b = vec3_init(0.0, 0.0, 0.0);
 	}
-	len = sqrt(vec3_dot(current_ray->direction, current_ray->direction));
-	if (len != 0.0)
-		unit_direction = vec3_divide(current_ray->direction, len);
-	else
-		unit_direction = vec3_cpy(current_ray->direction);
+  unit_direction = vec3_normalize(current_ray->direction);
 	a = 0.5 * (unit_direction.y + 1.0);
 	temp1 = vec3_multiply(color_a, 1.0 - a);
 	temp2 = vec3_multiply(color_b, a);
@@ -124,20 +122,38 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 	depth = 0;
 	while (depth < max_depth)
 	{
-		if (data->objects && world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec))
+		if ((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root, \
+				&current_ray, 0.001, INFINITY, &rec)) || (!USE_BVH && \
+				data->objects && world_hit(data->objects, &current_ray, 0.001, \
+				INFINITY, &rec)))
 		{
 			if (depth == 0)
-				direct_light = calculate_direct_lighting(data, &rec);
+			    direct_light = calculate_direct_lighting(data, &rec);
 			if (rec.mat)
 			{
 				t_ray scattered;
 				t_rgb attenuation;
 				if (rec.mat->scatter(rec.mat, &current_ray, &rec, &attenuation, &scattered))
 				{
+					double	max_throughput;
+					double	brightness;
+
 					direct_contrib = rgb_modulate(throughput, direct_light);
 					direct_contrib = rgb_modulate(direct_contrib, attenuation);
 					final_color = rgb_add(final_color, direct_contrib);
 					throughput = rgb_modulate(throughput, attenuation);
+					if (depth >= 3)
+					{
+						max_throughput = fmax(fmax(throughput.r, throughput.g), \
+							throughput.b);
+						brightness = max_throughput / 255.0;
+						if (brightness < 0.1)
+						{
+							if (random_double() > brightness)
+								return (final_color);
+							throughput = rgb_multiply(throughput, 1.0 / brightness);
+						}
+					}
 					current_ray = scattered;
 				}
 				else

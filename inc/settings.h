@@ -31,6 +31,10 @@
 #  define MULTI_THREADING 1
 # endif
 
+# ifndef USE_BVH
+#  define USE_BVH 1
+# endif
+
 # ifndef BONUS
 #  define BONUS 0
 # endif
