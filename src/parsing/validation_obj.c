@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 10:36:19 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/28 11:03:07 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/28 11:29:13 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,31 +158,36 @@ int	parse_pyramid(char **tokens, t_data *scene)
 
 int	parse_cone(char **tokens, t_data *scene)
 {
-	int		len;
 	t_obj	*o;
+	int		len;
 
 	len = ft_arrlen(tokens);
-	if (len < 6)
+	if (len != 6 && len != 7)
 		return (rt_error("invalid cone format"));
 	o = obj_new(CONE);
 	if (!o)
 		return (rt_error("malloc failed (cone)"));
-	if (!parse_vec3(tokens[1], &o->data.cone.cords)
-		|| !parse_vec3(tokens[2], &o->data.cone.norm)
-		|| !parse_double(tokens[3], &o->data.cone.diameter)
-		|| !parse_double(tokens[4], &o->data.cone.height)
-		|| !parse_rgb(tokens[5], &o->data.cone.rgb))
-		return (rt_error("invalid cone parameters"));
-	if (!vec_non_zero(o->data.cone.norm)
-		|| !in_range_d(o->data.cone.diameter, 0.0, 1e9)
-		|| !in_range_d(o->data.cone.height, 0.0, 1e9)
-		|| !vec_in_range(&o->data.cone.cords, -1e9, 1e9)
-		|| !vec_in_range(&o->data.cone.norm, -1.0, 1.0))
-		return (rt_error("invalid cone parameters"));
-	o->data.cone.norm = vec3_normalize(o->data.cone.norm);
-	if (len > 6 && parse_material(tokens + 6, len - 6, o) != 0)
-		return (rt_error("invalid cone material"));
-	if (obj_push(scene->objects, o) != 0)
-		return (rt_error("obj push failed"));
+	if (parse_vec3(tokens[1], &o->data.cone.cords))
+		return (free(o), rt_error("invalid cone center"));
+	if (parse_vec3(tokens[2], &o->data.cone.norm)
+		|| !vec_in_range(&o->data.cone.norm, -1.0, 1.0)
+		|| !vec_non_zero(o->data.cone.norm))
+		return (free(o), rt_error("invalid cone axis"));
+	if (parse_double(tokens[3], &o->data.cone.diameter)
+		|| o->data.cone.diameter <= 0.0)
+		return (free(o), rt_error("invalid cone diameter"));
+	if (parse_double(tokens[4], &o->data.cone.height)
+		|| o->data.cone.height <= 0.0)
+		return (free(o), rt_error("invalid cone height"));
+	if (parse_rgb(tokens[5], &o->data.cone.rgb))
+		return (free(o), rt_error("invalid cone RGB"));
+	if (parse_material(tokens, len, o))
+		return (free(o), rt_error("invalid cone material"));
+	if (obj_push(scene->objects, o))
+	{
+		if (o->data.cone.mat)
+			free(o->data.cone.mat);
+		return (free(o), rt_error("object push failed"));
+	}
 	return (0);
 }
