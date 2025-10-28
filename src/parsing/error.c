@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 18:52:57 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/10 16:57:38 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/28 11:35:21 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,10 @@ static void	free_objects(t_obj_list *lst)
 			free(cur->data.plane.mat);
 		if (cur->type == CYLINDER && cur->data.cylinder.mat)
 			free(cur->data.cylinder.mat);
+		if (cur->type == PYRAMID && cur->data.pyramid.mat)
+			free(cur->data.pyramid.mat);
+		if (cur->type == CONE && cur->data.cone.mat)
+			free(cur->data.cone.mat);
 		free(cur);
 		cur = nx;
 	}

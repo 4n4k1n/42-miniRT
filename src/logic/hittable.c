@@ -32,6 +32,10 @@ int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record 
 		return (hit_plane_obj(&o->data.plane, r, min, max, rec));
 	if (o->type == CYLINDER)
 		return (hit_cylinder_obj(&o->data.cylinder, r, min, max, rec));
+	if (o->type == PYRAMID)
+		return (hit_pyramid_obj(&o->data.pyramid, r, min, max, rec));
+	if (o->type == CONE)
+		return (hit_cone_obj(&o->data.cone, r, min, max, rec));
 	return (0);
 }
 

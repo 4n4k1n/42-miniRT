@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
 /*   Updated: 2025/10/27 12:21:13 by anakin           ###   ########.fr       */
@@ -82,12 +82,17 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 	double	a;
 	t_vec3	temp1;
 	t_vec3	temp2;
-	t_vec3			color_a = (t_vec3){0.0, 0.0, 0.0};
-	t_vec3			color_b = (t_vec3){0.0, 0.0, 0.0};
+	t_vec3			color_a = (t_vec3){1.0, 1.0, 1.0};
+	t_vec3			color_b = (t_vec3){0.5, 0.7, 1.0};
 	t_vec3			result;
 	t_rgb			sky_color;
 
-	unit_direction = vec3_normalize(current_ray->direction);
+	if (!SKY)
+	{
+		color_a = vec3_init(0.0, 0.0, 0.0);
+		color_b = vec3_init(0.0, 0.0, 0.0);
+	}
+  unit_direction = vec3_normalize(current_ray->direction);
 	a = 0.5 * (unit_direction.y + 1.0);
 	temp1 = vec3_multiply(color_a, 1.0 - a);
 	temp2 = vec3_multiply(color_b, a);
