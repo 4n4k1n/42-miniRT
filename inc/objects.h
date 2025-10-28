@@ -62,6 +62,16 @@ typedef struct s_cylinder
 	t_material		*mat;
 }					t_cylinder;
 
+typedef struct s_cone
+{
+	t_vec3		cords;
+	t_vec3		norm;
+	double		diameter;
+	double		height;
+	t_rgb		rgb;
+	t_material	*mat;
+}				t_cone;
+
 typedef struct s_pyramid
 {
 	t_vec3		cords;
