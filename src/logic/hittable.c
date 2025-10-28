@@ -37,10 +37,12 @@ int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record 
 
 /**
  * Tests ray intersection against all objects in the scene
+ * Uses BVH if available, falls back to linear search
  * Finds closest intersection within distance range [min, max]
  * Returns 1 if any object hit, 0 otherwise
  */
-int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, t_hit_record *out)
+int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, \
+		t_hit_record *out)
 {
 	t_hit_record	tmp;
 	double			closest;
@@ -63,4 +65,15 @@ int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, t_hit_re
 		cur = cur->next;
 	}
 	return (hit_any);
+}
+
+/**
+ * Tests ray intersection using BVH acceleration structure
+ */
+int	world_hit_bvh(t_bvh_node *bvh, t_ray *r, double min, double max, \
+		t_hit_record *out)
+{
+	if (!bvh || !out)
+		return (0);
+	return (bvh_hit(bvh, r, min, max, out));
 }

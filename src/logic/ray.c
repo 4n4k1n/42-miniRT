@@ -51,7 +51,10 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 			light_dir = vec3_normalize(to_light);
 			shadow_ray.origin = rec->p;
 			shadow_ray.direction = light_dir;
-			if (!world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))
+			if (!((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root, \
+					&shadow_ray, 0.001, distance - 0.001, &shadow_rec)) || \
+					(!USE_BVH && data->objects && world_hit(data->objects, \
+					&shadow_ray, 0.001, distance - 0.001, &shadow_rec))))
 			{
 				diffuse = fmax(0.0, vec3_dot(rec->normal, light_dir));
 				light_contrib.r += (light->color.r / 255.0) * light->intensity * diffuse * 255.0;
@@ -114,9 +117,12 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 	depth = 0;
 	while (depth < max_depth)
 	{
-		if (data->objects && world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec))
+		if ((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root, \
+				&current_ray, 0.001, INFINITY, &rec)) || (!USE_BVH && \
+				data->objects && world_hit(data->objects, &current_ray, 0.001, \
+				INFINITY, &rec)))
 		{
-            if (depth == 0)
+			if (depth == 0)
 			    direct_light = calculate_direct_lighting(data, &rec);
 			if (rec.mat)
 			{
