@@ -7,7 +7,7 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fgraphite-identity -floop-nest-optimize -floop-interchange -floop-strip-mine -floop-block -floop-unroll-and-jam \
   -fstrict-aliasing -fweb -frename-registers -fira-loop-pressure -fira-region=all -fira-hoist-pressure \
   -fsched-pressure -fsched-spec -fsched-spec-load \
-  -falign-functions=32 -falign-loops=32 -falign-jumps=32 \
+  -falign-functions=32 -falign-loops=32 -falign-jumps=32 -falign-labels=32 \
   -freorder-blocks -freorder-blocks-and-partition -freorder-functions \
   -fdata-sections -ffunction-sections -Wl,--gc-sections \
   -fno-plt -fno-semantic-interposition \
@@ -16,7 +16,12 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fassociative-math -ffinite-math-only -fno-signed-zeros \
   -fipa-pta -fipa-cp-clone -fipa-sra -fipa-pure-const -fipa-reference \
   -fdevirtualize -fdevirtualize-speculatively \
-  -fno-stack-protector -fno-exceptions -fwhole-program -pthread
+  -fno-stack-protector -fno-exceptions -fwhole-program -pthread \
+  -fmodulo-sched -fmodulo-sched-allow-regmoves \
+  -fsplit-loops -fpredictive-commoning -ftree-loop-im -ftree-loop-if-convert \
+  -fgcse-sm -fgcse-las -fvariable-expansion-in-unroller -funroll-all-loops
+
+LDFLAGS := -Wl,-O2 -Wl,--sort-common -Wl,--as-needed 
 OBJ_DIR = objs
 CC = gcc
 
@@ -118,7 +123,7 @@ CFLAGS += -I./inc -I$(MLX42_DIR)/include
 all: $(LIBFT) $(LIBMLX42) $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBMLX42) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) $(LIBMLX42) $(LIBFT) -o $(NAME)
 
 $(OBJ_DIR)/%.o: src/%.c inc/mini_rt.h
 	@mkdir -p $(dir $@)
