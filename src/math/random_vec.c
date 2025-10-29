@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   random_vec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 12:00:52 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 15:16:35 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/29 14:13:27 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ t_vec3	random_unit_vec3(void)
 {
 	t_vec3	vec;
 	double	lensq;
-	
+
 	while (true)
 	{
 		randomize_vec3(&vec, -1.0, 1.0);

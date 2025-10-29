@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vec_sqrt.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 14:32:12 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 13:24:49 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/29 14:19:36 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "mini_rt.h"
 #include <math.h>
 
-double sqrt(double x);
+double			sqrt(double x);
 
 /**
  * Calculates the length (magnitude) of a vector
