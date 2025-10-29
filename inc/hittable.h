@@ -34,5 +34,6 @@ int				hittable_hit(const t_obj *o, t_ray *r, double min, double max,
 					t_hit_record *rec);
 int				world_hit(const t_obj_list *list, t_ray *r, double min,
 					double max, t_hit_record *out);
+t_vec3	bump_perturb_from_uv(const t_bump *b, t_vec3 n, t_vec3 t, t_vec3 bta, double u, double v);
 
 #endif
