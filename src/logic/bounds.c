@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/28 19:52:20 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 14:31:33 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ t_aabb	get_plane_bounds(const t_plane *p)
 	return (box);
 }
 
-static void	expand_cylinder_caps(t_aabb *box, t_vec3 center, \
-		t_vec3 axis, double radius, double half_h)
+static void	expand_cylinder_caps(t_aabb *box, t_vec3 center, t_vec3 axis,
+		double radius, double half_h)
 {
 	t_vec3	top;
 	t_vec3	bottom;

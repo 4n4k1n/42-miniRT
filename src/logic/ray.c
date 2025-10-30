@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/27 12:21:13 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 14:35:05 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,27 @@
 
 static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 {
-	t_light		*light;
-	t_vec3		light_dir;
-	t_vec3		to_light;
-	t_vec3		sample_point;
-	t_vec3		offset;
-	double		distance;
-	double		diffuse;
-	t_rgb		light_contrib;
-	t_rgb		total_light;
-	t_ray		shadow_ray;
+	t_light			*light;
+	t_vec3			light_dir;
+	t_vec3			to_light;
+	t_vec3			sample_point;
+	t_vec3			offset;
+	double			distance;
+	double			diffuse;
+	t_rgb			light_contrib;
+	t_rgb			total_light;
+	t_ray			shadow_ray;
 	t_hit_record	shadow_rec;
-	int			samples;
-	int			hits;
-	double		light_radius;
+	int				samples;
+	int				hits;
+	double			light_radius;
 
-	total_light.r = (data->ambiente.color.r / 255.0) * data->ambiente.lighting * 255.0;
-	total_light.g = (data->ambiente.color.g / 255.0) * data->ambiente.lighting * 255.0;
-	total_light.b = (data->ambiente.color.b / 255.0) * data->ambiente.lighting * 255.0;
+	total_light.r = (data->ambiente.color.r / 255.0) * data->ambiente.lighting
+		* 255.0;
+	total_light.g = (data->ambiente.color.g / 255.0) * data->ambiente.lighting
+		* 255.0;
+	total_light.b = (data->ambiente.color.b / 255.0) * data->ambiente.lighting
+		* 255.0;
 	if (!data->settings.light_state || !data->light_list)
 		return (total_light);
 	light = data->light_list->head;
@@ -51,15 +54,19 @@ static t_rgb	calculate_direct_lighting(t_data *data, t_hit_record *rec)
 			light_dir = vec3_normalize(to_light);
 			shadow_ray.origin = rec->p;
 			shadow_ray.direction = light_dir;
-			if (!((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root, \
-					&shadow_ray, 0.001, distance - 0.001, &shadow_rec)) || \
-					(!USE_BVH && data->objects && world_hit(data->objects, \
-					&shadow_ray, 0.001, distance - 0.001, &shadow_rec))))
+			if (!((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root,
+							&shadow_ray, 0.001, distance - 0.001, &shadow_rec))
+					|| (!USE_BVH && data->objects && world_hit(data->objects,
+							&shadow_ray, 0.001, distance - 0.001,
+							&shadow_rec))))
 			{
 				diffuse = fmax(0.0, vec3_dot(rec->normal, light_dir));
-				light_contrib.r += (light->color.r / 255.0) * light->intensity * diffuse * 255.0;
-				light_contrib.g += (light->color.g / 255.0) * light->intensity * diffuse * 255.0;
-				light_contrib.b += (light->color.b / 255.0) * light->intensity * diffuse * 255.0;
+				light_contrib.r += (light->color.r / 255.0) * light->intensity
+					* diffuse * 255.0;
+				light_contrib.g += (light->color.g / 255.0) * light->intensity
+					* diffuse * 255.0;
+				light_contrib.b += (light->color.b / 255.0) * light->intensity
+					* diffuse * 255.0;
 				hits++;
 			}
 			samples++;
@@ -82,17 +89,19 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 	double	a;
 	t_vec3	temp1;
 	t_vec3	temp2;
-	t_vec3			color_a = (t_vec3){1.0, 1.0, 1.0};
-	t_vec3			color_b = (t_vec3){0.5, 0.7, 1.0};
-	t_vec3			result;
-	t_rgb			sky_color;
+	t_vec3	color_a;
+	t_vec3	color_b;
+	t_vec3	result;
+	t_rgb	sky_color;
 
+	color_a = (t_vec3){1.0, 1.0, 1.0};
+	color_b = (t_vec3){0.5, 0.7, 1.0};
 	if (!SKY)
 	{
 		color_a = vec3_init(0.0, 0.0, 0.0);
 		color_b = vec3_init(0.0, 0.0, 0.0);
 	}
-  unit_direction = vec3_normalize(current_ray->direction);
+	unit_direction = vec3_normalize(current_ray->direction);
 	a = 0.5 * (unit_direction.y + 1.0);
 	temp1 = vec3_multiply(color_a, 1.0 - a);
 	temp2 = vec3_multiply(color_b, a);
@@ -111,47 +120,52 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
  */
 t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 {
-	t_ray			current_ray = *initial_ray;
-	t_rgb			final_color = (t_rgb){0.0, 0.0, 0.0};
-	t_rgb			throughput = data->ambiente.color;
+	t_ray			current_ray;
+	t_rgb			final_color;
+	t_rgb			throughput;
 	t_hit_record	rec;
 	t_rgb			direct_light;
 	t_rgb			direct_contrib;
 	int				depth;
+				t_ray scattered;
+				t_rgb attenuation;
+					double max_throughput;
+					double brightness;
+	t_rgb			sky;
 
+	current_ray = *initial_ray;
+	final_color = (t_rgb){0.0, 0.0, 0.0};
+	throughput = data->ambiente.color;
 	depth = 0;
 	while (depth < max_depth)
 	{
-		if ((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root, \
-				&current_ray, 0.001, INFINITY, &rec)) || (!USE_BVH && \
-				data->objects && world_hit(data->objects, &current_ray, 0.001, \
-				INFINITY, &rec)))
+		if ((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root,
+					&current_ray, 0.001, INFINITY, &rec)) || (!USE_BVH
+				&& data->objects && world_hit(data->objects, &current_ray,
+					0.001, INFINITY, &rec)))
 		{
 			if (depth == 0)
-			    direct_light = calculate_direct_lighting(data, &rec);
+				direct_light = calculate_direct_lighting(data, &rec);
 			if (rec.mat)
 			{
-				t_ray scattered;
-				t_rgb attenuation;
-				if (rec.mat->scatter(rec.mat, &current_ray, &rec, &attenuation, &scattered))
+				if (rec.mat->scatter(rec.mat, &current_ray, &rec, &attenuation,
+						&scattered))
 				{
-					double	max_throughput;
-					double	brightness;
-
 					direct_contrib = rgb_modulate(throughput, direct_light);
 					direct_contrib = rgb_modulate(direct_contrib, attenuation);
 					final_color = rgb_add(final_color, direct_contrib);
 					throughput = rgb_modulate(throughput, attenuation);
 					if (depth >= 3)
 					{
-						max_throughput = fmax(fmax(throughput.r, throughput.g), \
-							throughput.b);
+						max_throughput = fmax(fmax(throughput.r, throughput.g),
+								throughput.b);
 						brightness = max_throughput / 255.0;
 						if (brightness < 0.1)
 						{
 							if (random_double() > brightness)
 								return (final_color);
-							throughput = rgb_multiply(throughput, 1.0 / brightness);
+							throughput = rgb_multiply(throughput, 1.0
+									/ brightness);
 						}
 					}
 					current_ray = scattered;
@@ -168,7 +182,7 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 		}
 		else
 		{
-			t_rgb sky = calculate_final_color(&throughput, &current_ray);
+			sky = calculate_final_color(&throughput, &current_ray);
 			return (rgb_add(final_color, sky));
 		}
 		depth++;

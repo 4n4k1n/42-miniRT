@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lambertian.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/30 14:33:16 by anakin            #+#    #+#             */
+/*   Updated: 2025/10/30 14:34:47 by anakin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_rt.h"
 
 static int	lambertian_scatter(const t_material *self, const t_ray *r_in,
@@ -9,7 +21,6 @@ static int	lambertian_scatter(const t_material *self, const t_ray *r_in,
 	dir = random_on_hemisphere((t_vec3 *)&rec->normal);
 	scattered->origin = apply_surface_bias(rec->p, dir, rec->normal);
 	scattered->direction = dir;
-	// scattered->direction = vec3_add_inline(&rec->normal, &scattered->direction);
 	*attenuation = self->albedo;
 	return (1);
 }

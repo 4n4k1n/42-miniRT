@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dielectric.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/30 14:32:40 by anakin            #+#    #+#             */
+/*   Updated: 2025/10/30 14:32:41 by anakin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_rt.h"
 
 static double	schlick_reflectance(double cosine, double refraction_index)
@@ -9,7 +21,7 @@ static double	schlick_reflectance(double cosine, double refraction_index)
 	return (r0 + (1.0 - r0) * pow(1.0 - cosine, 5.0));
 }
 
-static t_vec3	vec3_refract(const t_vec3 uv, const t_vec3 n, \
+static t_vec3	vec3_refract(const t_vec3 uv, const t_vec3 n,
 		double etai_over_etat)
 {
 	t_vec3	neg_uv;
@@ -35,7 +47,7 @@ static t_vec3	vec3_refract(const t_vec3 uv, const t_vec3 n, \
 }
 
 static int	dielectric_scatter(const t_material *self, const t_ray *r_in,
-	const t_hit_record *rec, t_rgb *attenuation, t_ray *scattered)
+		const t_hit_record *rec, t_rgb *attenuation, t_ray *scattered)
 {
 	t_vec3	dir;
 	double	ri;
@@ -48,7 +60,8 @@ static int	dielectric_scatter(const t_material *self, const t_ray *r_in,
 	t_vec3	direction;
 
 	dir = vec3_normalize(r_in->direction);
-	ri = rec->front_face ? (1.0 / self->refraction_index) : self->refraction_index;
+	ri = rec->front_face ? (1.0
+			/ self->refraction_index) : self->refraction_index;
 	neg_dir = vec3_multiply(dir, -1.0);
 	cos_theta = fmin(vec3_dot(neg_dir, (t_vec3)rec->normal), 1.0);
 	sin_theta_sq = 1.0 - cos_theta * cos_theta;
@@ -69,7 +82,7 @@ static int	dielectric_scatter(const t_material *self, const t_ray *r_in,
 
 t_material	*material_dielectric(double refraction_index)
 {
-	t_material	*m;
+	t_material *m;
 
 	m = (t_material *)malloc(sizeof(t_material));
 	if (!m)

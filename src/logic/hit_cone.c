@@ -6,13 +6,14 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:05:05 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/30 14:17:37 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 14:32:04 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-static int	cone_side_hit(const t_cone *co, t_ray *r, double tmin, double tmax, t_hit_record *rec)
+static int	cone_side_hit(const t_cone *co, t_ray *r, double tmin, double tmax,
+		t_hit_record *rec)
 {
 	t_vec3	a;
 	double	hh;
@@ -77,7 +78,8 @@ static int	cone_side_hit(const t_cone *co, t_ray *r, double tmin, double tmax, t
 	return (1);
 }
 
-static int	cone_base_hit(const t_cone *co, t_ray *r, double tmin, double tmax, t_hit_record *rec)
+static int	cone_base_hit(const t_cone *co, t_ray *r, double tmin, double tmax,
+		t_hit_record *rec)
 {
 	t_vec3	a;
 	double	hh;

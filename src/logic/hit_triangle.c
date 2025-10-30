@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/28 21:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 14:34:25 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
  * Fast intersection test using barycentric coordinates
  * Returns 1 if hit, 0 otherwise
  */
-int	hit_triangle_obj(const t_triangle *tri, t_ray *r, double tmin, \
-		double tmax, t_hit_record *rec)
+int	hit_triangle_obj(const t_triangle *tri, t_ray *r, double tmin, double tmax,
+		t_hit_record *rec)
 {
 	t_vec3	e1;
 	t_vec3	e2;
@@ -35,12 +35,12 @@ int	hit_triangle_obj(const t_triangle *tri, t_ray *r, double tmin, \
 	if (fabs(det) < 1e-8)
 		return (0);
 	tvec = vec3_sub(r->origin, tri->v0);
-	return (hit_triangle_test(tri, r, tmin, tmax, rec, \
-		(t_tri_calc){e1, e2, p, tvec, det, 0, 0}));
+	return (hit_triangle_test(tri, r, tmin, tmax, rec, (t_tri_calc){e1, e2, p,
+			tvec, det, 0, 0}));
 }
 
-int	hit_triangle_test(const t_triangle *tri, t_ray *r, double tmin, \
-		double tmax, t_hit_record *rec, t_tri_calc calc)
+int	hit_triangle_test(const t_triangle *tri, t_ray *r, double tmin, double tmax,
+		t_hit_record *rec, t_tri_calc calc)
 {
 	double	inv_det;
 	double	u;

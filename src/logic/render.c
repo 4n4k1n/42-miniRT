@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:31:15 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/29 16:01:12 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/30 14:35:09 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ uint32_t	without_aa(t_data *data, int i, int j)
 
 void	render(t_data *data)
 {
-	int		i;
-	int		j;
+	int	i;
+	int	j;
 	int	render_time;
 
 	render_time = get_time_in_ms();
@@ -78,13 +78,14 @@ void	render(t_data *data)
 			i++;
 		}
 	}
-	printf("\n%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000 / (double)(get_time_in_ms() - render_time));
+	printf("\n%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000
+		/ (double)(get_time_in_ms() - render_time));
 }
 
-uint32_t *render_tile(t_data *data, t_tile *tile)
+uint32_t	*render_tile(t_data *data, t_tile *tile)
 {
-	uint32_t    i;
-	uint32_t    j;
+	uint32_t	i;
+	uint32_t	j;
 	uint32_t	pixel_x;
 	uint32_t	pixel_y;
 	int			thread_idx;
@@ -112,11 +113,12 @@ uint32_t *render_tile(t_data *data, t_tile *tile)
 			{
 				pixel_x = tile->x + j;
 				pixel_y = tile->y + i;
-
 				if (data->settings.aa_state)
-					data->pixels[i * tile->width + j] = monte_carlo_aa(data, pixel_y, pixel_x);
+					data->pixels[i * tile->width + j] = monte_carlo_aa(data,
+							pixel_y, pixel_x);
 				else
-					data->pixels[i * tile->width + j] = without_aa(data, pixel_y, pixel_x);
+					data->pixels[i * tile->width + j] = without_aa(data,
+							pixel_y, pixel_x);
 				j++;
 			}
 			i++;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   metal.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/30 14:33:25 by anakin            #+#    #+#             */
+/*   Updated: 2025/10/30 14:34:57 by anakin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_rt.h"
 
 static int	metal_scatter(const t_material *self, const t_ray *r_in,
@@ -24,7 +36,9 @@ static int	metal_scatter(const t_material *self, const t_ray *r_in,
 
 t_material	*material_metal(t_rgb albedo, double fuzz)
 {
-	t_material *m = (t_material *)malloc(sizeof(t_material));
+	t_material	*m;
+
+	m = (t_material *)malloc(sizeof(t_material));
 	if (!m)
 		return (NULL);
 	if (fuzz < 0.0)

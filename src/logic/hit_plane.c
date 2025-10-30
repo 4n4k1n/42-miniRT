@@ -1,12 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hit_plane.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/30 14:32:27 by anakin            #+#    #+#             */
+/*   Updated: 2025/10/30 14:32:28 by anakin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_rt.h"
 
-int	hit_plane_obj(const t_plane *pl, t_ray *r, double tmin, double tmax, t_hit_record *rec)
+int	hit_plane_obj(const t_plane *pl, t_ray *r, double tmin, double tmax,
+		t_hit_record *rec)
 {
-	t_vec3		n;
-	double		denom;
-	t_vec3		p0l0;
-	double		t;
-	t_vec3		tmp;
+	t_vec3	n;
+	double	denom;
+	t_vec3	p0l0;
+	double	t;
+	t_vec3	tmp;
 
 	if (!pl || !rec || !r)
 		return (0);

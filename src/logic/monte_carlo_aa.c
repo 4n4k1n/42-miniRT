@@ -6,19 +6,19 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 01:06:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/27 10:33:55 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 14:35:01 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-static inline double clamp(double x, double minv, double maxv)
+static inline double	clamp(double x, double minv, double maxv)
 {
 	if (x < minv)
-		return minv;
+		return (minv);
 	if (x > maxv)
-		return maxv;
-	return x;
+		return (maxv);
+	return (x);
 }
 
 static void	init_aa(t_anti_aliasing *aa)
@@ -30,7 +30,9 @@ static void	init_aa(t_anti_aliasing *aa)
 
 uint32_t	monte_carlo_aa(t_data *data, int i, int j)
 {
-	t_anti_aliasing aa = data->aa;
+	t_anti_aliasing	aa;
+
+	aa = data->aa;
 	init_aa(&aa);
 	while (aa.n < aa.max_spp)
 	{
@@ -47,7 +49,8 @@ uint32_t	monte_carlo_aa(t_data *data, int i, int j)
 		aa.acc_r += aa.sample.r;
 		aa.acc_g += aa.sample.g;
 		aa.acc_b += aa.sample.b;
-		aa.luma = (0.2126 * aa.sample.r + 0.7152 * aa.sample.g + 0.0722 * aa.sample.b) / 255.999;
+		aa.luma = (0.2126 * aa.sample.r + 0.7152 * aa.sample.g + 0.0722
+				* aa.sample.b) / 255.999;
 		aa.n++;
 		aa.delta = aa.luma - aa.mean;
 		aa.mean += aa.delta / aa.n;
@@ -60,7 +63,7 @@ uint32_t	monte_carlo_aa(t_data *data, int i, int j)
 			else
 				aa.var = 0.0;
 			if (aa.var <= AA_VAR_EPS)
-				break;
+				break ;
 		}
 	}
 	aa.inv_n = 1.0 / aa.n;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hittable.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/30 14:33:09 by anakin            #+#    #+#             */
+/*   Updated: 2025/10/30 14:33:10 by anakin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_rt.h"
 
 /**
@@ -22,7 +34,8 @@ void	set_face_normal(t_hit_record *rec, const t_ray *r, const t_vec3 *outw)
  * Dispatches to appropriate hit function based on object type
  * Currently only supports spheres, expandable for other shapes
  */
-int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record *rec)
+int	hittable_hit(const t_obj *o, t_ray *r, double min, double max,
+		t_hit_record *rec)
 {
 	if (!o || !rec)
 		return (0);
@@ -47,7 +60,7 @@ int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record 
  * Finds closest intersection within distance range [min, max]
  * Returns 1 if any object hit, 0 otherwise
  */
-int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, \
+int	world_hit(const t_obj_list *list, t_ray *r, double min, double max,
 		t_hit_record *out)
 {
 	t_hit_record	tmp;
@@ -76,7 +89,7 @@ int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, \
 /**
  * Tests ray intersection using BVH acceleration structure
  */
-int	world_hit_bvh(t_bvh_node *bvh, t_ray *r, double min, double max, \
+int	world_hit_bvh(t_bvh_node *bvh, t_ray *r, double min, double max,
 		t_hit_record *out)
 {
 	if (!bvh || !out)

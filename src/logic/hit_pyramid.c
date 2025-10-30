@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hit_pyramid.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 11:31:15 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/27 14:48:04 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/30 14:34:10 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ static void	build_basis(t_vec3 up, t_vec3 *right, t_vec3 *fwd)
 	*fwd = vec3_cross(*right, up);
 }
 
-static int	tri_hit(t_ray *r, t_vec3 v0, t_vec3 v1, t_vec3 v2, double *t, t_vec3 *n)
+static int	tri_hit(t_ray *r, t_vec3 v0, t_vec3 v1, t_vec3 v2, double *t,
+		t_vec3 *n)
 {
 	t_vec3	e1;
 	t_vec3	e2;
@@ -66,7 +67,8 @@ static int	tri_hit(t_ray *r, t_vec3 v0, t_vec3 v1, t_vec3 v2, double *t, t_vec3 
 	return (*t > 0.0);
 }
 
-static void	build_vertices(const t_pyramid *py, t_vec3 *apex, t_vec3 *b0, t_vec3 *b1, t_vec3 *b2, t_vec3 *b3)
+static void	build_vertices(const t_pyramid *py, t_vec3 *apex, t_vec3 *b0,
+		t_vec3 *b1, t_vec3 *b2, t_vec3 *b3)
 {
 	t_vec3	up;
 	t_vec3	r;
@@ -87,7 +89,8 @@ static void	build_vertices(const t_pyramid *py, t_vec3 *apex, t_vec3 *b0, t_vec3
 	*b3 = vec3_add(vec3_sub(bc, vec3_multiply(r, hw)), vec3_multiply(f, -hw));
 }
 
-int	hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin, double tmax, t_hit_record *rec)
+int	hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin, double tmax,
+		t_hit_record *rec)
 {
 	t_vec3	ap;
 	t_vec3	b0;

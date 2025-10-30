@@ -6,14 +6,14 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/28 00:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 14:31:49 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-static int	test_leaf_objects(t_bvh_node *node, t_ray *r, \
-		double tmin, double tmax, t_hit_record *rec)
+static int	test_leaf_objects(t_bvh_node *node, t_ray *r, double tmin,
+		double tmax, t_hit_record *rec)
 {
 	t_hit_record	tmp;
 	double			closest;
@@ -39,8 +39,8 @@ static int	test_leaf_objects(t_bvh_node *node, t_ray *r, \
 /**
  * Recursively traverses BVH tree to find ray intersections
  */
-int	bvh_hit(t_bvh_node *node, t_ray *r, double tmin, \
-		double tmax, t_hit_record *rec)
+int	bvh_hit(t_bvh_node *node, t_ray *r, double tmin, double tmax,
+		t_hit_record *rec)
 {
 	t_hit_record	left_rec;
 	t_hit_record	right_rec;
