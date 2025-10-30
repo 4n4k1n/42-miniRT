@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 23:17:51 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 11:20:21 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 13:19:01 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	fill_tiles(t_queue_tmp *tmp)
 {
+	tmp->i = 0;
 	while (tmp->i < tmp->tiles_y)
 	{
 		tmp->j = 0;
