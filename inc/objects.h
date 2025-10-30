@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:06:06 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 13:24:06 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 20:39:54 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,6 +298,15 @@ typedef struct s_sphere_calc
 	t_vec3					outward_normal;
 	double					sqrtd;
 }							t_sphere_calc;
+
+typedef struct s_aabb_hit_calc
+{
+	double	t0;
+	double	t1;
+	double	inv_d;
+	double	ray_comp[3];
+	double	orig_comp[3];
+}			t_aabb_hit_calc;
 
 typedef struct s_data
 {

@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:05:50 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 14:19:07 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 20:54:04 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,7 @@ int				world_hit(const t_obj_list *list, t_ray *r, double min,
 int				world_hit_bvh(t_bvh_node *bvh, t_ray *r, double min, double max,
 					t_hit_record *out);
 
-int				aabb_hit(const t_aabb *box, const t_ray *r, double tmin,
-					double tmax);
+int				aabb_hit(const t_aabb *box, const t_ray *r, t_mm mm);
 t_aabb			aabb_expand_point(t_aabb box, t_vec3 point);
 t_aabb			aabb_union(t_aabb a, t_aabb b);
 t_vec3			aabb_centroid(const t_aabb *box);

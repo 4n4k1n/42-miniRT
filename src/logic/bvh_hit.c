@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 14:31:49 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 20:54:55 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	bvh_hit(t_bvh_node *node, t_ray *r, double tmin, double tmax,
 
 	if (!node)
 		return (0);
-	if (!aabb_hit(&node->box, r, tmin, tmax))
+	if (!aabb_hit(&node->box, r, (t_mm){tmin, tmax}))
 		return (0);
 	if (node->obj_count > 0)
 		return (test_leaf_objects(node, r, tmin, tmax, rec));
