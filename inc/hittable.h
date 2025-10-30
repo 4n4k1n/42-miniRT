@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:05:50 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 13:05:51 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 14:13:18 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ typedef struct s_hit_record
 	t_material	*mat;
 }				t_hit_record;
 
-int				hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin,
-					double tmax, t_hit_record *rec);
+int	hit_sphere_obj(const t_sphere *s, t_ray *r, t_mm mm, t_hit_record *rec);
 int				hit_plane_obj(const t_plane *pl, t_ray *r, double tmin,
 					double tmax, t_hit_record *rec);
 int				hit_cylinder_obj(const t_cylinder *cyl, t_ray *r, double tmin,

@@ -7,7 +7,7 @@ YELLOW	= \033[0;33m
 RED		= \033[0;31m
 RESET	= \033[0m
 
-CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
+CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -march=native -mtune=native \
   -funroll-loops -fprefetch-loop-arrays -fpeel-loops -funswitch-loops -ftracer \
   -ftree-vectorize -ftree-slp-vectorize -ftree-loop-distribution -fivopts \
   -fgraphite-identity -floop-nest-optimize -floop-interchange -floop-strip-mine -floop-block -floop-unroll-and-jam \
@@ -25,7 +25,7 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fno-stack-protector -fno-exceptions -fwhole-program -pthread \
   -fmodulo-sched -fmodulo-sched-allow-regmoves \
   -fsplit-loops -fpredictive-commoning -ftree-loop-im -ftree-loop-if-convert \
-  -fgcse-sm -fgcse-las -fvariable-expansion-in-unroller -funroll-all-loops -fsanitize=address -g
+  -fgcse-sm -fgcse-las -fvariable-expansion-in-unroller -funroll-all-loops
 
 LDFLAGS := -Wl,-O2 -Wl,--sort-common -Wl,--as-needed 
 OBJ_DIR = objs

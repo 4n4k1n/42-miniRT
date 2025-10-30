@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:06:06 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 13:11:58 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 13:24:06 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,6 +284,20 @@ typedef struct s_settings
 }							t_settings;
 
 typedef struct s_master		t_master;
+
+typedef struct s_sphere_calc
+{
+	double					radius;
+	t_vec3					oc;
+	double					a;
+	double					h;
+	double					c;
+	double					discriminant;
+	double					root;
+	t_vec3					tmp;
+	t_vec3					outward_normal;
+	double					sqrtd;
+}							t_sphere_calc;
 
 typedef struct s_data
 {
