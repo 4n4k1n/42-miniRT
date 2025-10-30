@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   objects.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/30 13:06:06 by anakin            #+#    #+#             */
+/*   Updated: 2025/10/30 13:11:58 by anakin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef OBJECTS_H
 # define OBJECTS_H
 
@@ -7,6 +19,12 @@
 typedef struct s_material	t_material;
 typedef struct s_data		t_data;
 typedef struct s_tile		t_tile;
+
+typedef struct s_mm
+{
+	double					tmin;
+	double					tmax;
+}							t_mm;
 
 typedef struct s_vec3
 {

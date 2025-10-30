@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   material.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/30 13:05:54 by anakin            #+#    #+#             */
+/*   Updated: 2025/10/30 13:12:47 by anakin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MATERIAL_H
 # define MATERIAL_H
 
-struct s_ray;
-struct s_rgb;
-struct s_hit_record;
+struct						s_ray;
+struct						s_rgb;
+struct						s_hit_record;
 
 typedef struct s_material	t_material;
 
