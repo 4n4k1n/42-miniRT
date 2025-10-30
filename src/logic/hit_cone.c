@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hit_cone.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:05:05 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/28 11:33:15 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/30 14:17:37 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ static int	cone_base_hit(const t_cone *co, t_ray *r, double tmin, double tmax, t
 	return (1);
 }
 
-int	hit_cone_obj(const t_cone *co, t_ray *r, double tmin, double tmax, t_hit_record *rec)
+int	hit_cone_obj(const t_cone *co, t_ray *r, t_mm mm, t_hit_record *rec)
 {
 	t_hit_record	best;
 	t_hit_record	tmp;
@@ -120,14 +120,14 @@ int	hit_cone_obj(const t_cone *co, t_ray *r, double tmin, double tmax, t_hit_rec
 	double			best_t;
 
 	hit = 0;
-	best_t = tmax;
-	if (cone_side_hit(co, r, tmin, best_t, &tmp))
+	best_t = mm.tmax;
+	if (cone_side_hit(co, r, mm.tmin, best_t, &tmp))
 	{
 		hit = 1;
 		best_t = tmp.t;
 		best = tmp;
 	}
-	if (cone_base_hit(co, r, tmin, best_t, &tmp))
+	if (cone_base_hit(co, r, mm.tmin, best_t, &tmp))
 	{
 		hit = 1;
 		best_t = tmp.t;
