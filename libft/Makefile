@@ -1,6 +1,12 @@
 # Project Configuration
-MAKEFLAGS += -s
 NAME = libft.a
+
+# Colors
+GREEN	= \033[0;32m
+BLUE	= \033[0;34m
+YELLOW	= \033[0;33m
+RED		= \033[0;31m
+RESET	= \033[0m
 
 # Directory structure
 PRINTF_DIR = printf/srcs
@@ -38,23 +44,29 @@ RM = rm -f
 all: $(NAME)
 
 $(NAME): $(OBJS) $(PRINTF_OBJS)
-	ar rcs $(NAME) $(OBJS) $(PRINTF_OBJS)
+	@echo "$(BLUE)Creating library $(NAME)...$(RESET)"
+	@ar rcs $(NAME) $(OBJS) $(PRINTF_OBJS)
+	@echo "$(GREEN)Library complete!$(RESET)"
 
 # Rule for libft sources (in root directory)
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "$(GREEN)Compiling $<$(RESET)"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 # Rule for printf sources (in printf folder)
 $(OBJ_DIR)/%.o: $(PRINTF_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "$(GREEN)Compiling $<$(RESET)"
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) -r $(OBJ_DIR)
+	@echo "$(RED)Cleaning object files...$(RESET)"
+	@$(RM) -r $(OBJ_DIR)
 
 fclean: clean
-	$(RM) $(NAME)
+	@echo "$(RED)Removing $(NAME)...$(RESET)"
+	@$(RM) $(NAME)
 
 re:
 	$(MAKE) fclean

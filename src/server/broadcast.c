@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   broadcast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claude <claude@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/10/24 00:00:00 by claude           ###   ########.fr       */
+/*   Updated: 2025/10/30 09:58:39 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,28 @@ void	unregister_worker(t_master *master, int socket_fd)
 	pthread_mutex_unlock(&master->workers_lock);
 }
 
-void	broadcast_update(t_master *master, uint32_t update_value)
+static void	send_broadcast(t_master *master, t_camera_update *cam_update)
 {
 	int	i;
+
+	i = 0;
+	while (i < MAX_WORKER)
+	{
+		if (master->worker_sockets[i] != -1)
+		{
+			send_header(master->worker_sockets[i], MSG_UPDATE,
+				sizeof(t_camera_update));
+			send_all(master->worker_sockets[i], cam_update,
+				sizeof(t_camera_update));
+			printf("Sent camera update to worker socket %d\n",
+				master->worker_sockets[i]);
+		}
+		i++;
+	}
+}
+
+void	broadcast_update(t_master *master, uint32_t update_value)
+{
 	t_camera_update	cam_update;
 
 	(void)update_value;
@@ -63,17 +82,7 @@ void	broadcast_update(t_master *master, uint32_t update_value)
 	cam_update.aa_state = master->data->settings.aa_state;
 	cam_update.light_state = master->data->settings.light_state;
 	pthread_mutex_lock(&master->workers_lock);
-	i = 0;
-	while (i < MAX_WORKER)
-	{
-		if (master->worker_sockets[i] != -1)
-		{
-			send_header(master->worker_sockets[i], MSG_UPDATE, sizeof(t_camera_update));
-			send_all(master->worker_sockets[i], &cam_update, sizeof(t_camera_update));
-			printf("Sent camera update to worker socket %d\n", master->worker_sockets[i]);
-		}
-		i++;
-	}
+	send_broadcast(master, &cam_update);
 	pthread_mutex_unlock(&master->workers_lock);
 	reset_queue(master->queue);
 	pthread_mutex_lock(&master->restart_lock);
