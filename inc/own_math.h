@@ -15,6 +15,7 @@ double	vec3_sqrt(const t_vec3 vec);
 double	vec3_squared(const t_vec3 vec);
 t_vec3	vec3_init(const double x, const double y, const double z);
 t_vec3	vec3_reflect(const t_vec3 v, const t_vec3 n);
+t_vec3	vec3_refract(const t_vec3 v, const t_vec3 n, double etai_over_etat);
 t_vec3	vec3_normalize(const t_vec3 v);
 int		vec3_near_zero(const t_vec3 *v);
 

@@ -3,22 +3,27 @@
 static int	metal_scatter(const t_material *self, const t_ray *r_in,
 		const t_hit_record *rec, t_rgb *attenuation, t_ray *scattered)
 {
-	t_vec3	in_dir;
 	t_vec3	reflected;
-	t_vec3	rnd;
-	t_vec3	fuzz_off;
+	t_vec3	dir;
+	t_rgb	base;
+	t_rgb	texc;
+	double	s;
+	int		m;
 
-	in_dir = vec3_normalize(r_in->direction);
-	reflected = vec3_normalize(vec3_reflect(in_dir, rec->normal));
-	if (self->fuzz > 0.0)
+	reflected = vec3_reflect(vec3_normalize(r_in->direction), rec->normal);
+	dir = vec3_add(reflected, vec3_multiply(random_unit_vec3(), self->fuzz));
+	scattered->origin = apply_surface_bias(rec->p, dir, rec->normal);
+	scattered->direction = dir;
+	if (self->texture_type == CHECKER)
 	{
-		rnd = random_on_hemisphere((t_vec3 *)&rec->normal);
-		fuzz_off = vec3_multiply(rnd, self->fuzz);
-		reflected = vec3_add(reflected, fuzz_off);
+		s = (self->texture_scale <= 0.0) ? 1.0 : self->texture_scale;
+		m = (((int)floor(rec->u * s)) + ((int)floor(rec->v * s))) & 1;
+		texc = m ? self->texture_b : self->texture_a;
 	}
-	scattered->origin = apply_surface_bias(rec->p, reflected, rec->normal);
-	scattered->direction = reflected;
-	*attenuation = rgb_modulate(self->albedo, rec->rgb);
+	else
+		texc = (t_rgb){255.0, 255.0, 255.0};
+	base = rgb_modulate(self->albedo, rec->rgb);
+	*attenuation = rgb_modulate(base, texc);
 	return (vec3_dot(scattered->direction, rec->normal) > 0.0);
 }
 
@@ -38,5 +43,9 @@ t_material	*material_metal(t_rgb albedo, double fuzz)
 	m->fuzz = fuzz;
 	m->type = 1;
 	m->refraction_index = 1.0;
+	m->texture_type = NONE;
+	m->texture_a = (t_rgb){255.0, 255.0, 255.0};
+	m->texture_b = (t_rgb){0.0, 0.0, 0.0};
+	m->texture_scale = 1.0;
 	return (m);
 }
