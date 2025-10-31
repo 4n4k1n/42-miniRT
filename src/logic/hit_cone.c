@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:05:05 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/28 11:33:15 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/29 15:21:00 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,12 +112,24 @@ static int	cone_base_hit(const t_cone *co, t_ray *r, double tmin, double tmax, t
 	return (1);
 }
 
+/**
+ * Computes closest hit on cone (side or base) and sets UV/tangent basis
+ * Returns 1 on hit, 0 otherwise
+ */
 int	hit_cone_obj(const t_cone *co, t_ray *r, double tmin, double tmax, t_hit_record *rec)
 {
 	t_hit_record	best;
 	t_hit_record	tmp;
 	int				hit;
 	double			best_t;
+	t_vec3			best_p;
+	t_vec3			best_n;
+	t_vec3			a;
+	t_vec3			tmpv;
+	t_vec3			tan;
+	double			u;
+	double			v;
+	t_vec3			apex;
 
 	hit = 0;
 	best_t = tmax;
@@ -135,6 +147,29 @@ int	hit_cone_obj(const t_cone *co, t_ray *r, double tmin, double tmax, t_hit_rec
 	}
 	if (!hit)
 		return (0);
-	*rec = best;
+	rec->t = best.t;
+	rec->p = best.p;
+	a = vec3_normalize(co->norm);
+	apex = vec3_add(co->cords, vec3_multiply(a, co->height * 0.5));
+	best_p = rec->p;
+	best_n = best.normal;
+	tmpv = (fabs(a.y) < 0.999) ? (t_vec3){0.0, 1.0, 0.0} : (t_vec3){1.0, 0.0, 0.0};
+	tan = vec3_normalize(vec3_cross(tmpv, a));
+	rec->tangent = vec3_normalize(vec3_cross(a, vec3_normalize(vec3_sub(best_p, apex))));
+	rec->bitangent = a;
+	{
+		t_vec3 k = vec3_sub(best_p, apex);
+		t_vec3 ra = vec3_normalize(vec3_sub(k, vec3_multiply(a, vec3_dot(k, a))));
+		double x = vec3_dot(ra, tan);
+		double y = vec3_dot(ra, vec3_cross(a, tan));
+		u = (atan2(y, x) + M_PI) / (2.0 * M_PI);
+		v = fmax(0.0, fmin(1.0, vec3_dot(k, a) / co->height));
+	}
+	rec->u = u;
+	rec->v = v;
+	rec->bump = co->bump;
+	set_face_normal(rec, r, &best_n);
+	rec->rgb = co->rgb;
+	rec->mat = co->mat;
 	return (1);
 }

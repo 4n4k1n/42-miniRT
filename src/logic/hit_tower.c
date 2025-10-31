@@ -87,64 +87,70 @@ static int	cyl_cap_hit(const t_cylinder *cyl, t_ray *r,
 }
 
 /**
- * Computes ray intersection with finite closed cylinder (with caps)
- * Resolves side surface and both caps selecting nearest valid hit
- * Fills hit record with t, point, normal, color, and material
- * Returns 1 on hit, 0 otherwise
+ * Intersects the ray with the cylinder side surface
+ * Fills t_cyl_hit with root, point, s and outward normal when valid
+ * Returns 1 on success, 0 otherwise
  */
-int	hit_cylinder_obj(const t_cylinder *cyl, t_ray *r,
-	double tmin, double tmax, t_hit_record *rec)
+static int	cyl_side_hit(const t_cylinder *cyl, t_ray *r, double tmin, double tmax, t_cyl_hit *ch)
 {
-	t_cyl_hit	ch;
-	int			has_side;
-	int			best_hit;
-	double		best_t;
-	t_vec3		best_p;
-	t_vec3		best_n;
-	double		side_t;
-	t_vec3		side_p;
-	t_vec3		side_n;
+	t_vec3	d_perp;
+	t_vec3	k_perp;
+	t_vec3	q;
 
-	if (!cyl || !rec)
+	ch->radius = cyl->diameter * 0.5;
+	ch->half_h = cyl->height * 0.5;
+	ch->k = vec3_sub(r->origin, cyl->cords);
+	ch->d_dot_a = vec3_dot(r->direction, ch->axis);
+	ch->k_dot_a = vec3_dot(ch->k, ch->axis);
+	d_perp = vec3_sub(r->direction, vec3_multiply(ch->axis, ch->d_dot_a));
+	k_perp = vec3_sub(ch->k, vec3_multiply(ch->axis, ch->k_dot_a));
+	ch->a = vec3_dot(d_perp, d_perp);
+	ch->h = vec3_dot(d_perp, k_perp);
+	ch->c = vec3_dot(k_perp, k_perp) - ch->radius * ch->radius;
+	ch->disc = ch->h * ch->h - ch->a * ch->c;
+	if (ch->a <= 1e-12 || ch->disc < 0.0)
 		return (0);
+	if (!cyl_select_root(ch, r, tmin, tmax))
+		return (0);
+	q = vec3_sub(ch->point, cyl->cords);
+	ch->outward = vec3_sub(q, vec3_multiply(ch->axis, vec3_dot(q, ch->axis)));
+	ch->outward = vec3_normalize(ch->outward);
+	return (1);
+}
+
+/**
+ * Computes cylinder intersection and returns the closest hit among side/caps
+ * Computes UV and tangent basis at the hit for bump mapping
+ * Returns 1 if hit, 0 if miss
+ */
+int	hit_cylinder_obj(const t_cylinder *cyl, t_ray *r, double tmin, double tmax, t_hit_record *rec)
+{
+	t_vec3			best_p;
+	t_vec3			best_n;
+	double			best_t;
+	int				best_hit;
+	t_cyl_hit		ch;
+	t_vec3			a;
+	t_vec3			tan;
+	t_vec3			tmp;
+	t_vec3			base;
+	t_vec3			k;
+	double			s;
+	double			u;
+	double			v;
+
+	best_hit = 0;
+	best_t = tmax;
 	if (!cyl_valid_axis(cyl, &ch))
 		return (0);
-	ch.radius = cyl->diameter * 0.5;
-	ch.half_h = cyl->height * 0.5;
-	ch.k = vec3_sub(r->origin, cyl->cords);
-	ch.d_dot_a = vec3_dot(r->direction, ch.axis);
-	ch.k_dot_a = vec3_dot(ch.k, ch.axis);
-	ch.a = vec3_dot(r->direction, r->direction)
-		- ch.d_dot_a * ch.d_dot_a;
-	has_side = 0;
-	if (ch.a != 0.0)
-	{
-		ch.h = vec3_dot(r->direction, ch.k)
-			- ch.d_dot_a * ch.k_dot_a;
-		ch.c = vec3_dot(ch.k, ch.k) - ch.k_dot_a * ch.k_dot_a
-			- ch.radius * ch.radius;
-		ch.disc = ch.h * ch.h - ch.a * ch.c;
-		if (ch.disc >= 0.0 && cyl_select_root(&ch, r, tmin, tmax))
-		{
-			ch.v = vec3_sub(ch.point, cyl->cords);
-			ch.axis_part = vec3_multiply(ch.axis,
-					vec3_dot(ch.v, ch.axis));
-			ch.outward = vec3_sub(ch.v, ch.axis_part);
-			ch.outward = vec3_normalize(ch.outward);
-			side_t = ch.root;
-			side_p = ch.point;
-			side_n = ch.outward;
-			has_side = 1;
-		}
-	}
-	best_hit = 0;
-	best_t = tmax + 1.0;
-	if (has_side && side_t >= tmin && side_t <= tmax)
+	a = ch.axis;
+	if (cyl_side_hit(cyl, r, tmin, tmax, &ch)
+		&& ch.root >= tmin && ch.root <= tmax)
 	{
 		best_hit = 1;
-		best_t = side_t;
-		best_p = side_p;
-		best_n = side_n;
+		best_t = ch.root;
+		best_p = ch.point;
+		best_n = vec3_normalize(vec3_sub(ch.point, vec3_add(cyl->cords, vec3_multiply(a, ch.s))));
 	}
 	if (cyl_cap_hit(cyl, r, &ch, 1)
 		&& ch.root >= tmin && ch.root <= tmax
@@ -153,7 +159,7 @@ int	hit_cylinder_obj(const t_cylinder *cyl, t_ray *r,
 		best_hit = 1;
 		best_t = ch.root;
 		best_p = ch.point;
-		best_n = ch.outward;
+		best_n = a;
 	}
 	if (cyl_cap_hit(cyl, r, &ch, 0)
 		&& ch.root >= tmin && ch.root <= tmax
@@ -168,6 +174,23 @@ int	hit_cylinder_obj(const t_cylinder *cyl, t_ray *r,
 		return (0);
 	rec->t = best_t;
 	rec->p = best_p;
+	tmp = (fabs(a.y) < 0.999) ? (t_vec3){0.0, 1.0, 0.0} : (t_vec3){1.0, 0.0, 0.0};
+	tan = vec3_normalize(vec3_cross(tmp, a));
+	rec->tangent = vec3_normalize(vec3_cross(a, vec3_normalize(vec3_sub(best_p, vec3_add(cyl->cords, vec3_multiply(a, vec3_dot(vec3_sub(best_p, cyl->cords), a)))))));
+	rec->bitangent = a;
+	base = vec3_sub(cyl->cords, vec3_multiply(a, cyl->height * 0.5));
+	k = vec3_sub(best_p, base);
+	s = fmax(0.0, fmin(cyl->height, vec3_dot(k, a)));
+	{
+		t_vec3 rp = vec3_normalize(vec3_sub(k, vec3_multiply(a, s)));
+		double x = vec3_dot(rp, tan);
+		double y = vec3_dot(rp, vec3_cross(a, tan));
+		u = (atan2(y, x) + M_PI) / (2.0 * M_PI);
+		v = s / cyl->height;
+	}
+	rec->u = u;
+	rec->v = v;
+	rec->bump = cyl->bump;
 	set_face_normal(rec, r, &best_n);
 	rec->rgb = cyl->rgb;
 	rec->mat = cyl->mat;

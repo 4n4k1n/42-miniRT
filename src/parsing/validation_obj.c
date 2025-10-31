@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 10:36:19 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/28 11:29:13 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/28 15:06:16 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,8 @@
 
 /**
  * Parses sphere object parameters from tokens
- * Format: sp <x,y,z> <diameter> <r,g,b>
- * @param tokens Array of parsed string tokens
- * @param scene Scene data structure to populate
- * @return 0 on success, 1 on failure
+ * Format: sp <x,y,z> <diameter> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * The bump token, if present, must be last.
  */
 int	parse_sphere(char **tokens, t_data *scene)
 {
@@ -25,7 +23,7 @@ int	parse_sphere(char **tokens, t_data *scene)
 	int		len;
 
 	len = ft_arrlen(tokens);
-	if (len != 4 && len != 5)
+	if (len < 4 || len > 6)
 		return (rt_error("invalid sphere format"));
 	o = obj_new(SPHERE);
 	if (!o)
@@ -37,6 +35,13 @@ int	parse_sphere(char **tokens, t_data *scene)
 		return (free(o), rt_error("invalid sphere diameter"));
 	if (parse_rgb(tokens[3], &o->data.sphere.rgb))
 		return (free(o), rt_error("invalid sphere RGB"));
+	o->data.sphere.bump = NULL;
+	if (len >= 5 && ft_strncmp(tokens[len - 1], "bm:", 3) == 0)
+	{
+		if (parse_bump(tokens[len - 1], o))
+			return (free(o), rt_error("invalid sphere bump"));
+		len--;
+	}
 	if (parse_material(tokens, len, o))
 		return (free(o), rt_error("invalid sphere material"));
 	if (obj_push(scene->objects, o))
@@ -50,10 +55,8 @@ int	parse_sphere(char **tokens, t_data *scene)
 
 /**
  * Parses plane object parameters from tokens
- * Format: pl <x,y,z> <nx,ny,nz> <r,g,b>
- * @param tokens Array of parsed string tokens
- * @param scene Scene data structure to populate
- * @return 0 on success, 1 on failure
+ * Format: pl <x,y,z> <nx,ny,nz> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * The bump token, if present, must be last.
  */
 int	parse_plane(char **tokens, t_data *scene)
 {
@@ -61,7 +64,7 @@ int	parse_plane(char **tokens, t_data *scene)
 	int		len;
 
 	len = ft_arrlen(tokens);
-	if (len != 4 && len != 5)
+	if (len < 4 || len > 6)
 		return (rt_error("invalid plane format"));
 	o = obj_new(PLANE);
 	if (!o)
@@ -74,6 +77,13 @@ int	parse_plane(char **tokens, t_data *scene)
 		return (free(o), rt_error("invalid plane normal"));
 	if (parse_rgb(tokens[3], &o->data.plane.rgb))
 		return (free(o), rt_error("invalid plane RGB"));
+	o->data.plane.bump = NULL;
+	if (len >= 5 && ft_strncmp(tokens[len - 1], "bm:", 3) == 0)
+	{
+		if (parse_bump(tokens[len - 1], o))
+			return (free(o), rt_error("invalid plane bump"));
+		len--;
+	}
 	if (parse_material(tokens, len, o))
 		return (free(o), rt_error("invalid plane material"));
 	if (obj_push(scene->objects, o))
@@ -83,10 +93,8 @@ int	parse_plane(char **tokens, t_data *scene)
 
 /**
  * Parses cylinder object parameters from tokens
- * Format: cy <x,y,z> <nx,ny,nz> <diameter> <height> <r,g,b>
- * @param tokens Array of parsed string tokens
- * @param scene Scene data structure to populate
- * @return 0 on success, 1 on failure
+ * Format: cy <x,y,z> <nx,ny,nz> <diameter> <height> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * The bump token, if present, must be last.
  */
 int	parse_cylinder(char **tokens, t_data *scene)
 {
@@ -94,7 +102,7 @@ int	parse_cylinder(char **tokens, t_data *scene)
 	int		len;
 
 	len = ft_arrlen(tokens);
-	if (len != 6 && len != 7)
+	if (len < 6 || len > 8)
 		return (rt_error("invalid cylinder format"));
 	o = obj_new(CYLINDER);
 	if (!o)
@@ -113,6 +121,13 @@ int	parse_cylinder(char **tokens, t_data *scene)
 		return (free(o), rt_error("invalid cylinder height"));
 	if (parse_rgb(tokens[5], &o->data.cylinder.rgb))
 		return (free(o), rt_error("invalid cylinder RGB"));
+	o->data.cylinder.bump = NULL;
+	if (len >= 7 && ft_strncmp(tokens[len - 1], "bm:", 3) == 0)
+	{
+		if (parse_bump(tokens[len - 1], o))
+			return (free(o), rt_error("invalid cylinder bump"));
+		len--;
+	}
 	if (parse_material(tokens, len, o))
 		return (free(o), rt_error("invalid cylinder material"));
 	if (obj_push(scene->objects, o))
@@ -120,13 +135,18 @@ int	parse_cylinder(char **tokens, t_data *scene)
 	return (0);
 }
 
+/**
+ * Parses pyramid object parameters from tokens
+ * Format: py <x,y,z> <nx,ny,nz> <base> <height> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * The bump token, if present, must be last.
+ */
 int	parse_pyramid(char **tokens, t_data *scene)
 {
 	t_obj	*o;
 	int		len;
 
 	len = ft_arrlen(tokens);
-	if (len != 6 && len != 7)
+	if (len < 6 || len > 8)
 		return (rt_error("invalid pyramid format"));
 	o = obj_new(PYRAMID);
 	if (!o)
@@ -145,6 +165,13 @@ int	parse_pyramid(char **tokens, t_data *scene)
 		return (free(o), rt_error("invalid pyramid height"));
 	if (parse_rgb(tokens[5], &o->data.pyramid.rgb))
 		return (free(o), rt_error("invalid pyramid RGB"));
+	o->data.pyramid.bump = NULL;
+	if (len >= 7 && ft_strncmp(tokens[len - 1], "bm:", 3) == 0)
+	{
+		if (parse_bump(tokens[len - 1], o))
+			return (free(o), rt_error("invalid pyramid bump"));
+		len--;
+	}
 	if (parse_material(tokens, len, o))
 		return (free(o), rt_error("invalid pyramid material"));
 	if (obj_push(scene->objects, o))
@@ -156,13 +183,18 @@ int	parse_pyramid(char **tokens, t_data *scene)
 	return (0);
 }
 
+/**
+ * Parses cone object parameters from tokens
+ * Format: co <x,y,z> <nx,ny,nz> <diameter> <height> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * The bump token, if present, must be last.
+ */
 int	parse_cone(char **tokens, t_data *scene)
 {
 	t_obj	*o;
 	int		len;
 
 	len = ft_arrlen(tokens);
-	if (len != 6 && len != 7)
+	if (len < 6 || len > 8)
 		return (rt_error("invalid cone format"));
 	o = obj_new(CONE);
 	if (!o)
@@ -181,14 +213,17 @@ int	parse_cone(char **tokens, t_data *scene)
 		return (free(o), rt_error("invalid cone height"));
 	if (parse_rgb(tokens[5], &o->data.cone.rgb))
 		return (free(o), rt_error("invalid cone RGB"));
+	o->data.cone.bump = NULL;
+	if (len >= 7 && ft_strncmp(tokens[len - 1], "bm:", 3) == 0)
+	{
+		if (parse_bump(tokens[len - 1], o))
+			return (free(o), rt_error("invalid cone bump"));
+		len--;
+	}
 	if (parse_material(tokens, len, o))
 		return (free(o), rt_error("invalid cone material"));
 	if (obj_push(scene->objects, o))
-	{
-		if (o->data.cone.mat)
-			free(o->data.cone.mat);
 		return (free(o), rt_error("object push failed"));
-	}
 	return (0);
 }
 

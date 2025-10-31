@@ -18,13 +18,15 @@ static int	metal_scatter(const t_material *self, const t_ray *r_in,
 	}
 	scattered->origin = apply_surface_bias(rec->p, reflected, rec->normal);
 	scattered->direction = reflected;
-	*attenuation = self->albedo;
+	*attenuation = rgb_modulate(self->albedo, rec->rgb);
 	return (vec3_dot(scattered->direction, rec->normal) > 0.0);
 }
 
 t_material	*material_metal(t_rgb albedo, double fuzz)
 {
-	t_material *m = (t_material *)malloc(sizeof(t_material));
+	t_material	*m;
+
+	m = (t_material *)malloc(sizeof(t_material));
 	if (!m)
 		return (NULL);
 	if (fuzz < 0.0)

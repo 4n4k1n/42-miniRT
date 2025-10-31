@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   hit_pyramid.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 11:31:15 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/27 14:48:04 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/10/29 15:20:40 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,11 @@ static void	build_vertices(const t_pyramid *py, t_vec3 *apex, t_vec3 *b0, t_vec3
 	*b3 = vec3_add(vec3_sub(bc, vec3_multiply(r, hw)), vec3_multiply(f, -hw));
 }
 
+/**
+ * Tests ray/axis-aligned pyramid with given center, axis, base and height
+ * Computes UV and tangent basis at the hit for bump mapping
+ * Returns 1 if hit, 0 if miss
+ */
 int	hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin, double tmax, t_hit_record *rec)
 {
 	t_vec3	ap;
@@ -99,6 +104,8 @@ int	hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin, double tmax, t_h
 	double	t;
 	t_vec3	n;
 	t_vec3	p;
+	t_vec3	tmp;
+	t_vec3	tan;
 
 	if (!py || !r || !rec)
 		return (0);
@@ -122,8 +129,20 @@ int	hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin, double tmax, t_h
 	rec->t = best_t;
 	p = vec3_multiply(r->direction, rec->t);
 	rec->p = vec3_add(r->origin, p);
+	tmp = (fabs(rec->normal.y) < 0.999) ? (t_vec3){0.0, 1.0, 0.0} : (t_vec3){1.0, 0.0, 0.0};
+	tan = vec3_normalize(vec3_cross(tmp, rec->normal));
+	rec->tangent = tan;
+	rec->bitangent = vec3_cross(rec->normal, tan);
+	{
+		t_vec3 d = vec3_sub(rec->p, py->cords);
+		double u = d.x * rec->tangent.x + d.y * rec->tangent.y + d.z * rec->tangent.z;
+		double v = d.x * rec->bitangent.x + d.y * rec->bitangent.y + d.z * rec->bitangent.z;
+		rec->u = u - floor(u);
+		rec->v = v - floor(v);
+	}
 	set_face_normal(rec, r, &rec->normal);
 	rec->rgb = py->rgb;
 	rec->mat = py->mat;
+	rec->bump = py->bump;
 	return (1);
 }

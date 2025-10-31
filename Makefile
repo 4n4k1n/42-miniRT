@@ -54,6 +54,7 @@ SRC = src/main.c \
 		src/parsing/validation_mat.c \
 		src/parsing/validation.c \
 		src/parsing/validators.c \
+		src/parsing/bump.c \
 		src/logic/hit_sphere.c \
 		src/logic/hit_plane.c \
 		src/logic/hit_tower.c \
@@ -69,6 +70,7 @@ SRC = src/main.c \
 		src/logic/ray.c \
 		src/logic/render.c \
 		src/logic/monte_carlo_aa.c \
+		src/logic/bump.c \
 		src/logic/camera.c \
 		src/logic/metal.c \
 		src/logic/lambertian.c \
