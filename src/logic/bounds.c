@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bounds.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/28 19:52:20 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/31 11:50:29 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,39 @@ t_aabb	get_sphere_bounds(const t_sphere *s)
 t_aabb	get_plane_bounds(const t_plane *p)
 {
 	t_aabb	box;
+	t_vec3	n;
+	t_vec3	tmp;
+	t_vec3	t;
+	t_vec3	b;
+	double	hs;
+	double	eps;
+	t_vec3	c;
+	t_vec3	p1;
+	t_vec3	p2;
+	t_vec3	p3;
+	t_vec3	p4;
+	t_vec3	expand;
 
-	(void)p;
-	box.min.x = -100.0;
-	box.min.y = -100.0;
-	box.min.z = -100.0;
-	box.max.x = 100.0;
-	box.max.y = 100.0;
-	box.max.z = 100.0;
+	n = vec3_normalize(p->norm);
+	tmp = (fabs(n.y) < 0.999) ? (t_vec3){0.0, 1.0, 0.0} : (t_vec3){1.0, 0.0, 0.0};
+	t = vec3_normalize(vec3_cross(tmp, n));
+	b = vec3_cross(n, t);
+	hs = 10000.0;
+	eps = 1.0;
+	c = p->cords;
+	p1 = vec3_add(c, vec3_add(vec3_multiply(t, hs), vec3_multiply(b, hs)));
+	p2 = vec3_add(c, vec3_sub(vec3_multiply(t, hs), vec3_multiply(b, hs)));
+	p3 = vec3_sub(c, vec3_sub(vec3_multiply(t, hs), vec3_multiply(b, hs)));
+	p4 = vec3_sub(c, vec3_add(vec3_multiply(t, hs), vec3_multiply(b, hs)));
+	box.min.x = fmin(fmin(p1.x, p2.x), fmin(p3.x, p4.x));
+	box.min.y = fmin(fmin(p1.y, p2.y), fmin(p3.y, p4.y));
+	box.min.z = fmin(fmin(p1.z, p2.z), fmin(p3.z, p4.z));
+	box.max.x = fmax(fmax(p1.x, p2.x), fmax(p3.x, p4.x));
+	box.max.y = fmax(fmax(p1.y, p2.y), fmax(p3.y, p4.y));
+	box.max.z = fmax(fmax(p1.z, p2.z), fmax(p3.z, p4.z));
+	expand = vec3_init(eps, eps, eps);
+	box.min = vec3_sub(box.min, expand);
+	box.max = vec3_add(box.max, expand);
 	return (box);
 }
 
