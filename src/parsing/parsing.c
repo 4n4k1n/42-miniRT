@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 17:28:26 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/28 10:59:46 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/28 22:03:05 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,21 @@ static char	*trim_and_strip(char *s)
 {
 	char	*hash;
 	char	*out;
+	char	*p;
 
 	hash = ft_strchr(s, '#');
 	if (hash)
 		*hash = '\0';
 	out = ft_strtrim(s, " \t\r\n");
+	if (!out)
+		return (NULL);
+	p = out;
+	while (*p)
+	{
+		if (*p == '\t')
+			*p = ' ';
+		p++;
+	}
 	return (out);
 }
 
@@ -88,6 +98,8 @@ static int	dispatch_line(char **tokens, t_data *scene, t_arg_check *args)
 		return (parse_pyramid(tokens, scene));
 	else if (ft_strcmp(tokens[0], "co") == 0)
 		return (parse_cone(tokens, scene));
+	else if (ft_strcmp(tokens[0], "tr") == 0)
+		return (parse_triangle(tokens, scene));
 	return (rt_error("invalid identifier"));
 }
 
@@ -101,11 +113,13 @@ static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 	char	*raw;
 	char	*line;
 	char	**tokens;
+	int		i;
 
 	args->has_a = 0;
 	args->has_c = 0;
 	args->has_l = 0;
 	raw = get_next_line(fd);
+	i = 0;
 	while (raw)
 	{
 		line = trim_and_strip(raw);
@@ -122,6 +136,7 @@ static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 			ft_array_free(tokens);
 		}
 		free(line);
+		printf("Parsed obj: %d\n", i++);
 		raw = get_next_line(fd);
 	}
 	if (!args->has_a || !args->has_c)

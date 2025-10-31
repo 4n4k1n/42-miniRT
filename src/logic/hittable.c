@@ -36,15 +36,19 @@ int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record 
 		return (hit_pyramid_obj(&o->data.pyramid, r, min, max, rec));
 	if (o->type == CONE)
 		return (hit_cone_obj(&o->data.cone, r, min, max, rec));
+	if (o->type == TRIANGLE)
+		return (hit_triangle_obj(&o->data.triangle, r, min, max, rec));
 	return (0);
 }
 
 /**
  * Tests ray intersection against all objects in the scene
+ * Uses BVH if available, falls back to linear search
  * Finds closest intersection within distance range [min, max]
  * Returns 1 if any object hit, 0 otherwise
  */
-int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, t_hit_record *out)
+int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, \
+		t_hit_record *out)
 {
 	t_hit_record	tmp;
 	double			closest;
@@ -67,4 +71,15 @@ int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, t_hit_re
 		cur = cur->next;
 	}
 	return (hit_any);
+}
+
+/**
+ * Tests ray intersection using BVH acceleration structure
+ */
+int	world_hit_bvh(t_bvh_node *bvh, t_ray *r, double min, double max, \
+		t_hit_record *out)
+{
+	if (!bvh || !out)
+		return (0);
+	return (bvh_hit(bvh, r, min, max, out));
 }

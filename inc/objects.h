@@ -42,7 +42,8 @@ typedef enum e_obj_type
 	PLANE,
 	CYLINDER,
 	PYRAMID,
-	CONE
+	CONE,
+	TRIANGLE
 }							t_obj_type;
 
 typedef struct s_sphere
@@ -96,6 +97,15 @@ typedef struct s_pyramid
 	t_bump					*bump;
 }							t_pyramid;
 
+typedef struct s_triangle
+{
+	t_vec3					v0;
+	t_vec3					v1;
+	t_vec3					v2;
+	t_rgb					rgb;
+	t_material				*mat;
+}							t_triangle;
+
 typedef struct s_cyl_hit
 {
 	t_vec3					axis;
@@ -118,6 +128,17 @@ typedef struct s_cyl_hit
 	double					len;
 }							t_cyl_hit;
 
+typedef struct s_tri_calc
+{
+	t_vec3					e1;
+	t_vec3					e2;
+	t_vec3					p;
+	t_vec3					tvec;
+	double					det;
+	double					u;
+	double					v;
+}							t_tri_calc;
+
 typedef union u_obj_data
 {
 	t_sphere				sphere;
@@ -125,6 +146,7 @@ typedef union u_obj_data
 	t_cylinder				cylinder;
 	t_pyramid				pyramid;
 	t_cone					cone;
+	t_triangle				triangle;
 }							t_obj_data;
 
 typedef struct s_obj
@@ -140,6 +162,21 @@ typedef struct s_obj_list
 	t_obj					*tail;
 	size_t					size;
 }							t_obj_list;
+
+typedef struct s_aabb
+{
+	t_vec3					min;
+	t_vec3					max;
+}							t_aabb;
+
+typedef struct s_bvh_node
+{
+	t_aabb					box;
+	struct s_bvh_node		*left;
+	struct s_bvh_node		*right;
+	t_obj					**objects;
+	int						obj_count;
+}							t_bvh_node;
 
 typedef struct s_light
 {
@@ -249,6 +286,7 @@ typedef struct s_data
 	t_settings				settings;
 	t_anti_aliasing			aa;
 	t_obj_list				*objects;
+	t_bvh_node				*bvh_root;
 	t_camera				camera;
 	t_light_list			*light_list;
 	t_ambient				ambiente;

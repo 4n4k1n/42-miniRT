@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/29 18:20:52 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/31 11:15:01 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 {
-	double	len;
 	t_vec3	unit_direction;
 	double	a;
 	t_vec3	temp1;
@@ -29,11 +28,7 @@ static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 		color_a = vec3_init(0.0, 0.0, 0.0);
 		color_b = vec3_init(0.0, 0.0, 0.0);
 	}
-	len = sqrt(vec3_dot(current_ray->direction, current_ray->direction));
-	if (len != 0.0)
-		unit_direction = vec3_divide(current_ray->direction, len);
-	else
-		unit_direction = vec3_cpy(current_ray->direction);
+  unit_direction = vec3_normalize(current_ray->direction);
 	a = 0.5 * (unit_direction.y + 1.0);
 	temp1 = vec3_multiply(color_a, 1.0 - a);
 	temp2 = vec3_multiply(color_b, a);
@@ -161,7 +156,10 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 	depth = 0;
 	while (depth < max_depth)
 	{
-		if (data->objects && world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec))
+		if ((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root, \
+				&current_ray, 0.001, INFINITY, &rec)) || (!USE_BVH && \
+				data->objects && world_hit(data->objects, &current_ray, 0.001, \
+				INFINITY, &rec)))
 		{
 			if (rec.bump)
 			{
@@ -178,9 +176,24 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 				t_rgb attenuation;
 				if (rec.mat->scatter(rec.mat, &current_ray, &rec, &attenuation, &scattered))
 				{
+					double	max_throughput;
+					double	brightness;
+
 					direct_contrib = rgb_modulate(throughput, direct_light);
 					final_color = rgb_add(final_color, direct_contrib);
 					throughput = rgb_modulate(throughput, attenuation);
+					if (depth >= 3)
+					{
+						max_throughput = fmax(fmax(throughput.r, throughput.g), \
+							throughput.b);
+						brightness = max_throughput / 255.0;
+						if (brightness < 0.1)
+						{
+							if (random_double() > brightness)
+								return (final_color);
+							throughput = rgb_multiply(throughput, 1.0 / brightness);
+						}
+					}
 					current_ray = scattered;
 					depth++;
 					continue;

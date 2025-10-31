@@ -26,6 +26,7 @@ int		parse_sphere(char **tokens, t_data *scene);
 int		parse_pyramid(char **tokens, t_data *scene);
 int		parse_cone(char **tokens, t_data *scene);
 int		parse_bump(const char *token, t_obj *o);
+int		parse_triangle(char **tokens, t_data *scene);
 
 // Utils
 int		is_rt_file(const char *path);

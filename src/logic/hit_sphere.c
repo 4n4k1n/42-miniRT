@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:32:34 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/29 15:18:44 by nweber           ###   ########.fr       */
+/*   Updated: 2025/10/31 11:27:55 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin, double tmax, t_hit_
 	double	c;
 	double	dis;
 	double	root;
+	double	sqrtd;
 	t_vec3	outward;
 	t_vec3	hp;
 	t_vec3	tmp;
@@ -38,13 +39,15 @@ int	hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin, double tmax, t_hit_
 	dis = h * h - a * c;
 	if (dis < 0)
 		return (0);
-	root = (-h - sqrt(dis)) / a;
+	sqrtd = sqrt(dis);
+	root = (-h - sqrtd) / a;
 	if (root <= tmin || root >= tmax)
 	{
-		root = (-h + sqrt(dis)) / a;
+		root = (-h + sqrtd) / a;
 		if (root <= tmin || root >= tmax)
 			return (0);
 	}
+	rec->t = root;
 	rec->t = root;
 	hp = vec3_add(r->origin, vec3_multiply(r->direction, rec->t));
 	rec->p = hp;
