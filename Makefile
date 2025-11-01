@@ -19,7 +19,7 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fno-stack-protector -fno-exceptions -fwhole-program -pthread \
   -fmodulo-sched -fmodulo-sched-allow-regmoves \
   -fsplit-loops -fpredictive-commoning -ftree-loop-im -ftree-loop-if-convert \
-  -fgcse-sm -fgcse-las -fvariable-expansion-in-unroller -funroll-all-loops
+  -fgcse-sm -fgcse-las -fvariable-expansion-in-unroller -funroll-all-loops -fsanitize=address -g
 
 LDFLAGS := -Wl,-O2 -Wl,--sort-common -Wl,--as-needed 
 OBJ_DIR = objs
@@ -79,6 +79,8 @@ SRC = src/main.c \
 		src/utils/mlx_hooks.c \
 		src/parsing/debug.c \
 		src/utils/threads.c \
+		src/utils/threads_init.c \
+		src/utils/threads_utils.c \
 		src/utils/error.c \
 		src/server/master.c \
 		src/server/worker.c \

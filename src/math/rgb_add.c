@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rgb_add.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:56:32 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/27 10:59:51 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/29 14:14:20 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,6 @@
 
 inline t_rgb	rgb_add(const t_rgb a, const t_rgb b)
 {
-	return ((t_rgb){fmin(a.r + b.r, 255.999), fmin(a.g + b.g, 255.999), fmin(a.b + b.b, 255.999)});
+	return ((t_rgb){fmin(a.r + b.r, 255.999), fmin(a.g + b.g, 255.999), fmin(a.b
+			+ b.b, 255.999)});
 }

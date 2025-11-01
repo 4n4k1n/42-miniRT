@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   surface_bias.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/27 00:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/29 14:28:06 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ t_vec3	apply_surface_bias(t_vec3 point, t_vec3 direction, t_vec3 normal)
 	t_vec3	bias;
 
 	eps = 1e-4;
-	sign = vec3_dot(direction, normal) > 0.0 ? 1.0 : -1.0;
+	if (vec3_dot(direction, normal) > 0.0)
+		sign = 1.0;
+	else
+		sign = -1.0;
 	bias = vec3_multiply(normal, eps * sign);
 	return (vec3_add(point, bias));
 }

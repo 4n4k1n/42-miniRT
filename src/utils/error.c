@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 12:45:19 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/11 12:57:52 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/29 14:31:45 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-int ft_error(char *msg, int error_code)
+int	ft_error(char *msg, int error_code)
 {
-    perror(msg);
-    return (error_code);
+	perror(msg);
+	return (error_code);
 }

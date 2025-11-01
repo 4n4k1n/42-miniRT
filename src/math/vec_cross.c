@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vec_cross.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 15:48:25 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 10:44:30 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/29 14:19:09 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,6 @@
  */
 inline t_vec3	vec3_cross(const t_vec3 a, const t_vec3 b)
 {
-	return ((t_vec3){a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, \
-		a.x * b.y - a.y * b.x});
+	return ((t_vec3){a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y
+		- a.y * b.x});
 }
