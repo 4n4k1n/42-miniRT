@@ -1,12 +1,6 @@
+MAKEFLAGS += -s
+
 NAME	:= miniRT
-
-# Colors
-GREEN	= \033[0;32m
-BLUE	= \033[0;34m
-YELLOW	= \033[0;33m
-RED		= \033[0;31m
-RESET	= \033[0m
-
 CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -funroll-loops -fprefetch-loop-arrays -fpeel-loops -funswitch-loops -ftracer \
   -ftree-vectorize -ftree-slp-vectorize -ftree-loop-distribution -fivopts \
@@ -87,12 +81,7 @@ SRC = src/main.c \
 		src/utils/threads_utils.c \
 		src/utils/error.c \
 		src/server/master.c \
-		src/server/setup_master.c \
 		src/server/worker.c \
-		src/server/worker_utils.c \
-		src/server/worker_run.c \
-		src/server/worker_tile.c \
-		src/server/worker_accept.c \
 		src/server/socket.c \
 		src/server/queue.c \
 		src/server/ip.c \
@@ -136,14 +125,11 @@ CFLAGS += -I./inc -I$(MLX42_DIR)/include
 all: $(LIBFT) $(LIBMLX42) $(NAME)
 
 $(NAME): $(OBJ)
-	@echo "$(BLUE)Linking $(NAME)...$(RESET)"
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) $(LIBMLX42) $(LIBFT) -o $(NAME)
-	@echo "$(GREEN)Build complete!$(RESET)"
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) $(LIBMLX42) $(LIBFT) -o $(NAME)
 
 $(OBJ_DIR)/%.o: src/%.c inc/mini_rt.h
 	@mkdir -p $(dir $@)
-	@echo "$(GREEN)Compiling $<$(RESET)"
-	@$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
@@ -159,9 +145,8 @@ $(LIBMLX42):
 	fi
 
 clean:
-	@echo "$(RED)Cleaning object files...$(RESET)"
-	@rm -rf $(OBJ_DIR)
-	@$(MAKE) clean -C $(LIBFT_DIR)
+	rm -rf $(OBJ_DIR)
+	$(MAKE) clean -C $(LIBFT_DIR)
 
 fclean: clean
 	rm -f $(NAME)
