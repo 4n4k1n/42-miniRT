@@ -75,11 +75,39 @@ int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, \
 
 /**
  * Tests ray intersection using BVH acceleration structure
+ * Also tests planes separately as they are excluded from BVH
  */
-int	world_hit_bvh(t_bvh_node *bvh, t_ray *r, double min, double max, \
-		t_hit_record *out)
+int	world_hit_bvh(t_bvh_node *bvh, t_obj_list *objects, t_ray *r, \
+		double min, double max, t_hit_record *out)
 {
-	if (!bvh || !out)
+	t_hit_record	temp_rec;
+	t_obj			*cur;
+	int				hit_any;
+	double			closest;
+
+	if (!out)
 		return (0);
-	return (bvh_hit(bvh, r, min, max, out));
+	hit_any = 0;
+	closest = max;
+	if (bvh && bvh_hit(bvh, r, min, closest, out))
+	{
+		hit_any = 1;
+		closest = out->t;
+	}
+	if (objects)
+	{
+		cur = objects->head;
+		while (cur)
+		{
+			if (cur->type == PLANE && hittable_hit(cur, r, min, closest, \
+					&temp_rec))
+			{
+				hit_any = 1;
+				closest = temp_rec.t;
+				*out = temp_rec;
+			}
+			cur = cur->next;
+		}
+	}
+	return (hit_any);
 }
