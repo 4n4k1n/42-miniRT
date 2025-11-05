@@ -134,6 +134,38 @@ t_aabb	get_cylinder_bounds(const t_cylinder *c)
 	return (box);
 }
 
+// Conservative AABB for a finite cone: cover apex and base disk.
+static t_aabb	get_cone_bounds(const t_cone *co)
+{
+	t_aabb	box;
+	t_vec3	a;
+	double	hh;
+	double	r;
+	t_vec3	apex;
+	t_vec3	base;
+	t_vec3	expand;
+	t_vec3	eps;
+
+	a = vec3_normalize(co->norm);
+	hh = co->height * 0.5;
+	r = co->diameter * 0.5;
+	apex = vec3_sub(co->cords, vec3_multiply(a, hh));
+	base = vec3_add(co->cords, vec3_multiply(a, hh));
+	box.min.x = fmin(apex.x, base.x);
+	box.min.y = fmin(apex.y, base.y);
+	box.min.z = fmin(apex.z, base.z);
+	box.max.x = fmax(apex.x, base.x);
+	box.max.y = fmax(apex.y, base.y);
+	box.max.z = fmax(apex.z, base.z);
+	expand = vec3_init(r, r, r);
+	box.min = vec3_sub(box.min, expand);
+	box.max = vec3_add(box.max, expand);
+	eps = vec3_init(1e-6, 1e-6, 1e-6);
+	box.min = vec3_sub(box.min, eps);
+	box.max = vec3_add(box.max, eps);
+	return (box);
+}
+
 /**
  * Gets bounding box for any object type
  */
@@ -147,5 +179,7 @@ t_aabb	get_object_bounds(const t_obj *obj)
 		return (get_cylinder_bounds(&obj->data.cylinder));
 	else if (obj->type == TRIANGLE)
 		return (get_triangle_bounds(&obj->data.triangle));
+	else if (obj->type == CONE)
+		return (get_cone_bounds(&obj->data.cone));
 	return ((t_aabb){{0, 0, 0}, {0, 0, 0}});
 }
