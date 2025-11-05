@@ -3,14 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:31:15 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/27 10:33:45 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/29 16:01:12 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
+
+int	render_with_mt(t_data *data)
+{
+	int	checked;
+
+	checked = 0;
+	__atomic_store_n(&data->threads_done, 0, __ATOMIC_SEQ_CST);
+	change_thread_state(data);
+	while (1)
+	{
+		checked = __atomic_load_n(&data->threads_done, __ATOMIC_SEQ_CST);
+		if (checked == data->threads_amount)
+			break ;
+		usleep(500);
+	}
+	__atomic_store_n(&data->threads_done, 0, __ATOMIC_SEQ_CST);
+	return (0);
+}
 
 uint32_t	without_aa(t_data *data, int i, int j)
 {

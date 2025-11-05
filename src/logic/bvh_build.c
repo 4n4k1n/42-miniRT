@@ -146,12 +146,14 @@ static t_bvh_node	*build_bvh_recursive(t_obj **objects, int count)
 
 /**
  * Builds BVH from object list
+ * Excludes planes from BVH as they are infinite and should be tested separately
  */
 t_bvh_node	*build_bvh(t_obj_list *list)
 {
 	t_obj		**objects;
 	t_obj		*cur;
 	int			i;
+	int			count;
 	t_bvh_node	*root;
 
 	if (!list || list->size == 0)
@@ -163,10 +165,17 @@ t_bvh_node	*build_bvh(t_obj_list *list)
 	i = 0;
 	while (cur)
 	{
-		objects[i++] = cur;
+		if (cur->type != PLANE)
+			objects[i++] = cur;
 		cur = cur->next;
 	}
-	root = build_bvh_recursive(objects, list->size);
+	count = i;
+	if (count == 0)
+	{
+		free(objects);
+		return (NULL);
+	}
+	root = build_bvh_recursive(objects, count);
 	free(objects);
 	return (root);
 }

@@ -42,5 +42,11 @@ int	render_with_mt(t_data *data);
 void	cleanup_data(t_data *data);
 int	init_threads(t_data *data);
 int ft_error(char *msg, int error_code);
+void	*thread_job_worker(void *arg);
+int	init_threads_worker(t_data *data);
+int	init_threads(t_data *data);
+void	cleanup_data(t_data *data);
+int	change_thread_state(t_data *data);
+int	ft_wait(t_thread *thread);
 
 #endif

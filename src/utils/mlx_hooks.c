@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_hooks.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/29 12:25:05 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/29 14:31:53 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,21 @@
  */
 void	key_hook(mlx_key_data_t keydata, void *param)
 {
-	t_data	*data;
-	t_vec3	forward, right, up;
-	t_vec3	move_vec;
+	t_data			*data;
+	t_vec3			move_vec;
 	static float	move_distace = 1.0;
 
+	t_vec3 forward, right, up;
 	data = (t_data *)param;
-	if ((keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) && (keydata.key == MLX_KEY_W
-		|| keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_A
-		|| keydata.key == MLX_KEY_D || keydata.key == MLX_KEY_SPACE || keydata.key == MLX_KEY_LEFT_SHIFT 
-		|| keydata.key == MLX_KEY_UP || keydata.key == MLX_KEY_DOWN 
-		|| keydata.key == MLX_KEY_LEFT || keydata.key == MLX_KEY_RIGHT || keydata.key == MLX_KEY_ESCAPE || keydata.key == MLX_KEY_R || keydata.key == MLX_KEY_L || keydata.key == MLX_KEY_LEFT_BRACKET || keydata.key == MLX_KEY_RIGHT_BRACKET))
+	if ((keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT)
+		&& (keydata.key == MLX_KEY_W || keydata.key == MLX_KEY_S
+			|| keydata.key == MLX_KEY_A || keydata.key == MLX_KEY_D
+			|| keydata.key == MLX_KEY_SPACE || keydata.key == MLX_KEY_LEFT_SHIFT
+			|| keydata.key == MLX_KEY_UP || keydata.key == MLX_KEY_DOWN
+			|| keydata.key == MLX_KEY_LEFT || keydata.key == MLX_KEY_RIGHT
+			|| keydata.key == MLX_KEY_ESCAPE || keydata.key == MLX_KEY_R
+			|| keydata.key == MLX_KEY_L || keydata.key == MLX_KEY_LEFT_BRACKET
+			|| keydata.key == MLX_KEY_RIGHT_BRACKET))
 	{
 		if (keydata.key == MLX_KEY_ESCAPE)
 			return (mlx_close_window(data->mlx));
@@ -48,7 +52,8 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 			render(data);
 			return ;
 		}
-		else if (keydata.key == MLX_KEY_W || keydata.key == MLX_KEY_S || keydata.key == MLX_KEY_A || keydata.key == MLX_KEY_D)
+		else if (keydata.key == MLX_KEY_W || keydata.key == MLX_KEY_S
+			|| keydata.key == MLX_KEY_A || keydata.key == MLX_KEY_D)
 		{
 			get_camera_vectors(data, &forward, &right, &up);
 			if (keydata.key == MLX_KEY_W)
