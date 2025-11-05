@@ -21,7 +21,7 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fsplit-loops -fpredictive-commoning -ftree-loop-im -ftree-loop-if-convert \
   -fgcse-sm -fgcse-las -fvariable-expansion-in-unroller -funroll-all-loops -fsanitize=address -g
 
-LDFLAGS := -Wl,-O2 -Wl,--sort-common -Wl,--as-needed 
+LDFLAGS := -Wl,-O2 -Wl,--sort-common -Wl,--as-needed
 OBJ_DIR = objs
 CC = gcc
 
@@ -40,6 +40,7 @@ SRC = src/main.c \
 		src/math/random.c \
 		src/math/vec_zero.c \
 		src/math/vec_reflect.c \
+		src/math/vec_refract.c \
 		src/math/vec_normalize.c \
 		src/math/surface_bias.c \
 		src/math/rgb_add.c \

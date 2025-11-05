@@ -30,7 +30,7 @@ static int	mat_base_for_obj(t_obj *o, int *base_len, t_rgb *albedo,
 	{
 		*base_len = 6;
 		*albedo = o->data.cylinder.rgb;
-		*outp = &o->data.pyramid.mat;
+		*outp = &o->data.cylinder.mat;
 		return (0);
 	}
 	if (o->type == CONE)
@@ -52,21 +52,17 @@ static int	mat_base_for_obj(t_obj *o, int *base_len, t_rgb *albedo,
 
 static int	parse_ri_token(const char *mstr, double *ri)
 {
-	const char	*num;
-	double		val;
+	const char	*s;
 
-	num = NULL;
-	if (mstr[1] == ':')
-		num = mstr + 2;
-	else if (mstr[1] != '\0')
-		num = mstr + 1;
-	if (num && *num != '\0')
-		val = ft_atof(num);
-	else
-		val = 1.5;
-	if (val <= 0.0)
-		val = 1.5;
-	*ri = val;
+	*ri = 1.5;
+	s = ft_strchr(mstr, ':');
+	if (!s)
+		return (0);
+	s++;
+	if (parse_double(s, ri))
+		return (1);
+	if (*ri <= 0.0)
+		*ri = 1.5;
 	return (0);
 }
 
@@ -103,20 +99,42 @@ int	parse_material(char **tokens, int len, t_obj *o)
 	const char	*mstr;
 	t_rgb		albedo;
 	t_material	**out;
+	int			i;
 
 	if (mat_base_for_obj(o, &base_len, &albedo, &out))
 		return (1);
-	if (len != base_len && len != base_len + 1)
-		return (1);
-	has_mat = (len == base_len + 1);
-	if (!has_mat)
-	{
-		*out = NULL;
-		return (0);
-	}
+	has_mat = 0;
 	mat_idx = base_len;
-	mstr = tokens[mat_idx];
-	if (!mstr || !mstr[0])
+	if (len > base_len && (tokens[mat_idx][0] == 'L'
+			|| tokens[mat_idx][0] == 'M' || tokens[mat_idx][0] == 'G'))
+		has_mat = 1;
+	mstr = has_mat ? tokens[mat_idx] : "L";
+	if (create_material_from_token(mstr, albedo, out))
 		return (1);
-	return (create_material_from_token(mstr, albedo, out));
+	i = mat_idx + (has_mat ? 1 : 0);
+	while (i < len)
+	{
+		if (ft_strncmp(tokens[i], "tx:", 3) == 0)
+		{
+			const char *rest = tokens[i] + 3;
+			double scale = 1.0;
+			if (ft_strncmp(rest, "checker", 7) != 0)
+				return (1);
+			rest += 7;
+			if (*rest == ':')
+			{
+				rest++;
+				if (parse_double(rest, &scale))
+					return (1);
+				if (scale <= 0.0)
+					scale = 1.0;
+			}
+			(*out)->texture_type = CHECKER;
+			(*out)->texture_scale = scale;
+			(*out)->texture_a = (t_rgb){255.0, 255.0, 255.0};
+			(*out)->texture_b = (t_rgb){0.0, 0.0, 0.0};
+		}
+		i++;
+	}
+	return (0);
 }

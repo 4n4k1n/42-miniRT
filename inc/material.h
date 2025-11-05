@@ -22,6 +22,11 @@ typedef enum e_material_type
 	GLASS
 }	t_material_type;
 
+typedef enum e_texture_type
+{
+	NONE,
+	CHECKER,
+}	t_texture_type;
 struct s_material
 {
 	t_scatter_fn	scatter;
@@ -29,6 +34,10 @@ struct s_material
 	double			fuzz;
 	int				type;
 	double			refraction_index;
+	int				texture_type;
+	struct s_rgb	texture_a;
+	struct s_rgb	texture_b;
+	double			texture_scale;
 };
 
 t_material*	material_lambertian(struct s_rgb albedo);
