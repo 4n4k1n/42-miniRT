@@ -14,7 +14,8 @@
 
 /**
  * Parses cylinder object parameters from tokens
- * Format: cy <x,y,z> <nx,ny,nz> <diameter> <height> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * Format: cy <x,y,z> <nx,ny,nz> <diameter> <height> <r,g,b>
+ * [MaterialToken] [bm:<path>[:strength]]
  * The bump token, if present, must be last.
  */
 int	parse_cylinder(char **tokens, t_data *scene)

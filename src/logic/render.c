@@ -74,11 +74,10 @@ void	render(t_data *data)
 					mlx_put_pixel(data->img, j, i, without_aa(data, i, j));
 				j++;
 			}
-			printf("%d\n", i);
 			i++;
 		}
 	}
-	printf("\n%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000 / (double)(get_time_in_ms() - render_time));
+	printf("%d\n%.2f fps\n", get_time_in_ms() - render_time, 1000 / (double)(get_time_in_ms() - render_time));
 }
 
 uint32_t *render_tile(t_data *data, t_tile *tile)

@@ -14,7 +14,8 @@
 
 /**
  * Parses pyramid object parameters from tokens
- * Format: py <x,y,z> <nx,ny,nz> <base> <height> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * Format: py <x,y,z> <nx,ny,nz> <base> <height> <r,g,b>
+ * [MaterialToken] [bm:<path>[:strength]]
  * The bump token, if present, must be last.
  */
 int	parse_pyramid(char **tokens, t_data *scene)

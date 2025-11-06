@@ -12,42 +12,6 @@
 
 #include "mini_rt.h"
 
-// fd = open(av[1], O_RDONLY)
-// while(1)
-// 	read line with gnl until newline-> validate the line
-// 		-> if valid safe in data struct
-// Capitalized Elements are only used once
-// Random amount of whitespaces and newlines
-// First info is always the identifier
-//
-
-/**
- * Removes comments and whitespace from input line
- * Strips everything after '#' character and trims spaces
- * Returns cleaned string for parsing
- */
-static char	*trim_and_strip(char *s)
-{
-	char	*hash;
-	char	*out;
-	char	*p;
-
-	hash = ft_strchr(s, '#');
-	if (hash)
-		*hash = '\0';
-	out = ft_strtrim(s, " \t\r\n");
-	if (!out)
-		return (NULL);
-	p = out;
-	while (*p)
-	{
-		if (*p == '\t')
-			*p = ' ';
-		p++;
-	}
-	return (out);
-}
-
 /**
  * Initializes scene data structures and lists
  * Allocates memory for object and light lists

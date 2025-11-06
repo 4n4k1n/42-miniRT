@@ -96,31 +96,6 @@ static int	create_material_from_token(const char *mstr, t_rgb albedo,
 	return (1);
 }
 
-static int	parse_texture_token(const char *tok, t_material **out)
-{
-	const char	*rest;
-	double		scale;
-
-	rest = tok + 3;
-	scale = 1.0;
-	if (ft_strncmp(rest, "checker", 7) != 0)
-		return (1);
-	rest += 7;
-	if (*rest == ':')
-	{
-		rest++;
-		if (parse_double(rest, &scale))
-			return (1);
-		if (scale <= 0.0)
-			scale = 1.0;
-	}
-	(*out)->texture_type = CHECKER;
-	(*out)->texture_scale = scale;
-	(*out)->texture_a = (t_rgb){255.0, 255.0, 255.0};
-	(*out)->texture_b = (t_rgb){0.0, 0.0, 0.0};
-	return (0);
-}
-
 int	parse_material(char **tokens, int len, t_obj *o)
 {
 	int			base_len;

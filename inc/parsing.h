@@ -36,6 +36,7 @@ int		parse_rgb(const char *str, t_rgb *out);
 
 // Validators
 int		validate_fov(double fov);
+char	*trim_and_strip(char *s);
 int		vec_in_range(t_vec3 *vec, double min, double max);
 int		in_range_d(double v, double min, double max);
 int		vec_non_zero(t_vec3 v);

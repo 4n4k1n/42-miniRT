@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing_cone.c                                      :+:      :+:    :+:   */
+/*   parsing_cone.c                                      :+:      :+:    :+:  */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,7 +14,8 @@
 
 /**
  * Parses cone object parameters from tokens
- * Format: co <x,y,z> <nx,ny,nz> <diameter> <height> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * Format: co <x,y,z> <nx,ny,nz> <diameter> <height> <r,g,b>
+ * [MaterialToken] [bm:<path>[:strength]]
  * The bump token, if present, must be last.
  */
 int	parse_cone(char **tokens, t_data *scene)
