@@ -104,6 +104,24 @@ static int	dispatch_line(char **tokens, t_data *scene, t_arg_check *args)
 }
 
 /**
+ * Processes a single line: tokenize and dispatch
+ */
+static int	process_line(char *line, t_data *scene, t_arg_check *args)
+{
+	char	**tokens;
+
+	if (line[0] == '\0')
+		return (0);
+	tokens = ft_split(line, ' ');
+	if (!tokens)
+		return (rt_error("malloc error"));
+	if (dispatch_line(tokens, scene, args))
+		return (ft_array_free(tokens), 1);
+	ft_array_free(tokens);
+	return (0);
+}
+
+/**
  * Main parsing loop that reads and processes each line
  * Reads file line by line, cleans and tokenizes each line
  * Validates presence of required elements (A, C, L)
@@ -112,7 +130,6 @@ static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 {
 	char	*raw;
 	char	*line;
-	char	**tokens;
 	int		i;
 
 	args->has_a = 0;
@@ -126,15 +143,8 @@ static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 		free(raw);
 		if (!line)
 			return (rt_error("malloc error"));
-		if (line[0] != '\0')
-		{
-			tokens = ft_split(line, ' ');
-			if (!tokens)
-				return (free(line), rt_error("malloc error"));
-			if (dispatch_line(tokens, scene, args))
-				return (ft_array_free(tokens), free(line), 1);
-			ft_array_free(tokens);
-		}
+		if (process_line(line, scene, args))
+			return (free(line), 1);
 		free(line);
 		printf("Parsed obj: %d\n", i++);
 		raw = get_next_line(fd);

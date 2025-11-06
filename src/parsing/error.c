@@ -21,7 +21,11 @@ int	rt_error(const char *msg)
 {
 	if (msg)
 	{
-		if (write(2, "Error\n", 6) == -1 || write(2, msg, ft_strlen(msg)) == -1 || write(2, "\n", 1) == -1)
+		if (write(2, "Error\n", 6) == -1)
+			return (1);
+		if (write(2, msg, ft_strlen(msg)) == -1)
+			return (1);
+		if (write(2, "\n", 1) == -1)
 			return (1);
 	}
 	return (1);

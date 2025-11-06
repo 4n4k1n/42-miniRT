@@ -50,5 +50,6 @@ int		light_push(t_light_list *lst, t_light *node);
 void	print_scene(const t_data *scene);
 void	print_vec3(const char *name, t_vec3 v);
 void	print_rgb(const char *name, t_rgb c);
+void	print_objects(const t_obj_list *lst);
 
 #endif

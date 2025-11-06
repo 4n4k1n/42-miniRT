@@ -56,6 +56,13 @@ SRC = src/main.c \
 		src/parsing/validation.c \
 		src/parsing/validators.c \
 		src/parsing/bump.c \
+		src/parsing/parsing_sphere.c \
+		src/parsing/parsing_plane.c \
+		src/parsing/parsing_cylinder.c \
+		src/parsing/parsing_pyramid.c \
+		src/parsing/parsing_cone.c \
+		src/parsing/parsing_triangle.c \
+		src/parsing/debug_print.c \
 		src/logic/hit_sphere.c \
 		src/logic/hit_plane.c \
 		src/logic/hit_tower.c \
