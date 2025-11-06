@@ -127,11 +127,15 @@ void    *accept_worker_threads(void *arg)
         worker_socket = accept(master->socket_fd, NULL, NULL);
         if (worker_socket < 0)
             continue ;
+        pthread_mutex_lock(&master->workers_lock);
         if (master->num_worker >= MAX_WORKER)
         {
+            pthread_mutex_unlock(&master->workers_lock);
             close(worker_socket);
             continue ;
         }
+        master->num_worker++;
+        pthread_mutex_unlock(&master->workers_lock);
         context = malloc(sizeof(t_worker_context));
         if (!context)
             return (close(worker_socket), ft_error("malloc", 1), NULL);
@@ -139,7 +143,6 @@ void    *accept_worker_threads(void *arg)
         context->worker_socket = worker_socket;
         pthread_create(&thread, NULL, worker_thread_func, context);
         pthread_detach(thread);
-        master->num_worker++;
     }
     return (NULL);
 }

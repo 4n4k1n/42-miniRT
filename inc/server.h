@@ -7,7 +7,7 @@
 #  define MAX_WORKER 16
 # endif
 
-# define TILE_SIZE 64
+# define TILE_SIZE 256
 
 typedef enum e_msg_types
 {
@@ -35,7 +35,9 @@ typedef enum e_updated_scene_type
     LOOK_LEFT,
     LOOK_RIGHT,
     UPDATE_LIGHT,
-    UPDATE_RENDERING
+    UPDATE_RENDERING,
+    MOVE_DIS_PLUS,
+    MOVE_DIS_MINUS
 }   t_updated_scene_type;
 
 typedef struct s_msg_header
@@ -113,7 +115,7 @@ typedef struct s_update
 int send_all(int socket_fd, const void *buffer, size_t length);
 int recv_all(int socket_fd, void *buffer, size_t length);
 int send_file(char *path, int socket_fd);
-void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
+int    send_header(int socket_fd, uint32_t msg_type, uint32_t payload);
 void    send_tile_assignment(int socket_fd, t_tile *tile);
 void    send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels);
 void	send_settings(int socket_fd, t_settings *settings);
