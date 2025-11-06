@@ -50,7 +50,7 @@ void	unregister_worker(t_master *master, int socket_fd)
 
 void	broadcast_update(t_master *master, uint32_t update_value)
 {
-	int	i;
+	int				i;
 	t_camera_update	cam_update;
 
 	(void)update_value;

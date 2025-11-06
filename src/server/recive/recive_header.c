@@ -12,12 +12,12 @@
 
 #include "mini_rt.h"
 
-t_msg_header    recive_header(int socket_fd)
+t_msg_header	recive_header(int socket_fd)
 {
-    t_msg_header    header;
+	t_msg_header	header;
 
-    recv_all(socket_fd, &header, sizeof(t_msg_header));
-    header.msg_type = ntohl(header.msg_type);
-    header.payload_size = ntohl(header.payload_size);
-    return (header);
+	recv_all(socket_fd, &header, sizeof(t_msg_header));
+	header.msg_type = ntohl(header.msg_type);
+	header.payload_size = ntohl(header.payload_size);
+	return (header);
 }

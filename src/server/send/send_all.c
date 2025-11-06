@@ -17,21 +17,21 @@
  * Loops until the entire buffer is transmitted or an error occurs.
  * Returns 0 on success, -1 on error.
  */
-int send_all(int socket_fd, const void *buffer, size_t length)
+int	send_all(int socket_fd, const void *buffer, size_t length)
 {
-    const char  *ptr;
-    size_t      remaining;
-    ssize_t     sent;
+	const char	*ptr;
+	size_t		remaining;
+	ssize_t		sent;
 
-    ptr = (const char *)buffer;
-    remaining = length;
-    while (remaining > 0)
-    {
-        sent = send(socket_fd, ptr, remaining, 0);
-        if (sent <= 0)
-            return (-1);
-        ptr += sent;
-        remaining -= sent;
-    }
-    return (0);
+	ptr = (const char *)buffer;
+	remaining = length;
+	while (remaining > 0)
+	{
+		sent = send(socket_fd, ptr, remaining, 0);
+		if (sent <= 0)
+			return (-1);
+		ptr += sent;
+		remaining -= sent;
+	}
+	return (0);
 }

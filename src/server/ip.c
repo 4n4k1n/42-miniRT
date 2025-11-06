@@ -13,10 +13,10 @@
 #include "mini_rt.h"
 #include <ifaddrs.h>
 
-char *get_public_ip(void)
+char	*get_public_ip(void)
 {
-	FILE *fp;
-	static char ip[64];
+	FILE		*fp;
+	static char	ip[64];
 
 	fp = popen("curl -s -4 --max-time 2 ifconfig.me 2>/dev/null", "r");
 	if (!fp)
@@ -33,10 +33,10 @@ char *get_public_ip(void)
 
 char *get_ip_address(void)
 {
-	struct ifaddrs *ifaddr;
-	struct ifaddrs *ifa;
-	struct sockaddr_in *sa;
-	char *ip;
+	struct ifaddrs		*ifaddr;
+	struct ifaddrs		*ifa;
+	struct sockaddr_in	*sa;
+	char				*ip;
 
 	if (getifaddrs(&ifaddr) == -1)
 		return (perror("getifaddrs error"), NULL);

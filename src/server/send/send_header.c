@@ -12,11 +12,11 @@
 
 #include "mini_rt.h"
 
-void    send_header(int socket_fd, uint32_t msg_type, uint32_t payload)
+void	send_header(int socket_fd, uint32_t msg_type, uint32_t payload)
 {
-    t_msg_header    header;
+	t_msg_header	header;
 
-    header.msg_type = htonl(msg_type);
-    header.payload_size = htonl(payload);
-    send_all(socket_fd, &header, sizeof(header));
+	header.msg_type = htonl(msg_type);
+	header.payload_size = htonl(payload);
+	send_all(socket_fd, &header, sizeof(header));
 }

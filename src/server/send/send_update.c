@@ -15,7 +15,7 @@
 void	send_update(int socket_fd, uint32_t update)
 {
 	t_update	net_update;
-	
+
 	send_header(socket_fd, MSG_UPDATE, sizeof(t_update));
 	net_update.updated_varible = htonl(update);
 	send_all(socket_fd, &net_update, sizeof(t_update));
