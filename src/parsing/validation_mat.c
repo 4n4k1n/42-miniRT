@@ -62,11 +62,10 @@ static int	mat_base_for_obj(t_obj *o, int *base_len, t_rgb *albedo,
 	return (1);
 }
 
-
 static int	create_material_from_token(const char *mstr, t_rgb albedo,
 			t_material **out)
 {
-	double	ri;
+	double		ri;
 	const char	*s;
 
 	if (mstr[0] == 'L')
@@ -122,7 +121,6 @@ static int	parse_texture_token(const char *tok, t_material **out)
 	return (0);
 }
 
-
 int	parse_material(char **tokens, int len, t_obj *o)
 {
 	int			base_len;
@@ -130,13 +128,15 @@ int	parse_material(char **tokens, int len, t_obj *o)
 	const char	*mstr;
 	t_rgb		albedo;
 	t_material	**out;
+	const char	*rest;
+	double		scale;
 
 	if (mat_base_for_obj(o, &base_len, &albedo, &out))
 		return (1);
 	mstr = "L";
 	i = base_len;
 	if (len > base_len && (tokens[i][0] == 'L'
-			|| tokens[i][0] == 'M' || tokens[i][0] == 'G'))
+		|| tokens[i][0] == 'M' || tokens[i][0] == 'G'))
 	{
 		mstr = tokens[i];
 		i++;
@@ -147,9 +147,8 @@ int	parse_material(char **tokens, int len, t_obj *o)
 	{
 		if (ft_strncmp(tokens[i], "tx:", 3) == 0)
 		{
-			const char	*rest = tokens[i] + 3;
-			double		scale = 1.0;
-
+			rest = tokens[i] + 3;
+			scale = 1.0;
 			if (ft_strncmp(rest, "checker", 7) != 0)
 				return (1);
 			rest += 7;
