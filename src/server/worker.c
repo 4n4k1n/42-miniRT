@@ -33,6 +33,7 @@ void    *worker_thread_func(void *arg)
     settings.min_samples = AA_MIN_SAMPLES;
     settings.scale = SCALE;
     settings.shadow_samples = SHADOW_SAMPLES;
+    settings.use_bvh = USE_BVH;
     send_settings(context->worker_socket, &settings);
     send_file(master->scene_file, context->worker_socket);
     header = recive_header(context->worker_socket);
@@ -193,6 +194,11 @@ int run_worker(char *master_ip, uint32_t port)
     close(scene_file_fd);
     free(scene_content);
     parse_scene("scene.rt", &data);
+    if (data.settings.use_bvh && data.objects && data.objects->size > 0)
+    {
+        data.bvh_root = build_bvh(data.objects);
+        printf("BVH built with %zu objects\n", data.objects->size);
+    }
     data.camera.samples_per_pixel = data.settings.max_samples;
     init_camera(&data);
     init_threads_worker(&data);

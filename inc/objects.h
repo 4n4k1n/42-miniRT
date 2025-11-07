@@ -276,6 +276,7 @@ typedef struct s_settings
 	uint32_t				max_samples;
 	uint32_t				shadow_samples;
 	uint32_t				depth;
+	uint32_t				use_bvh;
 }							t_settings;
 
 typedef struct s_master		t_master;

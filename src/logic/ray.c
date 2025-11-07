@@ -156,10 +156,10 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 	depth = 0;
 	while (depth < max_depth)
 	{
-		if ((USE_BVH && world_hit_bvh(data->bvh_root, data->objects, \
-				&current_ray, 0.001, INFINITY, &rec)) || (!USE_BVH && \
-				data->objects && world_hit(data->objects, &current_ray, 0.001, \
-				INFINITY, &rec)))
+		if ((data->settings.use_bvh && world_hit_bvh(data->bvh_root, \
+				data->objects, &current_ray, 0.001, INFINITY, &rec)) \
+				|| (!data->settings.use_bvh && data->objects && \
+				world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec)))
 		{
 			if (rec.bump)
 			{

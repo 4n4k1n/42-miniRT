@@ -33,11 +33,11 @@
 # endif
 
 # ifndef USE_BVH
-#  define USE_BVH 0
+#  define USE_BVH 1
 # endif
 
 # ifndef BONUS
-#  define BONUS 0
+#  define BONUS 1
 # endif
 
 #endif
