@@ -7,7 +7,7 @@
 #  define MAX_WORKER 16
 # endif
 
-# define TILE_SIZE 64
+# define TILE_SIZE 256
 
 typedef enum e_msg_types
 {
@@ -110,6 +110,30 @@ typedef struct s_update
     uint32_t    updated_varible;
 }   t_update;
 
+typedef struct s_run_master
+{
+	t_master	master;
+	t_data		data;
+	char		buffer[10];
+	int			prev_workers;
+	fd_set readfds;
+	struct timeval tv;
+	int ret;
+}   t_run_master;
+
+typedef struct s_queue_tmp
+{
+	uint32_t	i;
+	uint32_t	j;
+    uint32_t	tiles_x;
+	uint32_t	tiles_y;
+	uint32_t	tile_id;
+    t_queue *queue;
+    uint32_t width;
+    uint32_t height;
+	uint32_t tile_size;
+}   t_queue_tmp;
+
 int send_all(int socket_fd, const void *buffer, size_t length);
 int recv_all(int socket_fd, void *buffer, size_t length);
 int send_file(char *path, int socket_fd);
@@ -133,6 +157,8 @@ void    destroy_queue(t_queue *queue);
 
 int setup_listen_socket(uint32_t port);
 
+int	setup_master(t_master *master, t_data *data, char *scene_file,
+		uint32_t port);
 int run_master(char *scene_file, uint32_t port);
 int run_worker(char *master_ip, uint32_t port);
 
@@ -142,6 +168,20 @@ void    copy_tile_to_framebuffer(mlx_image_t *image, t_tile *result, uint32_t *p
 void    broadcast_update(t_master *master, uint32_t update_value);
 void    register_worker(t_master *master, int socket_fd);
 void    unregister_worker(t_master *master, int socket_fd);
+
+void	init_worker_settings(t_settings *settings);
+void	*handle_worker_disconnect(t_worker_context *context, t_master *master);
+void	process_tile_job(t_worker_context *context, t_master *master);
+void	worker_render_loop(t_worker_context *context, t_master *master);
+void	worker_wait_for_restart(t_master *master, int worker_socket);
+
+int	connect_to_master(char *master_ip, uint32_t port);
+int	setup_scene_file(int master_socket, t_data *data);
+void	handle_camera_update(t_data *data, t_camera_update *cam_update);
+int	process_tile_render(int master_socket, t_data *data,
+	uint32_t *tiles_rendered);
+int	handle_msg(int master_socket, t_data *data,
+	t_msg_header *header, uint32_t *tiles_rendered);
 
 char *get_ip_address(void);
 char *get_public_ip(void);

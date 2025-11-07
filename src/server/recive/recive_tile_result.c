@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 22:31:43 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/11 22:43:21 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 09:52:29 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	recive_tile_result(int socket_fd, t_tile *tile, uint32_t **pixels)
 	t_msg_header	header;
 	uint32_t		pixel_bytes;
 	uint32_t		pixel_count;
-	uint32_t		i;
+	int				i;
 
 	header = recive_header(socket_fd);
 	if (header.msg_type != MSG_TILE_COMPLETE)
@@ -35,6 +35,6 @@ void	recive_tile_result(int socket_fd, t_tile *tile, uint32_t **pixels)
 		return ;
 	recv_all(socket_fd, *pixels, pixel_bytes);
 	i = -1;
-	while (++i < pixel_count)
+	while (++i < (int)pixel_count)
 		(*pixels)[i] = ntohl((*pixels)[i]);
 }

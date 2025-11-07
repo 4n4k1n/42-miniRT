@@ -24,5 +24,6 @@ void	send_settings(int socket_fd, t_settings *settings)
 	net_settings.min_samples = htonl(settings->min_samples);
 	net_settings.scale = htonl(settings->scale);
 	net_settings.shadow_samples = htonl(net_settings.shadow_samples);
+	net_settings.use_bvh = htonl(settings->use_bvh);
 	send_all(socket_fd, &net_settings, sizeof(t_settings));
 }

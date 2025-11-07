@@ -91,7 +91,12 @@ SRC = src/main.c \
 		src/utils/threads_utils.c \
 		src/utils/error.c \
 		src/server/master.c \
+		src/server/setup_master.c \
 		src/server/worker.c \
+		src/server/worker_accept.c \
+		src/server/worker_run.c \
+		src/server/worker_tile.c \
+		src/server/worker_utils.c \
 		src/server/socket.c \
 		src/server/queue.c \
 		src/server/ip.c \

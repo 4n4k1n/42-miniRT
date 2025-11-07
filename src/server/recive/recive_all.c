@@ -19,9 +19,9 @@
  */
 int	recv_all(int socket_fd, void *buffer, size_t length)
 {
-	char		*ptr;
-	size_t		remaining;
-	ssize_t		received;
+	char	*ptr;
+	size_t	remaining;
+	ssize_t	received;
 
 	ptr = (char *)buffer;
 	remaining = length;

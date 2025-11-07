@@ -136,10 +136,12 @@ static int	run_local(char *scene_file)
 	t_data	data;
 
 	data.settings.light_state = false;
+	data.settings.use_bvh = USE_BVH;
 	data.bvh_root = NULL;
 	if (parse_scene(scene_file, &data))
 		return (1);
-	if (USE_BVH && data.objects && data.objects->size > 0)
+	print_scene(&data);
+	if (data.settings.use_bvh && data.objects && data.objects->size > 0)
 	{
 		data.bvh_root = build_bvh(data.objects);
 		printf("BVH built with %zu objects\n", data.objects->size);

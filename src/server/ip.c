@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 15:13:51 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/24 15:24:20 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 09:59:21 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*get_public_ip(void)
 	return (ip);
 }
 
-char *get_ip_address(void)
+char	*get_ip_address(void)
 {
 	struct ifaddrs		*ifaddr;
 	struct ifaddrs		*ifa;
