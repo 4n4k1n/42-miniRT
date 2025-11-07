@@ -19,7 +19,7 @@ CFLAGS	:= -Wall -Wextra -Ofast -flto -march=native -mtune=native \
   -fno-stack-protector -fno-exceptions -fwhole-program -pthread \
   -fmodulo-sched -fmodulo-sched-allow-regmoves \
   -fsplit-loops -fpredictive-commoning -ftree-loop-im -ftree-loop-if-convert \
-  -fgcse-sm -fgcse-las -fvariable-expansion-in-unroller -funroll-all-loops -fsanitize=address -g
+  -fgcse-sm -fgcse-las -fvariable-expansion-in-unroller -funroll-all-loops
 
 LDFLAGS := -Wl,-O2 -Wl,--sort-common -Wl,--as-needed 
 OBJ_DIR = objs
@@ -83,7 +83,12 @@ SRC = src/main.c \
 		src/utils/threads_utils.c \
 		src/utils/error.c \
 		src/server/master.c \
+		src/server/setup_master.c \
 		src/server/worker.c \
+		src/server/worker_accept.c \
+		src/server/worker_run.c \
+		src/server/worker_tile.c \
+		src/server/worker_utils.c \
 		src/server/socket.c \
 		src/server/queue.c \
 		src/server/ip.c \

@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/11/07 10:42:02 by anakin           ###   ########.fr       */
+/*   Updated: 2025/10/30 09:58:39 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,6 @@ void	unregister_worker(t_master *master, int socket_fd)
 		if (master->worker_sockets[i] == socket_fd)
 		{
 			master->worker_sockets[i] = -1;
-			master->num_worker--;
-			printf("Worker %d disconnected (%d workers remaining)\n", socket_fd,
-				master->num_worker);
 			break ;
 		}
 		i++;
@@ -51,30 +48,28 @@ void	unregister_worker(t_master *master, int socket_fd)
 	pthread_mutex_unlock(&master->workers_lock);
 }
 
-static void	send_update_to_worker(int socket_fd, t_camera_update *cam_update)
+static void	send_broadcast(t_master *master, t_camera_update *cam_update)
 {
-	int	result;
+	int	i;
 
-	result = send_header(socket_fd, MSG_UPDATE, sizeof(t_camera_update));
-	if (result < 0)
+	i = 0;
+	while (i < MAX_WORKER)
 	{
-		printf("Failed to send header to worker socket %d\n", socket_fd);
-		return ;
+		if (master->worker_sockets[i] != -1)
+		{
+			send_header(master->worker_sockets[i], MSG_UPDATE,
+				sizeof(t_camera_update));
+			send_all(master->worker_sockets[i], cam_update,
+				sizeof(t_camera_update));
+			printf("Sent camera update to worker socket %d\n",
+				master->worker_sockets[i]);
+		}
+		i++;
 	}
-	result = send_all(socket_fd, cam_update, sizeof(t_camera_update));
-	if (result < 0)
-	{
-		printf("Failed to send update to worker socket %d\n", socket_fd);
-		return ;
-	}
-	printf("Sent camera update to worker socket %d\n", socket_fd);
 }
 
 void	broadcast_update(t_master *master, uint32_t update_value)
 {
-	int				i;
-	int				worker_sockets[MAX_WORKER];
-	int				num_workers;
 	t_camera_update	cam_update;
 
 	(void)update_value;
@@ -87,21 +82,8 @@ void	broadcast_update(t_master *master, uint32_t update_value)
 	cam_update.aa_state = master->data->settings.aa_state;
 	cam_update.light_state = master->data->settings.light_state;
 	pthread_mutex_lock(&master->workers_lock);
-	i = 0;
-	num_workers = 0;
-	while (i < MAX_WORKER)
-	{
-		if (master->worker_sockets[i] != -1)
-			worker_sockets[num_workers++] = master->worker_sockets[i];
-		i++;
-	}
+	send_broadcast(master, &cam_update);
 	pthread_mutex_unlock(&master->workers_lock);
-	i = 0;
-	while (i < num_workers)
-	{
-		send_update_to_worker(worker_sockets[i], &cam_update);
-		i++;
-	}
 	reset_queue(master->queue);
 	pthread_mutex_lock(&master->restart_lock);
 	master->restart_render = true;
