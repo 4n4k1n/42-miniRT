@@ -233,6 +233,9 @@ typedef struct s_anti_aliasing
 	uint32_t				packed;
 }							t_anti_aliasing;
 
+typedef struct s_hit_record	t_hit_record;
+typedef struct s_ray_color_vars	t_ray_color_vars;
+
 typedef struct s_camera
 {
 	double					aspect_ratio;

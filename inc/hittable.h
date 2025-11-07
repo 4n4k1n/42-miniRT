@@ -18,6 +18,36 @@ typedef struct s_hit_record
 	t_bump		*bump;
 }				t_hit_record;
 
+typedef struct s_ray_color_vars
+{
+	t_ray			current_ray;
+	t_rgb			final_color;
+	t_rgb			throughput;
+	t_hit_record	rec;
+	int				depth;
+	t_vec3			bumped;
+	int				front;
+	t_rgb			direct_light;
+	t_ray			scattered;
+	t_rgb			attenuation;
+	t_rgb			direct_contrib;
+	double			max_throughput;
+	double			brightness;
+	t_rgb			sky;
+}				t_ray_color_vars;
+
+typedef struct s_shadow_calc
+{
+	t_vec3			offset;
+	t_vec3			sample_point;
+	t_vec3			to_light;
+	double			distance;
+	t_vec3			light_dir;
+	t_ray			shadow_ray;
+	t_hit_record	shadow_rec;
+	double			diffuse;
+}	t_shadow_calc;
+
 int				hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin,
 					double tmax, t_hit_record *rec);
 int				hit_plane_obj(const t_plane *pl, t_ray *r, double tmin,

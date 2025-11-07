@@ -69,8 +69,12 @@ SRC = src/main.c \
 		src/logic/bvh_hit.c \
 		src/logic/bvh_cleanup.c \
 		src/logic/ray.c \
+		src/logic/ray_helpers.c \
+		src/logic/ray_lighting.c \
+		src/logic/ray_shadow.c \
 		src/logic/render.c \
 		src/logic/monte_carlo_aa.c \
+		src/logic/monte_carlo_aa_helpers.c \
 		src/logic/bump.c \
 		src/logic/camera.c \
 		src/logic/metal.c \

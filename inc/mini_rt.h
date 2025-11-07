@@ -27,8 +27,23 @@
 # include "../libft/libft.h"
 
 t_rgb		ray_color(t_ray *ray, t_data *data, int depth);
+t_rgb		calculate_direct_lighting(t_data *data, const t_hit_record *rec);
+t_rgb		calculate_final_color(t_rgb *final, t_ray *current_ray);
+t_rgb		sample_bump_rgb(const t_bump *b, double u, double v);
+void		apply_bump_mapping(t_ray_color_vars *vars);
+int			russian_roulette(t_ray_color_vars *vars);
+t_rgb		get_ambient_light(t_data *data, const t_hit_record *rec);
+int			is_in_shadow(t_data *data, t_shadow_calc *sc);
+void		add_light_sample(t_rgb *light_contrib, t_light *light,
+				const t_hit_record *rec, double diffuse);
+double		clamp(double x, double minv, double maxv);
+void		init_aa(t_anti_aliasing *aa);
+void		update_variance(t_anti_aliasing *aa);
+int			should_continue(t_anti_aliasing *aa);
+void		sample_pixel(t_data *data, t_anti_aliasing *aa, int i, int j);
+uint32_t	finalize_color(t_anti_aliasing *aa);
 uint32_t	rgb_to_uint32(t_rgb *color);
-void	init_camera(t_data *data);
+void		init_camera(t_data *data);
 uint32_t	monte_carlo_aa(t_data *data, int i, int j);
 uint32_t	without_aa(t_data *data, int i, int j);
 t_vec3	random_on_hemisphere(t_vec3 *normal);
