@@ -28,5 +28,6 @@ t_settings	recive_settings(int socket_fd)
 	settings.min_samples = ntohl(settings.min_samples);
 	settings.scale = ntohl(settings.scale);
 	settings.shadow_samples = ntohl(settings.shadow_samples);
+	settings.use_bvh = ntohl(settings.use_bvh);
 	return (settings);
 }

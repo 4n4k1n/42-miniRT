@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/31 11:45:44 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/07 10:30:24 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,10 +156,10 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 	depth = 0;
 	while (depth < max_depth)
 	{
-		if ((USE_BVH && world_hit_bvh(data->bvh_root, data->objects, \
-				&current_ray, 0.001, INFINITY, &rec)) || (!USE_BVH && \
-				data->objects && world_hit(data->objects, &current_ray, 0.001, \
-				INFINITY, &rec)))
+		if ((data->settings.use_bvh && world_hit_bvh(data->bvh_root, \
+				data->objects, &current_ray, 0.001, INFINITY, &rec)) \
+				|| (!data->settings.use_bvh && data->objects && \
+				world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec)))
 		{
 			if (rec.bump)
 			{
@@ -169,7 +169,8 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 				rec.front_face = front;
 				rec.rgb = sample_bump_rgb(rec.bump, rec.u, rec.v);
 			}
-			direct_light = calculate_direct_lighting(data, &rec);
+			if (depth == 0)
+				direct_light = calculate_direct_lighting(data, &rec);
 			if (rec.mat)
 			{
 				t_ray scattered;

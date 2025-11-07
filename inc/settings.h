@@ -37,7 +37,7 @@
 # endif
 
 # ifndef BONUS
-#  define BONUS 0
+#  define BONUS 1
 # endif
 
 #endif
