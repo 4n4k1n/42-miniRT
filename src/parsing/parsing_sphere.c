@@ -12,19 +12,11 @@
 
 #include "mini_rt.h"
 
-/**
- * Parses sphere object parameters from tokens
- * Format: sp <x,y,z> <diameter> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
- * The bump token, if present, must be last.
- */
-int	parse_sphere(char **tokens, t_data *scene)
+static int	parse_sphere_core(char **tokens, t_obj **out)
 {
 	t_obj	*o;
-	int		len;
 
-	len = ft_arrlen(tokens);
-	if (len < 4 || len > 6)
-		return (rt_error("invalid sphere format"));
+	*out = NULL;
 	o = obj_new(SPHERE);
 	if (!o)
 		return (rt_error("malloc failed (sphere)"));
@@ -36,14 +28,41 @@ int	parse_sphere(char **tokens, t_data *scene)
 	if (parse_rgb(tokens[3], &o->data.sphere.rgb))
 		return (free(o), rt_error("invalid sphere RGB"));
 	o->data.sphere.bump = NULL;
-	if (len >= 5 && ft_strncmp(tokens[len - 1], "bm:", 3) == 0)
+	*out = o;
+	return (0);
+}
+
+static int	parse_sphere_extras(char **tokens, int *len, t_obj *o)
+{
+	if (*len >= 5 && ft_strncmp(tokens[*len - 1], "bm:", 3) == 0)
 	{
-		if (parse_bump(tokens[len - 1], o))
-			return (free(o), rt_error("invalid sphere bump"));
-		len--;
+		if (parse_bump(tokens[*len - 1], o))
+			return (rt_error("invalid sphere bump"));
+		(*len)--;
 	}
-	if (parse_material(tokens, len, o))
-		return (free(o), rt_error("invalid sphere material"));
+	if (parse_material(tokens, *len, o))
+		return (rt_error("invalid sphere material"));
+	return (0);
+}
+
+/**
+ * Parses sphere object parameters from tokens
+ * Format: sp <x,y,z> <diameter> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * The bump token, if present, must be last.
+ */
+int	parse_sphere(char **tokens, t_data *scene)
+{
+	t_obj	*o;
+	int		len;
+
+	o = NULL;
+	len = ft_arrlen(tokens);
+	if (len < 4 || len > 6)
+		return (rt_error("invalid sphere format"));
+	if (parse_sphere_core(tokens, &o))
+		return (1);
+	if (parse_sphere_extras(tokens, &len, o))
+		return (free(o), 1);
 	if (obj_push(scene->objects, o))
 	{
 		if (o->data.sphere.mat)

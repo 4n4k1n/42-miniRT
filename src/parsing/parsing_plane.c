@@ -12,19 +12,11 @@
 
 #include "mini_rt.h"
 
-/**
- * Parses plane object parameters from tokens
- * Format: pl <x,y,z> <nx,ny,nz> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
- * The bump token, if present, must be last.
- */
-int	parse_plane(char **tokens, t_data *scene)
+static int	parse_plane_core(char **tokens, t_obj **out)
 {
 	t_obj	*o;
-	int		len;
 
-	len = ft_arrlen(tokens);
-	if (len < 4 || len > 6)
-		return (rt_error("invalid plane format"));
+	*out = NULL;
 	o = obj_new(PLANE);
 	if (!o)
 		return (rt_error("malloc failed (plane)"));
@@ -37,14 +29,41 @@ int	parse_plane(char **tokens, t_data *scene)
 	if (parse_rgb(tokens[3], &o->data.plane.rgb))
 		return (free(o), rt_error("invalid plane RGB"));
 	o->data.plane.bump = NULL;
-	if (len >= 5 && ft_strncmp(tokens[len - 1], "bm:", 3) == 0)
+	*out = o;
+	return (0);
+}
+
+static int	parse_plane_extras(char **tokens, int *len, t_obj *o)
+{
+	if (*len >= 5 && ft_strncmp(tokens[*len - 1], "bm:", 3) == 0)
 	{
-		if (parse_bump(tokens[len - 1], o))
-			return (free(o), rt_error("invalid plane bump"));
-		len--;
+		if (parse_bump(tokens[*len - 1], o))
+			return (rt_error("invalid plane bump"));
+		(*len)--;
 	}
-	if (parse_material(tokens, len, o))
-		return (free(o), rt_error("invalid plane material"));
+	if (parse_material(tokens, *len, o))
+		return (rt_error("invalid plane material"));
+	return (0);
+}
+
+/**
+ * Parses plane object parameters from tokens
+ * Format: pl <x,y,z> <nx,ny,nz> <r,g,b> [MaterialToken] [bm:<path>[:strength]]
+ * The bump token, if present, must be last.
+ */
+int	parse_plane(char **tokens, t_data *scene)
+{
+	t_obj	*o;
+	int		len;
+
+	o = NULL;
+	len = ft_arrlen(tokens);
+	if (len < 4 || len > 6)
+		return (rt_error("invalid plane format"));
+	if (parse_plane_core(tokens, &o))
+		return (1);
+	if (parse_plane_extras(tokens, &len, o))
+		return (free(o), 1);
 	if (obj_push(scene->objects, o))
 		return (free(o), rt_error("object push failed"));
 	return (0);
