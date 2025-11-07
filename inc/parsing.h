@@ -10,6 +10,14 @@ typedef struct s_arg_check
 	int	has_l;
 }		t_arg_check;
 
+typedef struct s_mat_ctx
+{
+	int			base_len;
+	int			i;
+	t_rgb		albedo;
+	t_material	**out;
+}	t_mat_ctx;
+
 // Error
 int		rt_error(const char *msg);
 void	free_scene(t_data *scene);

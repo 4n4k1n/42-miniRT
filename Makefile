@@ -52,6 +52,7 @@ SRC = src/main.c \
 		src/parsing/parsing.c \
 		src/parsing/utils.c \
 		src/parsing/validation_mat.c \
+		src/parsing/mat_token.c \
 		src/parsing/validation.c \
 		src/parsing/validators.c \
 		src/parsing/bump.c \
