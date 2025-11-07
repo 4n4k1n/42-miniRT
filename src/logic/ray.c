@@ -6,207 +6,85 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/07 10:30:24 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/07 13:17:00 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-static t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
+static int	check_hit(t_data *data, t_ray_color_vars *vars)
 {
-	t_vec3	unit_direction;
-	double	a;
-	t_vec3	temp1;
-	t_vec3	temp2;
-	t_vec3			color_a = (t_vec3){1.0, 1.0, 1.0};
-	t_vec3			color_b = (t_vec3){0.5, 0.7, 1.0};
-	t_vec3			result;
-	t_rgb			sky_color;
+	if (data->settings.use_bvh && world_hit_bvh(data->bvh_root,
+			data->objects, &vars->current_ray, 0.001, INFINITY,
+			&vars->rec))
+		return (1);
+	if (!data->settings.use_bvh && data->objects
+		&& world_hit(data->objects, &vars->current_ray, 0.001, INFINITY,
+			&vars->rec))
+		return (1);
+	return (0);
+}
 
-	if (!SKY)
+static int	process_scatter(t_data *data, t_ray_color_vars *vars)
+{
+	(void)data;
+	if (!vars->rec.mat)
+		return (0);
+	if (!vars->rec.mat->scatter(vars->rec.mat, &vars->current_ray,
+			&vars->rec, &vars->attenuation, &vars->scattered))
+		return (0);
+	vars->direct_contrib = rgb_modulate(vars->throughput,
+			vars->direct_light);
+	vars->final_color = rgb_add(vars->final_color,
+			vars->direct_contrib);
+	vars->throughput = rgb_modulate(vars->throughput,
+			vars->attenuation);
+	if (vars->depth >= 3)
 	{
-		color_a = vec3_init(0.0, 0.0, 0.0);
-		color_b = vec3_init(0.0, 0.0, 0.0);
+		if (russian_roulette(vars))
+			return (0);
 	}
-  unit_direction = vec3_normalize(current_ray->direction);
-	a = 0.5 * (unit_direction.y + 1.0);
-	temp1 = vec3_multiply(color_a, 1.0 - a);
-	temp2 = vec3_multiply(color_b, a);
-	result = vec3_add(temp1, temp2);
-	sky_color.r = fmin(fmax(result.x, 0.0), 1.0) * 255.999;
-	sky_color.g = fmin(fmax(result.y, 0.0), 1.0) * 255.999;
-	sky_color.b = fmin(fmax(result.z, 0.0), 1.0) * 255.999;
-	return (rgb_modulate(*final, sky_color));
+	vars->current_ray = vars->scattered;
+	vars->depth++;
+	return (1);
 }
 
-static t_rgb	calculate_direct_lighting(t_data *data, const t_hit_record *rec)
+static t_rgb	process_hit(t_data *data, t_ray_color_vars *vars)
 {
-	t_rgb			total_light;
-	t_light			*light;
-	int				hits;
-	int				samples;
-	double			light_radius;
-	t_rgb			light_contrib;
-	t_vec3			offset;
-	t_vec3			sample_point;
-	t_vec3			to_light;
-	double			distance;
-	t_vec3			light_dir;
-	t_ray			shadow_ray;
-	t_hit_record	shadow_rec;
-	double			diffuse;
-
-	total_light.r = (data->ambiente.color.r / 255.0) * (rec->rgb.r / 255.0) * data->ambiente.lighting * 255.0;
-	total_light.g = (data->ambiente.color.g / 255.0) * (rec->rgb.g / 255.0) * data->ambiente.lighting * 255.0;
-	total_light.b = (data->ambiente.color.b / 255.0) * (rec->rgb.b / 255.0) * data->ambiente.lighting * 255.0;
-	if (!data->settings.light_state || !data->light_list)
-		return (total_light);
-	light = data->light_list->head;
-	while (light)
-	{
-		hits = 0;
-		samples = 0;
-		light_radius = 0.5;
-		light_contrib = (t_rgb){0.0, 0.0, 0.0};
-		while (samples < SHADOW_SAMPLES)
-		{
-			offset = random_unit_vec3();
-			offset = vec3_multiply(offset, light_radius);
-			sample_point = vec3_add(light->cords, offset);
-			to_light = vec3_sub(sample_point, rec->p);
-			distance = sqrt(vec3_dot(to_light, to_light));
-			light_dir = vec3_divide(to_light, distance);
-			shadow_ray.origin = rec->p;
-			shadow_ray.direction = light_dir;
-			if (!((USE_BVH && data->bvh_root && world_hit_bvh(data->bvh_root, &shadow_ray, 0.001, distance - 0.001, &shadow_rec)) || (!USE_BVH && data->objects && world_hit(data->objects, &shadow_ray, 0.001, distance - 0.001, &shadow_rec))))
-			{
-				diffuse = fmax(0.0, vec3_dot(rec->normal, light_dir));
-				light_contrib.r += (light->color.r / 255.0) * (rec->rgb.r / 255.0) * light->intensity * diffuse * 255.0;
-				light_contrib.g += (light->color.g / 255.0) * (rec->rgb.g / 255.0) * light->intensity * diffuse * 255.0;
-				light_contrib.b += (light->color.b / 255.0) * (rec->rgb.b / 255.0) * light->intensity * diffuse * 255.0;
-				hits++;
-			}
-			samples++;
-		}
-		if (hits > 0)
-		{
-			light_contrib.r /= samples;
-			light_contrib.g /= samples;
-			light_contrib.b /= samples;
-			total_light = rgb_add(total_light, light_contrib);
-		}
-		light = light->next;
-	}
-	return (total_light);
+	if (vars->rec.bump)
+		apply_bump_mapping(vars);
+	if (vars->depth == 0)
+		vars->direct_light = calculate_direct_lighting(data, &vars->rec);
+	if (process_scatter(data, vars))
+		return ((t_rgb){-1.0, -1.0, -1.0});
+	vars->final_color = rgb_add(vars->final_color,
+			rgb_modulate(vars->throughput, vars->direct_light));
+	return (vars->final_color);
 }
 
-/**
- * Samples an RGB color from the attached PNG at uv
- * Returns sRGB in 0..255 to match the renderer’s color space
- */
-static t_rgb	sample_bump_rgb(const t_bump *b, double u, double v)
-{
-	uint32_t	ix;
-	uint32_t	iy;
-	size_t		idx;
-	double		ur;
-	double		vr;
-	double		r;
-	double		g;
-	double		bl;
-
-	if (!b || !b->pixels || !b->width || !b->height)
-		return ((t_rgb){255.0, 255.0, 255.0});
-	ur = u;
-	vr = v;
-	while (ur < 0.0)
-		ur += 1.0;
-	while (vr < 0.0)
-		vr += 1.0;
-	if (ur > 1.0)
-		ur = ur - floor(ur);
-	if (vr > 1.0)
-		vr = vr - floor(vr);
-	ix = (uint32_t)fmin((double)(b->width - 1), floor(ur * (double)b->width));
-	iy = (uint32_t)fmin((double)(b->height - 1), floor(vr * (double)b->height));
-	idx = ((size_t)iy * (size_t)b->width + (size_t)ix) * 4;
-	r = (double)b->pixels[idx + 0];
-	g = (double)b->pixels[idx + 1];
-	bl = (double)b->pixels[idx + 2];
-	return ((t_rgb){r, g, bl});
-}
-
-/**
- * Traces a ray with multiple bounces and accumulates color.
- * Applies bump mapping for normals and uses the PNG as albedo if present.
- */
 t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 {
-	t_ray			current_ray;
-	t_rgb			final_color;
-	t_rgb			throughput;
-	t_hit_record	rec;
-	t_rgb			direct_light;
-	t_rgb			direct_contrib;
-	int				depth;
+	t_ray_color_vars	vars;
+	t_rgb				result;
 
-	current_ray = *initial_ray;
-	final_color = (t_rgb){0.0, 0.0, 0.0};
-	throughput = (t_rgb){255.0, 255.0, 255.0};
-	depth = 0;
-	while (depth < max_depth)
+	vars.current_ray = *initial_ray;
+	vars.final_color = (t_rgb){0.0, 0.0, 0.0};
+	vars.throughput = (t_rgb){255.0, 255.0, 255.0};
+	vars.depth = 0;
+	while (vars.depth < max_depth)
 	{
-		if ((data->settings.use_bvh && world_hit_bvh(data->bvh_root, \
-				data->objects, &current_ray, 0.001, INFINITY, &rec)) \
-				|| (!data->settings.use_bvh && data->objects && \
-				world_hit(data->objects, &current_ray, 0.001, INFINITY, &rec)))
+		if (check_hit(data, &vars))
 		{
-			if (rec.bump)
-			{
-				t_vec3 bumped = bump_perturb_from_uv(rec.bump, rec.normal, rec.tangent, rec.bitangent, rec.u, rec.v);
-				int front = (vec3_dot(current_ray.direction, bumped) < 0.0);
-				rec.normal = front ? bumped : vec3_multiply(bumped, -1.0);
-				rec.front_face = front;
-				rec.rgb = sample_bump_rgb(rec.bump, rec.u, rec.v);
-			}
-			if (depth == 0)
-				direct_light = calculate_direct_lighting(data, &rec);
-			if (rec.mat)
-			{
-				t_ray scattered;
-				t_rgb attenuation;
-				if (rec.mat->scatter(rec.mat, &current_ray, &rec, &attenuation, &scattered))
-				{
-					double	max_throughput;
-					double	brightness;
-
-					direct_contrib = rgb_modulate(throughput, direct_light);
-					final_color = rgb_add(final_color, direct_contrib);
-					throughput = rgb_modulate(throughput, attenuation);
-					if (depth >= 3)
-					{
-						max_throughput = fmax(fmax(throughput.r, throughput.g), throughput.b);
-						brightness = max_throughput / 255.0;
-						if (brightness < 0.1)
-						{
-							if (random_double() > brightness)
-								return (final_color);
-							throughput = rgb_multiply(throughput, 1.0 / brightness);
-						}
-					}
-					current_ray = scattered;
-					depth++;
-					continue;
-				}
-			}
-			final_color = rgb_add(final_color, rgb_modulate(throughput, direct_light));
-			return (final_color);
+			result = process_hit(data, &vars);
+			if (result.r >= 0.0)
+				return (result);
+			continue ;
 		}
-		{
-			t_rgb sky = calculate_final_color(&final_color, &current_ray);
-			final_color = rgb_add(final_color, rgb_modulate(throughput, sky));
-			return (final_color);
-		}
+		vars.sky = calculate_final_color(&vars.final_color,
+				&vars.current_ray);
+		vars.final_color = rgb_add(vars.final_color,
+				rgb_modulate(vars.throughput, vars.sky));
+		return (vars.final_color);
 	}
-	return (final_color);
+	return (vars.final_color);
 }
