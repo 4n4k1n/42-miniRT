@@ -65,5 +65,19 @@ int	hit_triangle_test(const t_triangle *tri, t_ray *r, double tmin, \
 	set_face_normal(rec, r, &rec->normal);
 	rec->rgb = tri->rgb;
 	rec->mat = tri->mat;
+	{
+		t_vec3 tan = vec3_normalize(calc.e1);
+		t_vec3 bta = vec3_cross(rec->normal, tan);
+		if (vec3_near_zero(&bta))
+			bta = vec3_cross(rec->normal, (t_vec3){1.0, 0.0, 0.0});
+		bta = vec3_normalize(bta);
+		tan = vec3_cross(bta, rec->normal);
+
+		rec->tangent = tan;
+		rec->bitangent = bta;
+		rec->u = 0.0;
+		rec->v = 0.0;
+		rec->bump = NULL;
+	}
 	return (1);
 }

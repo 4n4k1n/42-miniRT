@@ -1,140 +1,87 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validation_mat.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/06 13:35:08 by nweber            #+#    #+#             */
+/*   Updated: 2025/11/07 12:15:18 by nweber           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_rt.h"
 
-static int	mat_base_for_obj(t_obj *o, int *base_len, t_rgb *albedo,
-			t_material ***outp)
+static int	init_mat_ctx(t_obj *o, t_mat_ctx *ctx)
 {
-	if (!o)
+	if (mat_base_for_obj(o, &ctx->base_len, &ctx->albedo, &ctx->out))
 		return (1);
-	if (o->type == SPHERE)
-	{
-		*base_len = 4;
-		*albedo = o->data.sphere.rgb;
-		*outp = &o->data.sphere.mat;
-		return (0);
-	}
-	if (o->type == PLANE)
-	{
-		*base_len = 4;
-		*albedo = o->data.plane.rgb;
-		*outp = &o->data.plane.mat;
-		return (0);
-	}
-	if (o->type == CYLINDER)
-	{
-		*base_len = 6;
-		*albedo = o->data.cylinder.rgb;
-		*outp = &o->data.cylinder.mat;
-		return (0);
-	}
-	if (o->type == PYRAMID)
-	{
-		*base_len = 6;
-		*albedo = o->data.cylinder.rgb;
-		*outp = &o->data.cylinder.mat;
-		return (0);
-	}
-	if (o->type == CONE)
-	{
-		*base_len = 6;
-		*albedo = o->data.cone.rgb;
-		*outp = &o->data.cone.mat;
-		return (0);
-	}
-	if (o->type == TRIANGLE)
-	{
-		*base_len = 5;
-		*albedo = o->data.triangle.rgb;
-		*outp = &o->data.triangle.mat;
-		return (0);
-	}
-	return (1);
-}
-
-static int	parse_ri_token(const char *mstr, double *ri)
-{
-	const char	*s;
-
-	*ri = 1.5;
-	s = ft_strchr(mstr, ':');
-	if (!s)
-		return (0);
-	s++;
-	if (parse_double(s, ri))
-		return (1);
-	if (*ri <= 0.0)
-		*ri = 1.5;
+	ctx->i = ctx->base_len;
 	return (0);
 }
 
-static int	create_material_from_token(const char *mstr, t_rgb albedo,
-			t_material **out)
+static int	apply_mat_token(char **tokens, int len, t_mat_ctx *ctx)
 {
-	double	ri;
+	const char	*mstr;
 
-	if (mstr[0] == 'L')
+	mstr = "L";
+	if (ctx->i < len && (tokens[ctx->i][0] == 'L'
+		|| tokens[ctx->i][0] == 'M' || tokens[ctx->i][0] == 'G'))
 	{
-		*out = material_lambertian(albedo);
-		return (*out == NULL);
+		mstr = tokens[ctx->i];
+		ctx->i++;
 	}
-	if (mstr[0] == 'M')
+	if (create_material_from_token(mstr, ctx->albedo, ctx->out))
+		return (1);
+	return (0);
+}
+
+static int	apply_texture_token(const char *rest, t_material **out)
+{
+	double	scale;
+
+	if (ft_strncmp(rest, "checker", 7) != 0)
+		return (1);
+	scale = 1.0;
+	rest += 7;
+	if (*rest == ':')
 	{
-		*out = material_metal(albedo, 0.0);
-		return (*out == NULL);
-	}
-	if (mstr[0] == 'G')
-	{
-		if (parse_ri_token(mstr, &ri))
+		rest++;
+		if (parse_double(rest, &scale))
 			return (1);
-		*out = material_dielectric(ri);
-		return (*out == NULL);
+		if (scale <= 0.0)
+			scale = 1.0;
 	}
-	return (1);
+	(*out)->texture_type = CHECKER;
+	(*out)->texture_scale = scale;
+	(*out)->texture_a = (t_rgb){255.0, 255.0, 255.0};
+	(*out)->texture_b = (t_rgb){0.0, 0.0, 0.0};
+	return (0);
+}
+
+static int	parse_material_extras(char **tokens, int len, t_mat_ctx *ctx)
+{
+	while (ctx->i < len)
+	{
+		if (ft_strncmp(tokens[ctx->i], "tx:", 3) == 0)
+		{
+			if (apply_texture_token(tokens[ctx->i] + 3, ctx->out))
+				return (1);
+		}
+		ctx->i++;
+	}
+	return (0);
 }
 
 int	parse_material(char **tokens, int len, t_obj *o)
 {
-	int			base_len;
-	int			has_mat;
-	int			mat_idx;
-	const char	*mstr;
-	t_rgb		albedo;
-	t_material	**out;
-	int			i;
+	t_mat_ctx	ctx;
 
-	if (mat_base_for_obj(o, &base_len, &albedo, &out))
+	if (init_mat_ctx(o, &ctx))
 		return (1);
-	has_mat = 0;
-	mat_idx = base_len;
-	if (len > base_len && (tokens[mat_idx][0] == 'L'
-			|| tokens[mat_idx][0] == 'M' || tokens[mat_idx][0] == 'G'))
-		has_mat = 1;
-	mstr = has_mat ? tokens[mat_idx] : "L";
-	if (create_material_from_token(mstr, albedo, out))
+	if (apply_mat_token(tokens, len, &ctx))
 		return (1);
-	i = mat_idx + (has_mat ? 1 : 0);
-	while (i < len)
-	{
-		if (ft_strncmp(tokens[i], "tx:", 3) == 0)
-		{
-			const char *rest = tokens[i] + 3;
-			double scale = 1.0;
-			if (ft_strncmp(rest, "checker", 7) != 0)
-				return (1);
-			rest += 7;
-			if (*rest == ':')
-			{
-				rest++;
-				if (parse_double(rest, &scale))
-					return (1);
-				if (scale <= 0.0)
-					scale = 1.0;
-			}
-			(*out)->texture_type = CHECKER;
-			(*out)->texture_scale = scale;
-			(*out)->texture_a = (t_rgb){255.0, 255.0, 255.0};
-			(*out)->texture_b = (t_rgb){0.0, 0.0, 0.0};
-		}
-		i++;
-	}
+	if (parse_material_extras(tokens, len, &ctx))
+		return (1);
 	return (0);
 }

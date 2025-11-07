@@ -12,42 +12,6 @@
 
 #include "mini_rt.h"
 
-// fd = open(av[1], O_RDONLY)
-// while(1)
-// 	read line with gnl until newline-> validate the line
-// 		-> if valid safe in data struct
-// Capitalized Elements are only used once
-// Random amount of whitespaces and newlines
-// First info is always the identifier
-//
-
-/**
- * Removes comments and whitespace from input line
- * Strips everything after '#' character and trims spaces
- * Returns cleaned string for parsing
- */
-static char	*trim_and_strip(char *s)
-{
-	char	*hash;
-	char	*out;
-	char	*p;
-
-	hash = ft_strchr(s, '#');
-	if (hash)
-		*hash = '\0';
-	out = ft_strtrim(s, " \t\r\n");
-	if (!out)
-		return (NULL);
-	p = out;
-	while (*p)
-	{
-		if (*p == '\t')
-			*p = ' ';
-		p++;
-	}
-	return (out);
-}
-
 /**
  * Initializes scene data structures and lists
  * Allocates memory for object and light lists
@@ -104,6 +68,24 @@ static int	dispatch_line(char **tokens, t_data *scene, t_arg_check *args)
 }
 
 /**
+ * Processes a single line: tokenize and dispatch
+ */
+static int	process_line(char *line, t_data *scene, t_arg_check *args)
+{
+	char	**tokens;
+
+	if (line[0] == '\0')
+		return (0);
+	tokens = ft_split(line, ' ');
+	if (!tokens)
+		return (rt_error("malloc error"));
+	if (dispatch_line(tokens, scene, args))
+		return (ft_array_free(tokens), 1);
+	ft_array_free(tokens);
+	return (0);
+}
+
+/**
  * Main parsing loop that reads and processes each line
  * Reads file line by line, cleans and tokenizes each line
  * Validates presence of required elements (A, C, L)
@@ -112,7 +94,6 @@ static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 {
 	char	*raw;
 	char	*line;
-	char	**tokens;
 	int		i;
 
 	args->has_a = 0;
@@ -126,15 +107,8 @@ static int	read_parse(int fd, t_data *scene, t_arg_check *args)
 		free(raw);
 		if (!line)
 			return (rt_error("malloc error"));
-		if (line[0] != '\0')
-		{
-			tokens = ft_split(line, ' ');
-			if (!tokens)
-				return (free(line), rt_error("malloc error"));
-			if (dispatch_line(tokens, scene, args))
-				return (ft_array_free(tokens), free(line), 1);
-			ft_array_free(tokens);
-		}
+		if (process_line(line, scene, args))
+			return (free(line), 1);
 		free(line);
 		printf("Parsed obj: %d\n", i++);
 		raw = get_next_line(fd);

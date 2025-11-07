@@ -43,7 +43,6 @@ void	*thread_job(void *arg)
 		while (i < HEIGHT)
 		{
 			thread_put_row(thread, i);
-			printf("%d\n", i);
 			i += thread->data->threads_amount;
 		}
 		pthread_mutex_lock(&thread->active_mutex);

@@ -10,6 +10,14 @@ typedef struct s_arg_check
 	int	has_l;
 }		t_arg_check;
 
+typedef struct s_mat_ctx
+{
+	int			base_len;
+	int			i;
+	t_rgb		albedo;
+	t_material	**out;
+}	t_mat_ctx;
+
 // Error
 int		rt_error(const char *msg);
 void	free_scene(t_data *scene);
@@ -36,6 +44,7 @@ int		parse_rgb(const char *str, t_rgb *out);
 
 // Validators
 int		validate_fov(double fov);
+char	*trim_and_strip(char *s);
 int		vec_in_range(t_vec3 *vec, double min, double max);
 int		in_range_d(double v, double min, double max);
 int		vec_non_zero(t_vec3 v);
@@ -50,5 +59,6 @@ int		light_push(t_light_list *lst, t_light *node);
 void	print_scene(const t_data *scene);
 void	print_vec3(const char *name, t_vec3 v);
 void	print_rgb(const char *name, t_rgb c);
+void	print_objects(const t_obj_list *lst);
 
 #endif

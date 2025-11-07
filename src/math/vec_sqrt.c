@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#define _GNU_SOURCE
 #include "mini_rt.h"
 #include <math.h>
+#define _GNU_SOURCE
 
 double			sqrt(double x);
 

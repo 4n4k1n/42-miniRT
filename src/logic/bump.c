@@ -54,7 +54,7 @@ t_vec3	bump_perturb_from_uv(const t_bump *b, t_vec3 n, t_vec3 t, t_vec3 bta,
 	double	scale;
 	t_vec3	off;
 
-	if (!b)
+	if (!b || b->strength <= 0.0)
 		return (n);
 	du = 1.0 / (double)fmax(1u, b->width);
 	dv = 1.0 / (double)fmax(1u, b->height);
