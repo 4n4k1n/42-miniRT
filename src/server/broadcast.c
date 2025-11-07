@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   broadcast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claude <claude@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/10/24 00:00:00 by claude           ###   ########.fr       */
+/*   Updated: 2025/11/07 10:42:02 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	unregister_worker(t_master *master, int socket_fd)
 		{
 			master->worker_sockets[i] = -1;
 			master->num_worker--;
-			printf("Worker %d disconnected (%d workers remaining)\n",
-				socket_fd, master->num_worker);
+			printf("Worker %d disconnected (%d workers remaining)\n", socket_fd,
+				master->num_worker);
 			break ;
 		}
 		i++;

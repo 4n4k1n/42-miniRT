@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   send_all.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: claude <claude@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/10/24 00:00:00 by claude           ###   ########.fr       */
+/*   Updated: 2025/11/07 10:42:09 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,21 @@
  * Loops until the entire buffer is transmitted or an error occurs.
  * Returns 0 on success, -1 on error.
  */
-int send_all(int socket_fd, const void *buffer, size_t length)
+int	send_all(int socket_fd, const void *buffer, size_t length)
 {
-    const char  *ptr;
-    size_t      remaining;
-    ssize_t     sent;
+	const char	*ptr;
+	size_t		remaining;
+	ssize_t		sent;
 
-    ptr = (const char *)buffer;
-    remaining = length;
-    while (remaining > 0)
-    {
-        sent = send(socket_fd, ptr, remaining, 0);
-        if (sent <= 0)
-            return (-1);
-        ptr += sent;
-        remaining -= sent;
-    }
-    return (0);
+	ptr = (const char *)buffer;
+	remaining = length;
+	while (remaining > 0)
+	{
+		sent = send(socket_fd, ptr, remaining, 0);
+		if (sent <= 0)
+			return (-1);
+		ptr += sent;
+		remaining -= sent;
+	}
+	return (0);
 }
