@@ -3,6 +3,10 @@
 
 # include "objects.h"
 
+# ifndef M_PI
+#  define M_PI 3.14159265358979323846
+# endif
+
 t_vec3	vec3_add(const t_vec3 a, const t_vec3 b);
 t_vec3	vec3_sub(const t_vec3 a, const t_vec3 b);
 t_vec3	vec3_multiply(const t_vec3 a, double t);

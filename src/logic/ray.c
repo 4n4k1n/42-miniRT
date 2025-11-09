@@ -27,11 +27,16 @@ static int	check_hit(t_data *data, t_ray_color_vars *vars)
 
 static int	process_scatter(t_data *data, t_ray_color_vars *vars)
 {
+	struct s_scatter_ctx	ctx;
+
 	(void)data;
 	if (!vars->rec.mat)
 		return (0);
-	if (!vars->rec.mat->scatter(vars->rec.mat, &vars->current_ray,
-			&vars->rec, &vars->attenuation, &vars->scattered))
+	ctx.r_in = &vars->current_ray;
+	ctx.rec = &vars->rec;
+	ctx.attenuation = &vars->attenuation;
+	ctx.scattered = &vars->scattered;
+	if (!vars->rec.mat->scatter(vars->rec.mat, &ctx))
 		return (0);
 	vars->direct_contrib = rgb_modulate(vars->throughput,
 			vars->direct_light);

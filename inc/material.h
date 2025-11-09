@@ -9,10 +9,7 @@ typedef struct s_material t_material;
 
 typedef int (*t_scatter_fn)(
 	const t_material* self,
-	const struct s_ray* r_in,
-	const struct s_hit_record* rec,
-	struct s_rgb* attenuation,
-	struct s_ray* scattered
+	struct s_scatter_ctx* ctx
 );
 
 typedef enum e_material_type
@@ -27,6 +24,15 @@ typedef enum e_texture_type
 	NONE,
 	CHECKER,
 }	t_texture_type;
+
+struct s_scatter_ctx
+{
+	const struct s_ray			*r_in;
+	const struct s_hit_record	*rec;
+	struct s_rgb				*attenuation;
+	struct s_ray				*scattered;
+};
+
 struct s_material
 {
 	t_scatter_fn	scatter;

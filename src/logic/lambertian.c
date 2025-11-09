@@ -1,7 +1,7 @@
 #include "mini_rt.h"
 
-static int	lambertian_scatter(const t_material *self, const t_ray *r_in,
-		const t_hit_record *rec, t_rgb *attenuation, t_ray *scattered)
+static int	lambertian_scatter(const t_material *self,
+	struct s_scatter_ctx *ctx)
 {
 	t_vec3	dir;
 	t_rgb	base;
@@ -9,20 +9,21 @@ static int	lambertian_scatter(const t_material *self, const t_ray *r_in,
 	double	s;
 	int		m;
 
-	(void)r_in;
-	dir = random_on_hemisphere((t_vec3 *)&rec->normal);
-	scattered->origin = apply_surface_bias(rec->p, dir, rec->normal);
-	scattered->direction = dir;
+	(void)ctx->r_in;
+	dir = random_on_hemisphere((t_vec3 *)&ctx->rec->normal);
+	ctx->scattered->origin = apply_surface_bias(ctx->rec->p, dir,
+			ctx->rec->normal);
+	ctx->scattered->direction = dir;
 	if (self->texture_type == CHECKER)
 	{
 		s = (self->texture_scale <= 0.0) ? 1.0 : self->texture_scale;
-		m = (((int)floor(rec->u * s)) + ((int)floor(rec->v * s))) & 1;
+		m = (((int)floor(ctx->rec->u * s)) + ((int)floor(ctx->rec->v * s))) & 1;
 		texc = m ? self->texture_b : self->texture_a;
 	}
 	else
 		texc = (t_rgb){255.0, 255.0, 255.0};
-	base = rgb_modulate(rec->rgb, texc);
-	*attenuation = rgb_modulate(self->albedo, base);
+	base = rgb_modulate(ctx->rec->rgb, texc);
+	*ctx->attenuation = rgb_modulate(self->albedo, base);
 	return (1);
 }
 
