@@ -16,6 +16,22 @@ typedef struct s_slab_test
 	int		axis;
 }	t_slab_test;
 
+typedef struct s_cyl_bounds
+{
+	t_vec3	center;
+	t_vec3	axis;
+	double	radius;
+	double	half_h;
+}	t_cyl_bounds;
+
+typedef struct s_plane_basis
+{
+	t_vec3	c;
+	t_vec3	t;
+	t_vec3	b;
+	double	hs;
+}	t_plane_basis;
+
 typedef struct s_hit_record
 {
 	t_vec3		p;
