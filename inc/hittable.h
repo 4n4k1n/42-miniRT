@@ -9,6 +9,13 @@ typedef struct s_hit_range
 	double	tmax;
 }	t_hit_range;
 
+typedef struct s_slab_test
+{
+	double	tmin;
+	double	tmax;
+	int		axis;
+}	t_slab_test;
+
 typedef struct s_hit_record
 {
 	t_vec3		p;
