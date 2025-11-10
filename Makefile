@@ -64,10 +64,14 @@ SRC = src/main.c \
 		src/logic/hit_triangle.c \
 		src/logic/hittable.c \
 		src/logic/aabb.c \
+		src/logic/aabb_utils.c \
 		src/logic/bounds.c \
+		src/logic/bounds_simple.c \
+		src/logic/bounds_dispatch.c \
 		src/logic/bvh_build.c \
 		src/logic/bvh_hit.c \
 		src/logic/bvh_cleanup.c \
+		src/logic/bvh_utils.c \
 		src/logic/ray.c \
 		src/logic/ray_helpers.c \
 		src/logic/ray_lighting.c \

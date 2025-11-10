@@ -4,6 +4,7 @@
 struct s_ray;
 struct s_rgb;
 struct s_hit_record;
+struct s_scatter_ctx;
 
 typedef struct s_material t_material;
 
