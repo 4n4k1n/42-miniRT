@@ -3,6 +3,12 @@
 
 # include "mini_rt.h"
 
+typedef struct s_hit_range
+{
+	double	tmin;
+	double	tmax;
+}	t_hit_range;
+
 typedef struct s_hit_record
 {
 	t_vec3		p;
@@ -17,6 +23,14 @@ typedef struct s_hit_record
 	t_vec3		bitangent;
 	t_bump		*bump;
 }				t_hit_record;
+
+typedef struct s_bvh_hit_pair
+{
+	int				hit_left;
+	int				hit_right;
+	t_hit_record	left_rec;
+	t_hit_record	right_rec;
+}	t_bvh_hit_pair;
 
 typedef struct s_ray_color_vars
 {
@@ -84,8 +98,13 @@ t_aabb			get_cylinder_bounds(const t_cylinder *c);
 t_aabb			get_triangle_bounds(const t_triangle *t);
 t_aabb			get_object_bounds(const t_obj *obj);
 t_bvh_node		*build_bvh(t_obj_list *list);
-int				bvh_hit(t_bvh_node *node, t_ray *r, double tmin, double tmax,
+int				bvh_hit(t_bvh_node *node, t_ray *r, t_hit_range range,
 					t_hit_record *rec);
 void			free_bvh(t_bvh_node *node);
+int				get_longest_axis(t_aabb *box);
+double			get_centroid_component(t_obj *obj, int axis);
+void			swap_objects(t_obj **a, t_obj **b);
+int				partition_objects(t_obj **objects, int count, int axis);
+t_aabb			compute_bounds(t_obj **objects, int count);
 
 #endif

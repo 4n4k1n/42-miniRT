@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bounds.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/31 11:50:29 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/10 17:49:35 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ t_aabb	get_plane_bounds(const t_plane *p)
 	t_vec3	expand;
 
 	n = vec3_normalize(p->norm);
-	tmp = (fabs(n.y) < 0.999) ? (t_vec3){0.0, 1.0, 0.0} : (t_vec3){1.0, 0.0, 0.0};
+	tmp = (fabs(n.y) < 0.999) ? (t_vec3){0.0, 1.0, 0.0} : (t_vec3){1.0, 0.0,
+		0.0};
 	t = vec3_normalize(vec3_cross(tmp, n));
 	b = vec3_cross(n, t);
 	hs = 10000.0;
@@ -91,8 +92,8 @@ t_aabb	get_plane_bounds(const t_plane *p)
 	return (box);
 }
 
-static void	expand_cylinder_caps(t_aabb *box, t_vec3 center, \
-		t_vec3 axis, double radius, double half_h)
+static void	expand_cylinder_caps(t_aabb *box, t_vec3 center, t_vec3 axis,
+		double radius, double half_h)
 {
 	t_vec3	top;
 	t_vec3	bottom;

@@ -12,20 +12,20 @@
 
 #include "mini_rt.h"
 
-static int	test_leaf_objects(t_bvh_node *node, t_ray *r, \
-		double tmin, double tmax, t_hit_record *rec)
+static int	test_leaf_objects(t_bvh_node *node, t_ray *r,
+	t_hit_range range, t_hit_record *rec)
 {
 	t_hit_record	tmp;
 	double			closest;
 	int				hit_any;
 	int				i;
 
-	closest = tmax;
+	closest = range.tmax;
 	hit_any = 0;
 	i = 0;
 	while (i < node->obj_count)
 	{
-		if (hittable_hit(node->objects[i], r, tmin, closest, &tmp))
+		if (hittable_hit(node->objects[i], r, range.tmin, closest, &tmp))
 		{
 			hit_any = 1;
 			closest = tmp.t;
@@ -36,36 +36,41 @@ static int	test_leaf_objects(t_bvh_node *node, t_ray *r, \
 	return (hit_any);
 }
 
+static int	process_both_hits(t_hit_record *left_rec, t_hit_record *right_rec,
+	t_hit_record *rec)
+{
+	if (left_rec->t < right_rec->t)
+		*rec = *left_rec;
+	else
+		*rec = *right_rec;
+	return (1);
+}
+
+static int	process_child_hits(t_bvh_hit_pair *pair, t_hit_record *rec)
+{
+	if (pair->hit_left && pair->hit_right)
+		return (process_both_hits(&pair->left_rec, &pair->right_rec, rec));
+	if (pair->hit_left)
+		*rec = pair->left_rec;
+	else if (pair->hit_right)
+		*rec = pair->right_rec;
+	return (pair->hit_left || pair->hit_right);
+}
+
 /**
  * Recursively traverses BVH tree to find ray intersections
  */
-int	bvh_hit(t_bvh_node *node, t_ray *r, double tmin, \
-		double tmax, t_hit_record *rec)
+int	bvh_hit(t_bvh_node *node, t_ray *r, t_hit_range range, t_hit_record *rec)
 {
-	t_hit_record	left_rec;
-	t_hit_record	right_rec;
-	int				hit_left;
-	int				hit_right;
+	t_bvh_hit_pair	pair;
 
 	if (!node)
 		return (0);
-	if (!aabb_hit(&node->box, r, tmin, tmax))
+	if (!aabb_hit(&node->box, r, range.tmin, range.tmax))
 		return (0);
 	if (node->obj_count > 0)
-		return (test_leaf_objects(node, r, tmin, tmax, rec));
-	hit_left = bvh_hit(node->left, r, tmin, tmax, &left_rec);
-	hit_right = bvh_hit(node->right, r, tmin, tmax, &right_rec);
-	if (hit_left && hit_right)
-	{
-		if (left_rec.t < right_rec.t)
-			*rec = left_rec;
-		else
-			*rec = right_rec;
-		return (1);
-	}
-	if (hit_left)
-		*rec = left_rec;
-	else if (hit_right)
-		*rec = right_rec;
-	return (hit_left || hit_right);
+		return (test_leaf_objects(node, r, range, rec));
+	pair.hit_left = bvh_hit(node->left, r, range, &pair.left_rec);
+	pair.hit_right = bvh_hit(node->right, r, range, &pair.right_rec);
+	return (process_child_hits(&pair, rec));
 }

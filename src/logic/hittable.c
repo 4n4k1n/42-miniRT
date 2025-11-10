@@ -84,12 +84,15 @@ int	world_hit_bvh(t_bvh_node *bvh, t_obj_list *objects, t_ray *r, \
 	t_obj			*cur;
 	int				hit_any;
 	double			closest;
+	t_hit_range		range;
 
 	if (!out)
 		return (0);
 	hit_any = 0;
 	closest = max;
-	if (bvh && bvh_hit(bvh, r, min, closest, out))
+	range.tmin = min;
+	range.tmax = closest;
+	if (bvh && bvh_hit(bvh, r, range, out))
 	{
 		hit_any = 1;
 		closest = out->t;
