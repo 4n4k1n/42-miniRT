@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   bounds_dispatch.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/28 00:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 15:58:18 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,7 @@ t_aabb	get_object_bounds(const t_obj *obj)
 		return (get_cylinder_bounds(&obj->data.cylinder));
 	else if (obj->type == TRIANGLE)
 		return (get_triangle_bounds(&obj->data.triangle));
+	else if (obj->type == CONE)
+		return (get_cone_bounds(&obj->data.cone));
 	return ((t_aabb){{0, 0, 0}, {0, 0, 0}});
 }

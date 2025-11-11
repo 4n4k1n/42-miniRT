@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/11 00:00:00 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 00:00:00 by nweber           ###   ########.fr       */
+/*   Created: 2025/11/11 16:19:22 by nweber            #+#    #+#             */
+/*   Updated: 2025/11/11 16:19:25 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,11 @@ int	cone_base_hit(const t_cone *co, t_ray *r, t_hit_range range,
 void	compute_cone_uv(const t_cone *co, t_hit_record *rec, t_cone_uv *uv)
 {
 	t_vec3	a;
+	t_vec3	apex;
 
 	a = vec3_normalize(co->norm);
+	apex = vec3_sub(co->cords, vec3_multiply(a, co->height * 0.5));
+	uv->tan = apex;
 	uv->k = vec3_sub(rec->p, uv->tan);
 	uv->ra = vec3_normalize(vec3_sub(uv->k,
 				vec3_multiply(a, vec3_dot(uv->k, a))));
@@ -60,7 +63,7 @@ void	set_cone_tangent_basis(const t_cone *co, t_hit_record *rec)
 	t_vec3	apex;
 
 	a = vec3_normalize(co->norm);
-	apex = vec3_add(co->cords, vec3_multiply(a, co->height * 0.5));
+	apex = vec3_sub(co->cords, vec3_multiply(a, co->height * 0.5));
 	rec->tangent = vec3_normalize(vec3_cross(a,
 				vec3_normalize(vec3_sub(rec->p, apex))));
 	rec->bitangent = a;
