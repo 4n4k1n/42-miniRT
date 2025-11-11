@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 16:19:22 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 16:19:25 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/11 18:05:58 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,29 +43,45 @@ int	cone_base_hit(const t_cone *co, t_ray *r, t_hit_range range,
 void	compute_cone_uv(const t_cone *co, t_hit_record *rec, t_cone_uv *uv)
 {
 	t_vec3	a;
-	t_vec3	apex;
+	t_vec3	r;
+	t_vec3	f;
+	t_vec3	c;
+	t_vec3	k;
 
 	a = vec3_normalize(co->norm);
-	apex = vec3_sub(co->cords, vec3_multiply(a, co->height * 0.5));
-	uv->tan = apex;
-	uv->k = vec3_sub(rec->p, uv->tan);
-	uv->ra = vec3_normalize(vec3_sub(uv->k,
-				vec3_multiply(a, vec3_dot(uv->k, a))));
-	uv->x = vec3_dot(uv->ra, uv->tan);
-	uv->y = vec3_dot(uv->ra, vec3_cross(a, uv->tan));
-	rec->u = (atan2(uv->y, uv->x) + M_PI) / (2.0 * M_PI);
-	rec->v = fmax(0.0, fmin(1.0, vec3_dot(uv->k, a) / co->height));
+	build_basis(a, &r, &f);
+	if (fabs(vec3_dot(rec->normal, a)) > 0.999)
+	{
+		c = vec3_add(co->cords, vec3_multiply(a, co->height * 0.5));
+		k = vec3_sub(rec->p, c);
+		rec->u = 0.5 + 0.5 * (vec3_dot(k, r) / (co->diameter * 0.5));
+		rec->v = 0.5 + 0.5 * (vec3_dot(k, f) / (co->diameter * 0.5));
+		return ;
+	}
+	c = vec3_sub(co->cords, vec3_multiply(a, co->height * 0.5));
+	k = vec3_sub(rec->p, c);
+	uv->x = vec3_dot(k, a);
+	k = vec3_sub(k, vec3_multiply(a, uv->x));
+	k = vec3_normalize(k);
+	rec->u = (atan2(vec3_dot(k, f), vec3_dot(k, r)) + M_PI) / (2.0 * M_PI);
+	rec->v = fmax(0.0, fmin(1.0, uv->x / co->height));
 }
 
 void	set_cone_tangent_basis(const t_cone *co, t_hit_record *rec)
 {
 	t_vec3	a;
-	t_vec3	apex;
+	t_vec3	c;
+	t_vec3	r;
 
 	a = vec3_normalize(co->norm);
-	apex = vec3_sub(co->cords, vec3_multiply(a, co->height * 0.5));
-	rec->tangent = vec3_normalize(vec3_cross(a,
-				vec3_normalize(vec3_sub(rec->p, apex))));
+	if (fabs(vec3_dot(rec->normal, a)) > 0.999)
+	{
+		build_basis(a, &rec->tangent, &rec->bitangent);
+		return ;
+	}
+	c = vec3_sub(co->cords, vec3_multiply(a, co->height * 0.5));
+	r = vec3_normalize(vec3_sub(rec->p, c));
+	rec->tangent = vec3_normalize(vec3_cross(a, r));
 	rec->bitangent = a;
 }
 

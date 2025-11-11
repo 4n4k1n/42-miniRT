@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 11:05:05 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/29 15:21:00 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/11 18:06:16 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,29 @@ static int	cone_side_hit(const t_cone *co, t_ray *r, t_hit_range range,
 {
 	t_cone_calc	cc;
 	t_cone_quad	cq;
+	double		t0;
+	double		t1;
 	double		t;
 
 	init_cone_calc(co, r, &cc);
 	if (!solve_cone_quad(r, &cc, &cq))
 		return (0);
-	if (!select_cone_root(&cq, range, &t))
-		return (0);
-	if (!validate_cone_hit(co, r, &cc, t))
+	t0 = (-cq.quad_b - sqrt(cq.dis)) / (2.0 * cq.quad_a);
+	t1 = (-cq.quad_b + sqrt(cq.dis)) / (2.0 * cq.quad_a);
+	if (t0 > t1)
+	{
+		t = t0;
+		t0 = t1;
+		t1 = t;
+	}
+	t = t0;
+	if (t <= range.tmin || t >= range.tmax || !validate_cone_hit(co, r, &cc, t))
+		t = t1;
+	if (t <= range.tmin || t >= range.tmax || !validate_cone_hit(co, r, &cc, t))
 		return (0);
 	set_cone_normal(r, &cc, t, rec);
 	rec->rgb = co->rgb;
-	rec->mat = co->mat;
-	return (1);
+	return (rec->mat = co->mat, 1);
 }
 
 static int	test_cone_hits(const t_cone *co, t_ray *r, t_hit_range range,
