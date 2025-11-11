@@ -27,13 +27,20 @@ t_rgb	get_ambient_light(t_data *data, const t_hit_record *rec)
 
 int	is_in_shadow(t_data *data, t_shadow_calc *sc)
 {
-	if (data->settings.use_bvh && data->bvh_root
-		&& world_hit_bvh(data->bvh_root, data->objects,
-			&sc->shadow_ray, 0.001, sc->distance - 0.001, &sc->shadow_rec))
-		return (1);
+	t_bvh_ctx	bvh_ctx;
+	t_hit_range	range;
+
+	range.tmin = 0.001;
+	range.tmax = sc->distance - 0.001;
+	if (data->settings.use_bvh && data->bvh_root)
+	{
+		bvh_ctx = (t_bvh_ctx){data->bvh_root, data->objects,
+			&sc->shadow_ray, range};
+		if (world_hit_bvh(&bvh_ctx, &sc->shadow_rec))
+			return (1);
+	}
 	if (!data->settings.use_bvh && data->objects
-		&& world_hit(data->objects, &sc->shadow_ray, 0.001, sc->distance
-			- 0.001, &sc->shadow_rec))
+		&& world_hit(data->objects, &sc->shadow_ray, range, &sc->shadow_rec))
 		return (1);
 	return (0);
 }

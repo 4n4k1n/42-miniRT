@@ -86,6 +86,23 @@ typedef struct s_py_basis
 	double	hw;
 }	t_py_basis;
 
+typedef struct s_plane_check
+{
+	t_obj_list		*objects;
+	t_ray			*r;
+	t_hit_range		*range;
+	t_hit_record	*out;
+	int				*hit_any;
+}	t_plane_check;
+
+typedef struct s_bvh_ctx
+{
+	t_bvh_node		*bvh;
+	t_obj_list		*objects;
+	t_ray			*r;
+	t_hit_range		range;
+}	t_bvh_ctx;
+
 typedef struct s_hit_record
 {
 	t_vec3		p;
@@ -155,12 +172,11 @@ int				hit_triangle_test(const t_triangle *tri, t_ray *r,
 					t_hit_record *rec, t_tri_hit_ctx ctx);
 void			set_face_normal(t_hit_record *rec, const t_ray *r,
 					const t_vec3 *outw);
-int				hittable_hit(const t_obj *o, t_ray *r, double min, double max,
+int				hittable_hit(const t_obj *o, t_ray *r, t_hit_range range,
 					t_hit_record *rec);
-int				world_hit(const t_obj_list *list, t_ray *r, double min,
-					double max, t_hit_record *out);
-int				world_hit_bvh(t_bvh_node *bvh, t_obj_list *objects, t_ray *r,
-					double min, double max, t_hit_record *out);
+int				world_hit(const t_obj_list *list, t_ray *r, t_hit_range range,
+					t_hit_record *out);
+int				world_hit_bvh(t_bvh_ctx *ctx, t_hit_record *out);
 t_vec3			bump_perturb_from_uv(const t_bump *b, t_vec3 n, t_vec3 t,
 					t_vec3 bta, double u, double v);
 

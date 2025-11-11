@@ -16,19 +16,20 @@ static int	test_leaf_objects(t_bvh_node *node, t_ray *r,
 	t_hit_range range, t_hit_record *rec)
 {
 	t_hit_record	tmp;
-	double			closest;
+	t_hit_range		cur_range;
 	int				hit_any;
 	int				i;
 
-	closest = range.tmax;
+	cur_range.tmax = range.tmax;
 	hit_any = 0;
 	i = 0;
 	while (i < node->obj_count)
 	{
-		if (hittable_hit(node->objects[i], r, range.tmin, closest, &tmp))
+		cur_range.tmin = range.tmin;
+		if (hittable_hit(node->objects[i], r, cur_range, &tmp))
 		{
 			hit_any = 1;
-			closest = tmp.t;
+			cur_range.tmax = tmp.t;
 			*rec = tmp;
 		}
 		i++;

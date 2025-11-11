@@ -14,13 +14,20 @@
 
 static int	check_hit(t_data *data, t_ray_color_vars *vars)
 {
-	if (data->settings.use_bvh && world_hit_bvh(data->bvh_root,
-			data->objects, &vars->current_ray, 0.001, INFINITY,
-			&vars->rec))
-		return (1);
+	t_bvh_ctx	bvh_ctx;
+	t_hit_range	range;
+
+	range.tmin = 0.001;
+	range.tmax = INFINITY;
+	if (data->settings.use_bvh)
+	{
+		bvh_ctx = (t_bvh_ctx){data->bvh_root, data->objects,
+			&vars->current_ray, range};
+		if (world_hit_bvh(&bvh_ctx, &vars->rec))
+			return (1);
+	}
 	if (!data->settings.use_bvh && data->objects
-		&& world_hit(data->objects, &vars->current_ray, 0.001, INFINITY,
-			&vars->rec))
+		&& world_hit(data->objects, &vars->current_ray, range, &vars->rec))
 		return (1);
 	return (0);
 }

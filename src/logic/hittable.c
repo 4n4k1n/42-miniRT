@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hittable.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/11 00:00:00 by anakin            #+#    #+#             */
+/*   Updated: 2025/11/11 00:00:00 by anakin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_rt.h"
 
 /**
@@ -22,14 +34,11 @@ void	set_face_normal(t_hit_record *rec, const t_ray *r, const t_vec3 *outw)
  * Dispatches to appropriate hit function based on object type
  * Currently only supports spheres, expandable for other shapes
  */
-int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record *rec)
+int	hittable_hit(const t_obj *o, t_ray *r, t_hit_range range,
+	t_hit_record *rec)
 {
-	t_hit_range	range;
-
 	if (!o || !rec)
 		return (0);
-	range.tmin = min;
-	range.tmax = max;
 	if (o->type == SPHERE)
 		return (hit_sphere_obj(&o->data.sphere, r, range, rec));
 	if (o->type == PLANE)
@@ -39,7 +48,7 @@ int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record 
 	if (o->type == PYRAMID)
 		return (hit_pyramid_obj(&o->data.pyramid, r, range, rec));
 	if (o->type == CONE)
-		return (hit_cone_obj(&o->data.cone, r, min, max, rec));
+		return (hit_cone_obj(&o->data.cone, r, range.tmin, range.tmax, rec));
 	if (o->type == TRIANGLE)
 		return (hit_triangle_obj(&o->data.triangle, r, range, rec));
 	return (0);
@@ -51,25 +60,26 @@ int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record 
  * Finds closest intersection within distance range [min, max]
  * Returns 1 if any object hit, 0 otherwise
  */
-int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, \
-		t_hit_record *out)
+int	world_hit(const t_obj_list *list, t_ray *r, t_hit_range range,
+	t_hit_record *out)
 {
 	t_hit_record	tmp;
-	double			closest;
+	t_hit_range		cur_range;
 	t_obj			*cur;
 	int				hit_any;
 
 	if (!list || !out)
 		return (0);
-	closest = max;
+	cur_range.tmax = range.tmax;
 	hit_any = 0;
 	cur = list->head;
 	while (cur)
 	{
-		if (hittable_hit(cur, r, min, closest, &tmp))
+		cur_range.tmin = range.tmin;
+		if (hittable_hit(cur, r, cur_range, &tmp))
 		{
 			hit_any = 1;
-			closest = tmp.t;
+			cur_range.tmax = tmp.t;
 			*out = tmp;
 		}
 		cur = cur->next;
@@ -77,44 +87,49 @@ int	world_hit(const t_obj_list *list, t_ray *r, double min, double max, \
 	return (hit_any);
 }
 
+static void	check_plane_hits(t_plane_check *ctx)
+{
+	t_hit_record	temp_rec;
+	t_obj			*cur;
+
+	cur = ctx->objects->head;
+	while (cur)
+	{
+		if (cur->type == PLANE && hittable_hit(cur, ctx->r, *ctx->range,
+				&temp_rec))
+		{
+			*ctx->hit_any = 1;
+			ctx->range->tmax = temp_rec.t;
+			*ctx->out = temp_rec;
+		}
+		cur = cur->next;
+	}
+}
+
 /**
  * Tests ray intersection using BVH acceleration structure
  * Also tests planes separately as they are excluded from BVH
  */
-int	world_hit_bvh(t_bvh_node *bvh, t_obj_list *objects, t_ray *r, \
-		double min, double max, t_hit_record *out)
+int	world_hit_bvh(t_bvh_ctx *bvh_ctx, t_hit_record *out)
 {
-	t_hit_record	temp_rec;
-	t_obj			*cur;
-	int				hit_any;
-	double			closest;
+	t_plane_check	plane_ctx;
 	t_hit_range		range;
+	int				hit_any;
 
 	if (!out)
 		return (0);
 	hit_any = 0;
-	closest = max;
-	range.tmin = min;
-	range.tmax = closest;
-	if (bvh && bvh_hit(bvh, r, range, out))
+	range = bvh_ctx->range;
+	if (bvh_ctx->bvh && bvh_hit(bvh_ctx->bvh, bvh_ctx->r, range, out))
 	{
 		hit_any = 1;
-		closest = out->t;
+		range.tmax = out->t;
 	}
-	if (objects)
+	if (bvh_ctx->objects)
 	{
-		cur = objects->head;
-		while (cur)
-		{
-			if (cur->type == PLANE && hittable_hit(cur, r, min, closest, \
-					&temp_rec))
-			{
-				hit_any = 1;
-				closest = temp_rec.t;
-				*out = temp_rec;
-			}
-			cur = cur->next;
-		}
+		plane_ctx = (t_plane_check){bvh_ctx->objects, bvh_ctx->r, &range,
+			out, &hit_any};
+		check_plane_hits(&plane_ctx);
 	}
 	return (hit_any);
 }
