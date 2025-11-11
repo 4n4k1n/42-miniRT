@@ -1,0 +1,43 @@
+A 0.15 240,240,250
+
+C 0,3,12 0,-0.15,-1 60
+
+L -8,10,8 0.9 255,255,255
+L 8,10,8 0.6 255,230,200
+L 0,5,-5 0.4 200,220,255
+
+# Reflective floor
+pl 0,-0.5,0 0,1,0 50,50,60 M
+
+# Back wall with subtle color
+pl 0,0,-15 0,0,1 100,100,120 L
+
+# Main showcase - Phong spheres in a circle formation
+# Red sphere - very shiny
+sp 0,1,0 1.5 220,20,60 P:128
+
+# Surrounding spheres with varying shininess
+sp -3,0.8,-2 0.8 255,140,0 P:64
+sp 3,0.8,-2 0.8 0,191,255 P:64
+
+sp -4,0.6,-5 0.7 255,105,180 P:48
+sp 0,0.7,-6 0.8 147,112,219 P:96
+sp 4,0.6,-5 0.7 50,205,50 P:32
+
+# Small accent spheres above
+sp -2,2.5,-1 0.5 255,215,0 P:128
+sp 2,2.5,-1 0.5 255,255,100 P:96
+sp 0,3.5,-2 0.4 200,100,255 P:112
+
+# Pillars (cylinders) with Phong material
+cy -6,0,-8 0,1,0 0.8 5 180,180,200 P:32
+cy 6,0,-8 0,1,0 0.8 5 180,180,200 P:32
+
+# Pyramids with different shininess
+py -5,0.5,3 0,1,0 2 3 220,180,140 P:24
+py 5,0.5,3 0,1,0 2 3 140,180,220 P:24
+
+# Floating orbs with glass-like appearance (high shininess)
+sp -1,4,-3 0.3 200,230,255 P:256
+sp 1,4,-3 0.3 255,230,200 P:256
+sp 0,5,-4 0.35 230,255,230 P:256
