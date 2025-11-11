@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:31:15 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 13:54:29 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:41:34 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,10 @@ void	render(t_data *data)
 		render_with_mt(data);
 	else
 	{
-		while (++i < HEIGHT)
+		while (++i < data->defines.height)
 		{
 			j = -1;
-			while (++j < WIDTH)
+			while (++j < data->defines.width)
 			{
 				if (data->settings.aa_state)
 					mlx_put_pixel(data->img, j, i, monte_carlo_aa(data, i, j));

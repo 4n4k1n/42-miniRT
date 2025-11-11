@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   threads.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 14:10:56 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/29 16:22:36 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/11/11 22:33:10 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	thread_put_row(t_thread *thread, int i)
 	int			j;
 
 	j = 0;
-	while (j < WIDTH)
+	while (j < thread->data->defines.width)
 	{
 		if (thread->data->settings.aa_state)
 			color = monte_carlo_aa(thread->data, i, j);
@@ -40,7 +40,7 @@ void	*thread_job(void *arg)
 		if (ft_wait(thread))
 			break ;
 		i = thread->id;
-		while (i < HEIGHT)
+		while (i < thread->data->defines.height)
 		{
 			thread_put_row(thread, i);
 			i += thread->data->threads_amount;

@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 13:26:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/07 13:26:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:30:08 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	init_aa(t_anti_aliasing *aa)
 {
 	ft_memset(aa, 0, sizeof(t_anti_aliasing));
 	aa->min_spp = AA_MIN_SAMPLES;
-	aa->max_spp = AA_MAX_SAMPLES;
+	aa->max_spp = AA_MIN_SAMPLES * 8;
 }
 
 void	update_variance(t_anti_aliasing *aa)

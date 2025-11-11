@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   settings.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:38:36 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 17:39:11 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:19:50 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@
 # define LIGHT_MULTIPLIER 1.0
 
 // will be set automaticly(dont change them)
-# define WIDTH (1920 * (float)((float)SCALE / 100))
-# define HEIGHT (1080 * (float)((float)SCALE / 100))
-# define ASPECT_RATIO ((double)WIDTH / (double)HEIGHT)
-# define AA_MAX_SAMPLES (AA_MIN_SAMPLES * 8)
+// # define WIDTH (1920 * (float)((float)SCALE / 100))
+// # define HEIGHT (1080 * (float)((float)SCALE / 100))
+// # define ASPECT_RATIO ((double)WIDTH / (double)HEIGHT)
+// # define AA_MAX_SAMPLES (AA_MIN_SAMPLES * 8)
 
 # ifndef ANTI_ALIASING
 #  define ANTI_ALIASING 0

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   objects.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 15:34:27 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 15:34:35 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:20:11 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@
 typedef struct s_material		t_material;
 typedef struct s_data			t_data;
 typedef struct s_tile			t_tile;
+
+typedef struct s_defines
+{
+	int							width;
+	int							height;
+	float						aspect_ratio;
+	int							aa_max_samples;
+}								t_defines;
 
 typedef struct s_vec3
 {
@@ -338,6 +346,7 @@ typedef struct s_data
 	mlx_t						*mlx;
 	mlx_image_t					*img;
 	t_master					*master;
+	t_defines					defines;
 }								t_data;
 
 #endif

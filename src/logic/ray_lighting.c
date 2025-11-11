@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 13:16:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/07 13:20:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:08:25 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,6 @@ t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 
 	color_a = (t_vec3){1.0, 1.0, 1.0};
 	color_b = (t_vec3){0.5, 0.7, 1.0};
-	if (!SKY)
-	{
-		color_a = vec3_init(0.0, 0.0, 0.0);
-		color_b = vec3_init(0.0, 0.0, 0.0);
-	}
 	unit_direction = vec3_normalize(current_ray->direction);
 	a = 0.5 * (unit_direction.y + 1.0);
 	color_a = vec3_multiply(color_a, 1.0 - a);

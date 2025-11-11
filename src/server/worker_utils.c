@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 13:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:35:35 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	init_worker_settings(t_settings *settings)
 	settings->aa_state = ANTI_ALIASING;
 	settings->depth = MAX_DEPTH;
 	settings->light_state = false;
-	settings->max_samples = AA_MAX_SAMPLES;
+	settings->max_samples = AA_MIN_SAMPLES * 8;
 	settings->min_samples = AA_MIN_SAMPLES;
 	settings->scale = SCALE;
 	settings->shadow_samples = SHADOW_SAMPLES;

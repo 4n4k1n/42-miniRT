@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/27 11:39:22 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:43:33 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,10 @@ void	update_camera(t_data *data)
 	get_camera_vectors(data, &forward, &right, &up);
 	data->camera.viewport_u = vec3_multiply(right, data->camera.viewport_width);
 	data->camera.viewport_v = vec3_multiply(up, -data->camera.viewport_height);
-	data->camera.pixel_delta_u = vec3_divide(data->camera.viewport_u, WIDTH);
-	data->camera.pixel_delta_v = vec3_divide(data->camera.viewport_v, HEIGHT);
+	data->camera.pixel_delta_u = vec3_divide(data->camera.viewport_u,
+			data->defines.width);
+	data->camera.pixel_delta_v = vec3_divide(data->camera.viewport_v,
+			data->defines.height);
 	tmp.t1 = vec3_multiply(forward, data->camera.foc);
 	tmp.t2 = vec3_sub(data->camera.cords, tmp.t1);
 	tmp.t3 = vec3_divide(data->camera.viewport_u, 2.0);
@@ -75,8 +77,9 @@ void	init_camera(t_data *data)
 	double	focal_length;
 	t_vec3	normalized_dir;
 
-	data->width = WIDTH;
-	data->height = get_image_height(WIDTH, ASPECT_RATIO);
+	data->width = data->defines.width;
+	data->height = get_image_height(data->defines.width,
+			data->defines.aspect_ratio);
 	normalized_dir = vec3_normalize(data->camera.orientation);
 	data->camera.pitch = asin(normalized_dir.y);
 	data->camera.yaw = atan2(normalized_dir.z, normalized_dir.x);
@@ -84,7 +87,8 @@ void	init_camera(t_data *data)
 	theta = data->camera.foc * (M_PI / 180.0);
 	h = tan(theta / 2.0);
 	data->camera.viewport_height = 2.0 * h * focal_length;
-	data->camera.viewport_width = data->camera.viewport_height * ASPECT_RATIO;
+	data->camera.viewport_width = data->camera.viewport_height
+		* data->defines.aspect_ratio;
 	data->camera.foc = focal_length;
 	update_camera(data);
 }
