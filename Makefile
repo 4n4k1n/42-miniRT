@@ -89,6 +89,7 @@ SRC = src/main.c \
 		src/logic/metal.c \
 		src/logic/lambertian.c \
 		src/logic/dielectric.c \
+		src/logic/dielectric_utils.c \
 		src/math/random_vec.c \
 		src/utils/mlx_hooks.c \
 		src/parsing/debug.c \

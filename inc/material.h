@@ -51,4 +51,8 @@ t_material*	material_lambertian(struct s_rgb albedo);
 t_material*	material_metal(struct s_rgb albedo, double fuzz);
 t_material*	material_dielectric(double refraction_index);
 
+double		get_refraction_index(const t_material *self, int front_face);
+double		get_sin_theta(double cos_theta);
+struct s_rgb	get_texture_color(const t_material *self, double u, double v);
+
 #endif
