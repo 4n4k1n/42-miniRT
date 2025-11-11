@@ -24,7 +24,7 @@ static int	apply_mat_token(char **tokens, int len, t_mat_ctx *ctx)
 {
 	const char	*mstr;
 
-	mstr = "L";
+	mstr = NULL;
 	if (ctx->i < len && (tokens[ctx->i][0] == 'L'
 		|| tokens[ctx->i][0] == 'M' || tokens[ctx->i][0] == 'G'
 		|| tokens[ctx->i][0] == 'P'))
@@ -32,7 +32,7 @@ static int	apply_mat_token(char **tokens, int len, t_mat_ctx *ctx)
 		mstr = tokens[ctx->i];
 		ctx->i++;
 	}
-	if (create_material_from_token(mstr, ctx->albedo, ctx->out))
+	if (mstr && create_material_from_token(mstr, ctx->albedo, ctx->out))
 		return (1);
 	return (0);
 }
@@ -66,6 +66,8 @@ static int	parse_material_extras(char **tokens, int len, t_mat_ctx *ctx)
 	{
 		if (ft_strncmp(tokens[ctx->i], "tx:", 3) == 0)
 		{
+			if (!*ctx->out)
+				return (1);
 			if (apply_texture_token(tokens[ctx->i] + 3, ctx->out))
 				return (1);
 		}
