@@ -103,6 +103,39 @@ typedef struct s_bvh_ctx
 	t_hit_range		range;
 }	t_bvh_ctx;
 
+typedef struct s_cone_calc
+{
+	t_vec3	a;
+	t_vec3	apex;
+	t_vec3	v;
+	double	hh;
+	double	rad;
+	double	m;
+	double	c2;
+}	t_cone_calc;
+
+typedef struct s_cone_quad
+{
+	double	da;
+	double	va;
+	double	d2;
+	double	dv;
+	double	v2;
+	double	quad_a;
+	double	quad_b;
+	double	quad_c;
+	double	dis;
+}	t_cone_quad;
+
+typedef struct s_cone_uv
+{
+	t_vec3	k;
+	t_vec3	ra;
+	t_vec3	tan;
+	double	x;
+	double	y;
+}	t_cone_uv;
+
 typedef struct s_hit_record
 {
 	t_vec3		p;
@@ -164,8 +197,8 @@ int				hit_cylinder_obj(const t_cylinder *cyl, t_ray *r,
 					t_hit_range range, t_hit_record *rec);
 int				hit_pyramid_obj(const t_pyramid *py, t_ray *r,
 					t_hit_range range, t_hit_record *rec);
-int				hit_cone_obj(const t_cone *co, t_ray *r, double tmin,
-					double tmax, t_hit_record *rec);
+int				hit_cone_obj(const t_cone *co, t_ray *r, t_hit_range range,
+					t_hit_record *rec);
 int				hit_triangle_obj(const t_triangle *tri, t_ray *r,
 					t_hit_range range, t_hit_record *rec);
 int				hit_triangle_test(const t_triangle *tri, t_ray *r,
@@ -212,5 +245,19 @@ int				check_uv_bounds(t_py_tri_uv *uv);
 void			compute_base_corners(t_py_basis *basis, t_py_verts *v);
 void			compute_uv(const t_pyramid *py, t_hit_record *rec);
 void			set_tangent_basis(t_hit_record *rec);
+int				cone_base_hit(const t_cone *co, t_ray *r, t_hit_range range,
+					t_hit_record *rec);
+void			compute_cone_uv(const t_cone *co, t_hit_record *rec,
+					t_cone_uv *uv);
+void			set_cone_tangent_basis(const t_cone *co, t_hit_record *rec);
+int				validate_cone_hit(const t_cone *co, t_ray *r, t_cone_calc *cc,
+					double t);
+void			set_cone_normal(t_ray *r, t_cone_calc *cc, double t,
+					t_hit_record *rec);
+void			init_cone_calc(const t_cone *co, t_ray *r, t_cone_calc *cc);
+int				solve_cone_quad(t_ray *r, t_cone_calc *cc, t_cone_quad *cq);
+int				select_cone_root(t_cone_quad *cq, t_hit_range range,
+					double *t);
+int				check_base_distance(t_vec3 p, t_vec3 center, double radius);
 
 #endif
