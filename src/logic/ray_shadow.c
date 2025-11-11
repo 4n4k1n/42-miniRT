@@ -12,6 +12,27 @@
 
 #include "mini_rt.h"
 
+static void	add_phong_specular(t_phong_spec *ps)
+{
+	t_vec3	reflect_dir;
+	double	spec;
+	double	spec_intensity;
+
+	if (!ps->rec->mat || ps->rec->mat->type != PHONG)
+		return ;
+	reflect_dir = vec3_reflect(vec3_multiply(ps->sc->light_dir, -1.0),
+			ps->rec->normal);
+	spec = fmax(0.0, vec3_dot(ps->sc->view_dir, reflect_dir));
+	spec = pow(spec, ps->rec->mat->shininess);
+	spec_intensity = spec * ps->light->intensity;
+	ps->light_contrib->r += (ps->light->color.r / 255.0)
+		* (ps->rec->mat->specular.r / 255.0) * spec_intensity * 255.0;
+	ps->light_contrib->g += (ps->light->color.g / 255.0)
+		* (ps->rec->mat->specular.g / 255.0) * spec_intensity * 255.0;
+	ps->light_contrib->b += (ps->light->color.b / 255.0)
+		* (ps->rec->mat->specular.b / 255.0) * spec_intensity * 255.0;
+}
+
 static void	calc_shadow_sample(t_data *data, t_light *light,
 		const t_hit_record *rec, t_shadow_calc *sc)
 {
@@ -38,6 +59,7 @@ static void	process_light_samples(t_data *data, t_light *light,
 
 	hits = 0;
 	samples = 0;
+	sc.view_dir = vec3_normalize(vec3_sub(data->camera.center, rec->p));
 	while (samples < SHADOW_SAMPLES)
 	{
 		calc_shadow_sample(data, light, rec, &sc);
@@ -45,6 +67,7 @@ static void	process_light_samples(t_data *data, t_light *light,
 		{
 			sc.diffuse = fmax(0.0, vec3_dot(rec->normal, sc.light_dir));
 			add_light_sample(light_contrib, light, rec, sc.diffuse);
+			add_phong_specular(&(t_phong_spec){light_contrib, light, rec, &sc});
 			hits++;
 		}
 		samples++;
