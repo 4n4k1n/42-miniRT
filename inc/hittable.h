@@ -102,8 +102,8 @@ int				hit_sphere_obj(const t_sphere *s, t_ray *r, t_hit_range range,
 					t_hit_record *rec);
 int				hit_plane_obj(const t_plane *pl, t_ray *r, t_hit_range range,
 					t_hit_record *rec);
-int				hit_cylinder_obj(const t_cylinder *cyl, t_ray *r, double tmin,
-					double tmax, t_hit_record *rec);
+int				hit_cylinder_obj(const t_cylinder *cyl, t_ray *r,
+					t_hit_range range, t_hit_record *rec);
 int				hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin,
 					double tmax, t_hit_record *rec);
 int				hit_cone_obj(const t_cone *co, t_ray *r, double tmin,
@@ -142,5 +142,12 @@ double			get_centroid_component(t_obj *obj, int axis);
 void			swap_objects(t_obj **a, t_obj **b);
 int				partition_objects(t_obj **objects, int count, int axis);
 t_aabb			compute_bounds(t_obj **objects, int count);
+int				cyl_valid_axis(const t_cylinder *cyl, t_cyl_hit *ch);
+int				cyl_select_root(t_cyl_hit *ch, t_ray *r, t_hit_range range);
+int				cyl_cap_hit_check(t_cyl_cap_ctx *ctx, t_ray *r, t_cyl_hit *ch);
+void			check_best_hit(t_cyl_hit *ch, t_hit_range range,
+					t_cyl_best *best);
+void			compute_cyl_uv(const t_cylinder *cyl, t_cyl_hit *ch,
+					t_vec3 best_p, t_hit_record *rec);
 
 #endif
