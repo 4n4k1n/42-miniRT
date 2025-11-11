@@ -63,6 +63,17 @@ static int	process_scatter(t_data *data, t_ray_color_vars *vars)
 
 static t_rgb	process_hit(t_data *data, t_ray_color_vars *vars)
 {
+	t_rgb	simple_shading;
+
+	if (!vars->rec.mat)
+	{
+		simple_shading = calculate_direct_lighting(data, &vars->rec);
+		simple_shading = rgb_add(simple_shading,
+				get_ambient_light(data, &vars->rec));
+		vars->final_color = rgb_add(vars->final_color,
+				rgb_modulate(vars->throughput, simple_shading));
+		return (vars->final_color);
+	}
 	if (vars->rec.bump)
 		apply_bump_mapping(vars);
 	if (vars->depth == 0)
