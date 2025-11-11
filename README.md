@@ -1030,6 +1030,7 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 ## Authors
 
 - **4n4k1n** - [GitHub](https://github.com/4n4k1n)
+- **nweber23** - [GitHub](https://github.com/nweber23)
 
 ---
 
