@@ -17,7 +17,8 @@ typedef enum e_material_type
 {
 	LAMBERTIAN,
 	METAL,
-	GLASS
+	GLASS,
+	PHONG
 }	t_material_type;
 
 typedef enum e_texture_type
@@ -45,11 +46,14 @@ struct s_material
 	struct s_rgb	texture_a;
 	struct s_rgb	texture_b;
 	double			texture_scale;
+	double			shininess;
+	struct s_rgb	specular;
 };
 
 t_material*	material_lambertian(struct s_rgb albedo);
 t_material*	material_metal(struct s_rgb albedo, double fuzz);
 t_material*	material_dielectric(double refraction_index);
+t_material*	material_phong(struct s_rgb albedo, double shininess);
 
 double		get_refraction_index(const t_material *self, int front_face);
 double		get_sin_theta(double cos_theta);

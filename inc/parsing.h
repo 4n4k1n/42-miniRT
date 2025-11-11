@@ -28,6 +28,9 @@ int		mat_base_for_obj(t_obj *o, int *base_len,
 			t_rgb *albedo, t_material ***outp);
 int		create_material_from_token(const char *mstr, t_rgb albedo,
 			t_material **out);
+int		create_phong_material(const char *mstr, t_rgb albedo,
+			t_material **out);
+int		create_glass_material(const char *mstr, t_material **out);
 int		parse_scene(const char *path, t_data *scene);
 int		parse_ambient(char **tokens, t_data *scene, t_arg_check *args);
 int		parse_camera(char **tokens, t_data *scene, t_arg_check *args);

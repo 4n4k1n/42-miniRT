@@ -195,7 +195,16 @@ typedef struct s_shadow_calc
 	t_ray			shadow_ray;
 	t_hit_record	shadow_rec;
 	double			diffuse;
+	t_vec3			view_dir;
 }	t_shadow_calc;
+
+typedef struct s_phong_spec
+{
+	t_rgb				*light_contrib;
+	t_light				*light;
+	const t_hit_record	*rec;
+	t_shadow_calc		*sc;
+}	t_phong_spec;
 
 int				hit_sphere_obj(const t_sphere *s, t_ray *r, t_hit_range range,
 					t_hit_record *rec);
