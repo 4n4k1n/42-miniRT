@@ -45,6 +45,47 @@ typedef struct s_tri_hit_ctx
 	t_tri_calc	calc;
 }	t_tri_hit_ctx;
 
+typedef struct s_py_tri_calc
+{
+	t_vec3	e1;
+	t_vec3	e2;
+	t_vec3	p;
+	double	det;
+	double	inv_det;
+}	t_py_tri_calc;
+
+typedef struct s_py_tri_uv
+{
+	t_vec3	tvec;
+	t_vec3	q;
+	double	u;
+	double	v;
+}	t_py_tri_uv;
+
+typedef struct s_py_verts
+{
+	t_vec3	apex;
+	t_vec3	b0;
+	t_vec3	b1;
+	t_vec3	b2;
+	t_vec3	b3;
+}	t_py_verts;
+
+typedef struct s_py_best
+{
+	int		hit;
+	double	t;
+	t_vec3	n;
+}	t_py_best;
+
+typedef struct s_py_basis
+{
+	t_vec3	bc;
+	t_vec3	r;
+	t_vec3	f;
+	double	hw;
+}	t_py_basis;
+
 typedef struct s_hit_record
 {
 	t_vec3		p;
@@ -104,8 +145,8 @@ int				hit_plane_obj(const t_plane *pl, t_ray *r, t_hit_range range,
 					t_hit_record *rec);
 int				hit_cylinder_obj(const t_cylinder *cyl, t_ray *r,
 					t_hit_range range, t_hit_record *rec);
-int				hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin,
-					double tmax, t_hit_record *rec);
+int				hit_pyramid_obj(const t_pyramid *py, t_ray *r,
+					t_hit_range range, t_hit_record *rec);
 int				hit_cone_obj(const t_cone *co, t_ray *r, double tmin,
 					double tmax, t_hit_record *rec);
 int				hit_triangle_obj(const t_triangle *tri, t_ray *r,
@@ -149,5 +190,11 @@ void			check_best_hit(t_cyl_hit *ch, t_hit_range range,
 					t_cyl_best *best);
 void			compute_cyl_uv(const t_cylinder *cyl, t_cyl_hit *ch,
 					t_vec3 best_p, t_hit_record *rec);
+t_vec3			norm_or_zero(t_vec3 v);
+void			build_basis(t_vec3 up, t_vec3 *right, t_vec3 *fwd);
+int				check_uv_bounds(t_py_tri_uv *uv);
+void			compute_base_corners(t_py_basis *basis, t_py_verts *v);
+void			compute_uv(const t_pyramid *py, t_hit_record *rec);
+void			set_tangent_basis(t_hit_record *rec);
 
 #endif
