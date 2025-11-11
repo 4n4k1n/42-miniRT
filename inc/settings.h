@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   settings.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/11 17:38:36 by nweber            #+#    #+#             */
+/*   Updated: 2025/11/11 17:39:11 by nweber           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SETTINGS_H
 # define SETTINGS_H
 
 // basic settings
-// SCALE: image size multiblied by the scale(scale 1 is 1920x1080)
-// AA_MIN_SAMPLES: the minimum amount of rays per pixel (should be between 8 and 32)
-// MAX_DEPTH: the number of child rays that are created when there is an intersection (should be between 8 and 64)
-// SHADOW_SAMPLES: number of shadow rays per light for soft shadows (1 = hard shadows, 4-8 = soft)
+// SCALE: image size multiblied by the scale
+// AA_MIN_SAMPLES: the minimum amount of rays per pixel
+// MAX_DEPTH: the number of child rays
+// SHADOW_SAMPLES: number of shadow rays per light for soft shadows
 # define SCALE 70
 
 # define AA_MIN_SAMPLES 8
