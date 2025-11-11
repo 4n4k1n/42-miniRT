@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 15:32:45 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 15:32:47 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/11 15:57:25 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,6 +250,7 @@ t_aabb			get_sphere_bounds(const t_sphere *s);
 t_aabb			get_plane_bounds(const t_plane *p);
 t_aabb			get_cylinder_bounds(const t_cylinder *c);
 t_aabb			get_triangle_bounds(const t_triangle *t);
+t_aabb			get_cone_bounds(const t_cone *co);
 t_aabb			get_object_bounds(const t_obj *obj);
 t_bvh_node		*build_bvh(t_obj_list *list);
 int				bvh_hit(t_bvh_node *node, t_ray *r, t_hit_range range,

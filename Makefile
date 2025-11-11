@@ -80,6 +80,7 @@ SRC = src/main.c \
 		src/logic/aabb.c \
 		src/logic/aabb_utils.c \
 		src/logic/bounds.c \
+		src/logic/bounds_cones.c \
 		src/logic/bounds_simple.c \
 		src/logic/bounds_dispatch.c \
 		src/logic/bvh_build.c \
