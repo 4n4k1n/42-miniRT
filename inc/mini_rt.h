@@ -71,9 +71,13 @@ int			init_threads(t_data *data);
 int			ft_error(char *msg, int error_code);
 void		*thread_job_worker(void *arg);
 int			init_threads_worker(t_data *data);
-int			init_threads(t_data *data);
-void		cleanup_data(t_data *data);
 int			change_thread_state(t_data *data);
 int			ft_wait(t_thread *thread);
+void		cleanup_objects(t_obj_list *objects);
+void		cleanup_lights(t_light_list *lights);
+void		print_usage(char *prog);
+uint32_t	get_port(int ac, char **av);
+int			run_local(char *scene_file);
+int			set_triangle_tangent_space(t_hit_record *rec, t_vec3 *e1);
 
 #endif
