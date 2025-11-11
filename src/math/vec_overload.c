@@ -17,7 +17,7 @@
  * Formula: new_vec = -vec for each component
  * Inline version for performance
  */
-inline t_vec3	vec3_overload(const t_vec3 a)
+__attribute__((always_inline)) inline t_vec3	vec3_overload(const t_vec3 a)
 {
 	return ((t_vec3){-a.x, -a.y, -a.z});
 }

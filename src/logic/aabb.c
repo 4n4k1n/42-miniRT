@@ -21,7 +21,8 @@ static void	swap_doubles(double *a, double *b)
 	*b = temp;
 }
 
-static int	test_slab(const t_aabb *box, const t_ray *r, t_slab_test *test)
+static int	test_slab(const t_aabb *box, const t_ray *r,
+	t_slab_test *test)
 {
 	double	inv_d;
 	double	t0;
@@ -45,7 +46,8 @@ static int	test_slab(const t_aabb *box, const t_ray *r, t_slab_test *test)
  * Fast ray-AABB intersection test using slab method
  * Returns 1 if ray hits box between tmin and tmax, 0 otherwise
  */
-int	aabb_hit(const t_aabb *box, const t_ray *r, double tmin, double tmax)
+__attribute__((always_inline)) inline int	aabb_hit(const t_aabb *box,
+	const t_ray *r, double tmin, double tmax)
 {
 	t_slab_test	test;
 

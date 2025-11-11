@@ -17,7 +17,7 @@
  * Formula: |vec|² = x² + y² + z²
  * Used to avoid expensive sqrt operations when comparing lengths
  */
-inline double	vec3_squared(const t_vec3 vec)
+__attribute__((always_inline)) inline double	vec3_squared(const t_vec3 vec)
 {
 	return (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 }

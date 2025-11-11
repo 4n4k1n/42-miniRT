@@ -12,7 +12,8 @@
 
 #include "mini_rt.h"
 
-inline t_rgb	rgb_modulate(const t_rgb a, const t_rgb b)
+__attribute__((always_inline)) inline t_rgb	rgb_modulate(const t_rgb a,
+	const t_rgb b)
 {
 	return ((t_rgb){(a.r * b.r) / 255.999, (a.g * b.g) / 255.999, (a.b * b.b)
 		/ 255.999});

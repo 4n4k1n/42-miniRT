@@ -17,7 +17,8 @@
  * Formula: a·b = ax*bx + ay*by + az*bz
  * Returns scalar value used for angles and projections
  */
-inline double	vec3_dot(const t_vec3 a, const t_vec3 b)
+__attribute__((always_inline)) inline double	vec3_dot(const t_vec3 a,
+	const t_vec3 b)
 {
 	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }

@@ -17,7 +17,8 @@
  * Formula: new_vec = dst - src for each component
  * Inline version for performance
  */
-inline t_vec3	vec3_sub(const t_vec3 a, const t_vec3 b)
+__attribute__((always_inline)) inline t_vec3	vec3_sub(const t_vec3 a,
+	const t_vec3 b)
 {
 	return ((t_vec3){a.x - b.x, a.y - b.y, a.z - b.z});
 }

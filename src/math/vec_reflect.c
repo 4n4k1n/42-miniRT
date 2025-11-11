@@ -16,7 +16,8 @@
  * Reflects vector v across surface normal n
  * Formula: r = v - 2(v·n)n
  */
-t_vec3	vec3_reflect(const t_vec3 v, const t_vec3 n)
+__attribute__((always_inline)) inline t_vec3	vec3_reflect(const t_vec3 v,
+	const t_vec3 n)
 {
 	double	d;
 	t_vec3	twice_n;

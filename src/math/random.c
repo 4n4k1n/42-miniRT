@@ -33,7 +33,7 @@ static inline unsigned long long	rng_next_u64(void)
 	return (x * 2685821657736338717ULL);
 }
 
-inline double	random_double(void)
+__attribute__((always_inline)) inline double	random_double(void)
 {
 	const unsigned long long	r = rng_next_u64();
 	const unsigned long long	mantissa = r >> 11;
@@ -41,7 +41,8 @@ inline double	random_double(void)
 	return ((double)mantissa * (1.0 / 9007199254740992.0));
 }
 
-inline double	random_double_range(double min, double max)
+__attribute__((always_inline)) inline double	random_double_range(double min,
+	double max)
 {
 	return (min + (max - min) * random_double());
 }

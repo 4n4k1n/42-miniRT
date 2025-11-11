@@ -17,7 +17,8 @@
  * Sets normal vector to point against ray direction
  * Used for proper lighting calculations
  */
-void	set_face_normal(t_hit_record *rec, const t_ray *r, const t_vec3 *outw)
+__attribute__((always_inline)) inline void	set_face_normal(t_hit_record *rec,
+	const t_ray *r, const t_vec3 *outw)
 {
 	double	dotv;
 

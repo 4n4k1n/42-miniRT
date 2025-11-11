@@ -17,7 +17,8 @@
  * Formula: dst = dst + src for each component
  * Returns pointer to modified destination
  */
-inline t_vec3	vec3_add(const t_vec3 a, const t_vec3 b)
+__attribute__((always_inline)) inline t_vec3	vec3_add(const t_vec3 a,
+	const t_vec3 b)
 {
 	return ((t_vec3){a.x + b.x, a.y + b.y, a.z + b.z});
 }
