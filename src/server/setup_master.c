@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 10:01:22 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 22:46:23 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:56:54 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	setup_master(t_master *master, t_data *data, char *scene_file,
 	int	i;
 
 	translate_settings(data);
-	if (setup1(master, scene_file, data) == 1)
+	if (setup1(master, scene_file, data, data->defines) == 1)
 		return (1);
 	i = 0;
 	while (i < MAX_WORKER)

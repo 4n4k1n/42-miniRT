@@ -157,38 +157,63 @@ endif
 
 CFLAGS += -I./inc -I$(MLX42_DIR)/include
 
+# Colors
+CYAN = \033[0;96m
+GREEN = \033[0;92m
+YELLOW = \033[0;93m
+RED = \033[0;91m
+BLUE = \033[0;94m
+MAGENTA = \033[0;95m
+RESET = \033[0m
+
+# Progress tracking
+TOTAL_FILES = $(words $(SRC))
+COMPILED = 0
+
 all: $(LIBFT) $(LIBMLX42) $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) $(LIBMLX42) $(LIBFT) -o $(NAME)
+	@printf "$(BLUE)⚡ Linking $(NAME)...$(RESET)\n"
+	@$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) $(LIBMLX42) $(LIBFT) -o $(NAME)
+	@printf "$(GREEN)✓ $(NAME) built successfully!$(RESET)\n"
 
 $(OBJ_DIR)/%.o: src/%.c inc/mini_rt.h
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(eval COMPILED=$(shell echo $$(($(COMPILED)+1))))
+	@printf "$(CYAN)[%3d/%3d]$(RESET) Compiling $(YELLOW)%-40s$(RESET)\r" \
+		$(COMPILED) $(TOTAL_FILES) "$(notdir $<)"
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@if [ $(COMPILED) -eq $(TOTAL_FILES) ]; then printf "\n"; fi
 
 $(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
+	@printf "$(MAGENTA)→ Building libft...$(RESET)\n"
+	@$(MAKE) -C $(LIBFT_DIR)
 
 $(LIBMLX42):
 	@if [ ! -d $(MLX42_DIR) ]; then \
+		printf "$(MAGENTA)→ Cloning MLX42...$(RESET)\n"; \
 		git clone https://github.com/codam-coding-college/MLX42.git \
 		$(MLX42_DIR); \
 	fi
 	@if [ ! -f $(MLX42_DIR)/build/libmlx42.a ]; then \
-		cmake $(MLX42_DIR) -B $(MLX42_DIR)/build && \
-		cmake --build $(MLX42_DIR)/build -j4; \
+		printf "$(MAGENTA)→ Building MLX42...$(RESET)\n"; \
+		cmake $(MLX42_DIR) -B $(MLX42_DIR)/build > /dev/null 2>&1 && \
+		cmake --build $(MLX42_DIR)/build -j4 > /dev/null 2>&1; \
+		printf "$(GREEN)✓ MLX42 built$(RESET)\n"; \
 	fi
 
 clean:
-	rm -rf $(OBJ_DIR)
-	$(MAKE) clean -C $(LIBFT_DIR)
+	@rm -rf $(OBJ_DIR)
+	@printf "$(RED)✗ Cleaned miniRT object files$(RESET)\n"
+	@$(MAKE) clean -C $(LIBFT_DIR)
 
 fclean: clean
-	rm -f $(NAME)
-	$(MAKE) fclean -C $(LIBFT_DIR)
+	@rm -f $(NAME)
+	@printf "$(RED)✗ Removed $(NAME)$(RESET)\n"
+	@$(MAKE) fclean -C $(LIBFT_DIR)
 
 re:
-	$(MAKE) fclean
-	$(MAKE) all
+	@$(MAKE) fclean
+	@$(MAKE) all
 
 .PHONY: all clean fclean re
