@@ -83,7 +83,7 @@ The renderer can operate in three modes: **Local** (single machine), **Master** 
 ### Distribution
 
 - **Master-Worker Architecture** - Coordinate rendering across multiple machines
-- **Tile-Based Distribution** - 256x256 pixel tiles for load balancing
+- **Tile-Based Distribution** - 256x256 pixel tiles for load balancing(scalable)
 - **Dynamic Load Balancing** - Workers pull tiles as they complete
 - **Network Protocol** - Custom binary protocol over TCP
 - **Real-time Updates** - Camera changes broadcast to all workers
