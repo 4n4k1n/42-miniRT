@@ -12,7 +12,8 @@
 
 #include "mini_rt.h"
 
-void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up)
+void	get_camera_vectors(t_data *data, t_vec3 *forward,
+	t_vec3 *right, t_vec3 *up)
 {
 	forward->x = cos(data->camera.pitch) * cos(data->camera.yaw);
 	forward->y = sin(data->camera.pitch);
@@ -24,18 +25,16 @@ void	get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right, t_vec3 *up
 
 void	update_camera(t_data *data)
 {
-	t_init_tmp tmp;
-	t_vec3 forward;
-	t_vec3 right;
-	t_vec3 up;
+	t_init_tmp	tmp;
+	t_vec3		forward;
+	t_vec3		right;
+	t_vec3		up;
 
 	get_camera_vectors(data, &forward, &right, &up);
-
 	data->camera.viewport_u = vec3_multiply(right, data->camera.viewport_width);
 	data->camera.viewport_v = vec3_multiply(up, -data->camera.viewport_height);
 	data->camera.pixel_delta_u = vec3_divide(data->camera.viewport_u, WIDTH);
 	data->camera.pixel_delta_v = vec3_divide(data->camera.viewport_v, HEIGHT);
-
 	tmp.t1 = vec3_multiply(forward, data->camera.foc);
 	tmp.t2 = vec3_sub(data->camera.cords, tmp.t1);
 	tmp.t3 = vec3_divide(data->camera.viewport_u, 2.0);
@@ -44,7 +43,8 @@ void	update_camera(t_data *data)
 	data->camera.viewport_upper_left = vec3_sub(tmp.t4, tmp.t5);
 	tmp.t6 = vec3_add(data->camera.pixel_delta_u, data->camera.pixel_delta_v);
 	tmp.t7 = vec3_multiply(tmp.t6, 0.5);
-	data->camera.pixel00_loc = vec3_add(data->camera.viewport_upper_left, tmp.t7);
+	data->camera.pixel00_loc = vec3_add(data->camera.viewport_upper_left,
+			tmp.t7);
 }
 
 /**

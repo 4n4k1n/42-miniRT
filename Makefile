@@ -66,23 +66,37 @@ SRC = src/main.c \
 		src/logic/hit_sphere.c \
 		src/logic/hit_plane.c \
 		src/logic/hit_tower.c \
+		src/logic/hit_tower_utils.c \
 		src/logic/hit_pyramid.c \
+		src/logic/hit_pyramid_utils.c \
+		src/logic/hit_pyramid_basis.c \
 		src/logic/hit_cone.c \
+		src/logic/hit_cone_utils.c \
+		src/logic/hit_cone_calc.c \
 		src/logic/hit_triangle.c \
 		src/logic/hittable.c \
 		src/logic/aabb.c \
+		src/logic/aabb_utils.c \
 		src/logic/bounds.c \
+		src/logic/bounds_simple.c \
+		src/logic/bounds_dispatch.c \
 		src/logic/bvh_build.c \
 		src/logic/bvh_hit.c \
 		src/logic/bvh_cleanup.c \
+		src/logic/bvh_utils.c \
 		src/logic/ray.c \
+		src/logic/ray_helpers.c \
+		src/logic/ray_lighting.c \
+		src/logic/ray_shadow.c \
 		src/logic/render.c \
 		src/logic/monte_carlo_aa.c \
+		src/logic/monte_carlo_aa_helpers.c \
 		src/logic/bump.c \
 		src/logic/camera.c \
 		src/logic/metal.c \
 		src/logic/lambertian.c \
 		src/logic/dielectric.c \
+		src/logic/dielectric_utils.c \
 		src/math/random_vec.c \
 		src/utils/mlx_hooks.c \
 		src/parsing/debug.c \

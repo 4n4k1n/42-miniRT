@@ -128,6 +128,30 @@ typedef struct s_cyl_hit
 	double					len;
 }							t_cyl_hit;
 
+typedef struct s_cyl_cap_ctx
+{
+	const t_cylinder		*cyl;
+	t_vec3					center;
+	double					t;
+	int						top;
+}							t_cyl_cap_ctx;
+
+typedef struct s_cyl_best
+{
+	int						hit;
+	double					t;
+	t_vec3					p;
+	t_vec3					n;
+}							t_cyl_best;
+
+typedef struct s_cyl_record_ctx
+{
+	const t_cylinder		*cyl;
+	t_ray					*r;
+	t_cyl_hit				*ch;
+	t_cyl_best				*best;
+}							t_cyl_record_ctx;
+
 typedef struct s_tri_calc
 {
 	t_vec3					e1;
@@ -232,6 +256,9 @@ typedef struct s_anti_aliasing
 	t_rgb					color;
 	uint32_t				packed;
 }							t_anti_aliasing;
+
+typedef struct s_hit_record	t_hit_record;
+typedef struct s_ray_color_vars	t_ray_color_vars;
 
 typedef struct s_camera
 {

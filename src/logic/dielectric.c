@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dielectric.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/11 00:00:00 by nweber            #+#    #+#             */
+/*   Updated: 2025/11/11 00:00:00 by nweber           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "mini_rt.h"
 
 static double	schlick_reflectance(double cosine, double ref_idx)
@@ -9,46 +21,31 @@ static double	schlick_reflectance(double cosine, double ref_idx)
 	return (r0 + (1.0 - r0) * pow(1.0 - cosine, 5.0));
 }
 
-static int	dielectric_scatter(const t_material *self, const t_ray *r_in,
-		const t_hit_record *rec, t_rgb *attenuation, t_ray *scattered)
+static int	dielectric_scatter(const t_material *self,
+	struct s_scatter_ctx *ctx)
 {
 	double	ri;
 	t_vec3	dir;
-	t_vec3	neg_dir;
 	double	cos_theta;
-	double	sin_theta_sq;
 	double	sin_theta;
-	int		cannot_refract;
-	double	choose_reflect;
-	t_rgb	texc;
-	double	s;
-	int		m;
 	t_rgb	base;
 
-	ri = rec->front_face ? (1.0 / self->refraction_index) : self->refraction_index;
-	dir = vec3_normalize(r_in->direction);
-	neg_dir = vec3_overload(dir);
-	cos_theta = fmin(vec3_dot(neg_dir, (t_vec3)rec->normal), 1.0);
-	sin_theta_sq = 1.0 - cos_theta * cos_theta;
-	sin_theta = sin_theta_sq > 0.0 ? sqrt(sin_theta_sq) : 0.0;
-	cannot_refract = (ri * sin_theta) > 1.0;
-	choose_reflect = schlick_reflectance(cos_theta, ri);
-	if (cannot_refract || choose_reflect > random_double())
-		dir = vec3_reflect(dir, rec->normal);
+	ri = get_refraction_index(self, ctx->rec->front_face);
+	dir = vec3_normalize(ctx->r_in->direction);
+	cos_theta = fmin(vec3_dot(vec3_overload(dir),
+				(t_vec3)ctx->rec->normal), 1.0);
+	sin_theta = get_sin_theta(cos_theta);
+	if ((ri * sin_theta) > 1.0
+		|| schlick_reflectance(cos_theta, ri) > random_double())
+		dir = vec3_reflect(dir, ctx->rec->normal);
 	else
-		dir = vec3_refract(dir, rec->normal, ri);
-	scattered->origin = apply_surface_bias(rec->p, dir, rec->normal);
-	scattered->direction = dir;
-	if (self->texture_type == CHECKER)
-	{
-		s = (self->texture_scale <= 0.0) ? 1.0 : self->texture_scale;
-		m = (((int)floor(rec->u * s)) + ((int)floor(rec->v * s))) & 1;
-		texc = m ? self->texture_b : self->texture_a;
-	}
-	else
-		texc = (t_rgb){255.0, 255.0, 255.0};
-	base = rgb_modulate((t_rgb){255.0, 255.0, 255.0}, rec->rgb);
-	*attenuation = rgb_modulate(base, texc);
+		dir = vec3_refract(dir, ctx->rec->normal, ri);
+	ctx->scattered->origin = apply_surface_bias(ctx->rec->p, dir,
+			ctx->rec->normal);
+	ctx->scattered->direction = dir;
+	base = rgb_modulate((t_rgb){255.0, 255.0, 255.0}, ctx->rec->rgb);
+	*ctx->attenuation = rgb_modulate(base,
+			get_texture_color(self, ctx->rec->u, ctx->rec->v));
 	return (1);
 }
 
