@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:30:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 17:30:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:42:16 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static int	init_data_local(t_data *data, char *scene_file)
 {
+	translate_settings(data);
 	data->settings.light_state = false;
 	data->settings.use_bvh = USE_BVH;
 	data->bvh_root = NULL;
@@ -25,7 +26,7 @@ static int	init_data_local(t_data *data, char *scene_file)
 		printf("BVH built with %zu objects\n", data->objects->size);
 	}
 	data->settings.aa_state = ANTI_ALIASING;
-	data->camera.samples_per_pixel = AA_MAX_SAMPLES;
+	data->camera.samples_per_pixel = AA_MIN_SAMPLES * 8;
 	init_camera(data);
 	return (0);
 }
@@ -33,14 +34,16 @@ static int	init_data_local(t_data *data, char *scene_file)
 static int	init_mlx_local(t_data *data)
 {
 	mlx_set_setting(MLX_MAXIMIZED, false);
-	data->mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
+	data->mlx = mlx_init(data->defines.width,
+			data->defines.height, "miniRT", false);
 	if (!data->mlx)
 	{
 		cleanup_objects(data->objects);
 		cleanup_lights(data->light_list);
 		return (1);
 	}
-	data->img = mlx_new_image(data->mlx, WIDTH, HEIGHT);
+	data->img = mlx_new_image(data->mlx, data->defines.width,
+			data->defines.height);
 	if (!data->img || (mlx_image_to_window(data->mlx, data->img, 0, 0) < 0))
 	{
 		cleanup_objects(data->objects);

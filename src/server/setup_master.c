@@ -6,13 +6,14 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 10:01:22 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 10:15:19 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:46:23 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-static bool	setup1(t_master *master, char *scene_file, t_data *d)
+static bool	setup1(t_master *master, char *scene_file, t_data *d,
+	t_defines defines)
 {
 	ft_memset(master, 0, sizeof(t_master));
 	master->scene_file = scene_file;
@@ -24,11 +25,11 @@ static bool	setup1(t_master *master, char *scene_file, t_data *d)
 	master->queue = malloc(sizeof(t_queue));
 	if (!master->queue)
 		return (free_scene(d), ft_error("malloc", 1));
-	init_queue(master->queue, WIDTH, HEIGHT, TILE_SIZE);
-	master->mlx = mlx_init(WIDTH, HEIGHT, "miniRT", false);
+	init_queue(master->queue, defines.width, defines.height, TILE_SIZE);
+	master->mlx = mlx_init(defines.width, defines.height, "miniRT", false);
 	if (!master->mlx)
 		return (free(master->queue), free_scene(d), ft_error("mlx_init", 1));
-	master->img = mlx_new_image(master->mlx, WIDTH, HEIGHT);
+	master->img = mlx_new_image(master->mlx, defines.width, defines.height);
 	if (!master->img)
 	{
 		return (mlx_terminate(master->mlx), free(master->queue),
@@ -46,6 +47,7 @@ int	setup_master(t_master *master, t_data *data, char *scene_file,
 {
 	int	i;
 
+	translate_settings(data);
 	if (setup1(master, scene_file, data) == 1)
 		return (1);
 	i = 0;

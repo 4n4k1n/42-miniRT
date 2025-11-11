@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 11:41:09 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 11:19:52 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:46:40 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ static void	print_master_stats(t_run_master *r_master, char *scene_file)
 {
 	printf("\n=== Master Server Ready ===\n");
 	printf("Scene: %s\n", scene_file);
-	printf("Resolution: %dx%d\n", (int)WIDTH, (int)HEIGHT);
+	printf("Resolution: %dx%d\n", (int)r_master->data.defines.width,
+		(int)r_master->data.defines.height);
 	printf("Tile size: %d\n", TILE_SIZE);
 	printf("Total tiles: %zu\n\n", r_master->master.queue->size);
 	printf("Local IP:  %s\n", get_ip_address());
