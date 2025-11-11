@@ -66,16 +66,25 @@ static int	get_image_height(int width, double ra)
  * Initializes camera parameters for ray tracing
  * Sets up viewport dimensions, pixel deltas, and starting pixel location
  * Creates coordinate system for converting screen pixels to world rays
+ * Uses parsed camera data from scene file (position, orientation, FOV)
  */
 void	init_camera(t_data *data)
 {
+	double	theta;
+	double	h;
+	double	focal_length;
+	t_vec3	normalized_dir;
+
 	data->width = WIDTH;
 	data->height = get_image_height(WIDTH, ASPECT_RATIO);
-	data->camera.foc = 1.0;
-	data->camera.viewport_height = 2.0;
+	normalized_dir = vec3_normalize(data->camera.orientation);
+	data->camera.pitch = asin(normalized_dir.y);
+	data->camera.yaw = atan2(normalized_dir.z, normalized_dir.x);
+	focal_length = 1.0;
+	theta = data->camera.foc * (M_PI / 180.0);
+	h = tan(theta / 2.0);
+	data->camera.viewport_height = 2.0 * h * focal_length;
 	data->camera.viewport_width = data->camera.viewport_height * ASPECT_RATIO;
-	data->camera.cords = vec3_init(0.0, 0.0, 0.0);
-	data->camera.pitch = 0.0;
-	data->camera.yaw = 0.0;
+	data->camera.foc = focal_length;
 	update_camera(data);
 }
