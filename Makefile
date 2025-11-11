@@ -26,6 +26,8 @@ OBJ_DIR = objs
 CC = gcc
 
 SRC = src/main.c \
+		src/main_utils.c \
+		src/main_local.c \
 		src/math/vec_add.c \
 		src/math/vec_cpy.c \
 		src/math/vec_cross.c \
