@@ -34,30 +34,52 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror -Iincludes -I$(PRINTF_DIR)
 RM = rm -f
 
+# Colors
+CYAN = \033[0;96m
+GREEN = \033[0;92m
+YELLOW = \033[0;93m
+RED = \033[0;91m
+RESET = \033[0m
+
+# Progress tracking
+TOTAL_FILES = $(words $(SRCS) $(PRINTF_SRCS))
+COMPILED = 0
+
 # Build rules
 all: $(NAME)
 
 $(NAME): $(OBJS) $(PRINTF_OBJS)
-	ar rcs $(NAME) $(OBJS) $(PRINTF_OBJS)
+	@ar rcs $(NAME) $(OBJS) $(PRINTF_OBJS)
+	@printf "$(GREEN)✓ libft.a created$(RESET)\n"
 
 # Rule for libft sources (in root directory)
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(eval COMPILED=$(shell echo $$(($(COMPILED)+1))))
+	@printf "$(CYAN)[%3d/%3d]$(RESET) Compiling $(YELLOW)%-30s$(RESET)\r" \
+		$(COMPILED) $(TOTAL_FILES) "$(notdir $<)"
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@if [ $(COMPILED) -eq $(TOTAL_FILES) ]; then printf "\n"; fi
 
 # Rule for printf sources (in printf folder)
 $(OBJ_DIR)/%.o: $(PRINTF_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(eval COMPILED=$(shell echo $$(($(COMPILED)+1))))
+	@printf "$(CYAN)[%3d/%3d]$(RESET) Compiling $(YELLOW)%-30s$(RESET)\r" \
+		$(COMPILED) $(TOTAL_FILES) "$(notdir $<)"
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@if [ $(COMPILED) -eq $(TOTAL_FILES) ]; then printf "\n"; fi
 
 clean:
-	$(RM) -r $(OBJ_DIR)
+	@$(RM) -r $(OBJ_DIR)
+	@printf "$(RED)✗ Cleaned object files$(RESET)\n"
 
 fclean: clean
-	$(RM) $(NAME)
+	@$(RM) $(NAME)
+	@printf "$(RED)✗ Removed libft.a$(RESET)\n"
 
 re:
-	$(MAKE) fclean
-	$(MAKE) all
+	@$(MAKE) fclean
+	@$(MAKE) all
 
 .PHONY: all clean fclean re bonus
