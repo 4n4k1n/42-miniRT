@@ -136,6 +136,14 @@ typedef struct s_cone_uv
 	double	y;
 }	t_cone_uv;
 
+typedef struct s_bump_ctx
+{
+	const t_bump	*b;
+	t_vec3			n;
+	t_vec3			t;
+	t_vec3			bta;
+}	t_bump_ctx;
+
 typedef struct s_hit_record
 {
 	t_vec3		p;
@@ -210,8 +218,7 @@ int				hittable_hit(const t_obj *o, t_ray *r, t_hit_range range,
 int				world_hit(const t_obj_list *list, t_ray *r, t_hit_range range,
 					t_hit_record *out);
 int				world_hit_bvh(t_bvh_ctx *ctx, t_hit_record *out);
-t_vec3			bump_perturb_from_uv(const t_bump *b, t_vec3 n, t_vec3 t,
-					t_vec3 bta, double u, double v);
+t_vec3			bump_perturb_from_uv(t_bump_ctx *ctx, double u, double v);
 
 int				aabb_hit(const t_aabb *box, const t_ray *r, double tmin,
 					double tmax);

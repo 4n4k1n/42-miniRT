@@ -41,9 +41,11 @@ t_rgb	sample_bump_rgb(const t_bump *b, double u, double v)
 
 void	apply_bump_mapping(t_ray_color_vars *vars)
 {
-	vars->bumped = bump_perturb_from_uv(vars->rec.bump,
-			vars->rec.normal, vars->rec.tangent, vars->rec.bitangent,
-			vars->rec.u, vars->rec.v);
+	t_bump_ctx	ctx;
+
+	ctx = (t_bump_ctx){vars->rec.bump, vars->rec.normal, vars->rec.tangent,
+		vars->rec.bitangent};
+	vars->bumped = bump_perturb_from_uv(&ctx, vars->rec.u, vars->rec.v);
 	vars->front = (vec3_dot(vars->current_ray.direction,
 				vars->bumped) < 0.0);
 	if (vars->front)
