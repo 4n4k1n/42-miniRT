@@ -102,3 +102,30 @@ int	parse_rgb(const char *str, t_rgb *out)
 	ft_array_free(tokens);
 	return (0);
 }
+
+/**
+ * Removes comments and whitespace from input line
+ * Strips everything after '#' character and trims spaces
+ * Returns cleaned string for parsing
+ */
+char	*trim_and_strip(char *s)
+{
+	char	*hash;
+	char	*out;
+	char	*p;
+
+	hash = ft_strchr(s, '#');
+	if (hash)
+		*hash = '\0';
+	out = ft_strtrim(s, " \t\r\n");
+	if (!out)
+		return (NULL);
+	p = out;
+	while (*p)
+	{
+		if (*p == '\t')
+			*p = ' ';
+		p++;
+	}
+	return (out);
+}

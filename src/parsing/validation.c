@@ -71,6 +71,16 @@ int	parse_camera(char **tokens, t_data *scene, t_arg_check *args)
 }
 
 /**
+ * Sets default white color for light
+ */
+static void	set_default_light_color(t_light *ln)
+{
+	ln->color.r = 255.0;
+	ln->color.g = 255.0;
+	ln->color.b = 255.0;
+}
+
+/**
  * Parses light source parameters from tokens
  * Format: L <x,y,z> <brightness> [r,g,b]
  * @param tokens Array of parsed string tokens
@@ -95,17 +105,10 @@ int	parse_light(char **tokens, t_data *scene, t_arg_check *args)
 		return (free(ln), rt_error("invalid light brightness"));
 	if (!in_range_d(ln->intensity, 0.0, 1.0))
 		return (free(ln), rt_error("light brightness out of range [0,1]"));
-	if (argc == 4)
-	{
-		if (parse_rgb(tokens[3], &ln->color))
-			return (free(ln), rt_error("invalid light RGB"));
-	}
-	else
-	{
-		ln->color.r = 255.0;
-		ln->color.g = 255.0;
-		ln->color.b = 255.0;
-	}
+	if (argc == 4 && parse_rgb(tokens[3], &ln->color))
+		return (free(ln), rt_error("invalid light RGB"));
+	if (argc != 4)
+		set_default_light_color(ln);
 	if (light_push(scene->light_list, ln))
 		return (free(ln), rt_error("light push failed"));
 	args->has_l = 1;

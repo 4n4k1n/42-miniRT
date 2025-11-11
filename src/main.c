@@ -140,7 +140,6 @@ static int	run_local(char *scene_file)
 	data.bvh_root = NULL;
 	if (parse_scene(scene_file, &data))
 		return (1);
-	print_scene(&data);
 	if (data.settings.use_bvh && data.objects && data.objects->size > 0)
 	{
 		data.bvh_root = build_bvh(data.objects);
