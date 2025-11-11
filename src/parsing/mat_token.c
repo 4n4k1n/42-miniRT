@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mat_token.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 11:06:47 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/07 11:42:02 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/11 15:00:35 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,28 +15,14 @@
 int	create_material_from_token(const char *mstr, t_rgb albedo,
 			t_material **out)
 {
-	double		ri;
-	const char	*s;
-
 	if (mstr[0] == 'L')
 		return (*out = material_lambertian(albedo), *out == NULL);
 	if (mstr[0] == 'M')
 		return (*out = material_metal(albedo, 0.0), *out == NULL);
+	if (mstr[0] == 'P')
+		return (create_phong_material(mstr, albedo, out));
 	if (mstr[0] == 'G')
-	{
-		ri = 1.5;
-		s = ft_strchr(mstr, ':');
-		if (s)
-		{
-			s++;
-			if (parse_double(s, &ri))
-				return (1);
-			if (ri <= 0.0)
-				ri = 1.5;
-		}
-		*out = material_dielectric(ri);
-		return (*out == NULL);
-	}
+		return (create_glass_material(mstr, out));
 	return (1);
 }
 

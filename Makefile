@@ -53,6 +53,7 @@ SRC = src/main.c \
 		src/parsing/utils.c \
 		src/parsing/validation_mat.c \
 		src/parsing/mat_token.c \
+		src/parsing/mat_token_helpers.c \
 		src/parsing/validation.c \
 		src/parsing/validators.c \
 		src/parsing/bump.c \
@@ -95,6 +96,7 @@ SRC = src/main.c \
 		src/logic/camera.c \
 		src/logic/metal.c \
 		src/logic/lambertian.c \
+		src/logic/phong.c \
 		src/logic/dielectric.c \
 		src/logic/dielectric_utils.c \
 		src/math/random_vec.c \

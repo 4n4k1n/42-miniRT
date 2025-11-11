@@ -26,7 +26,8 @@ static int	apply_mat_token(char **tokens, int len, t_mat_ctx *ctx)
 
 	mstr = "L";
 	if (ctx->i < len && (tokens[ctx->i][0] == 'L'
-		|| tokens[ctx->i][0] == 'M' || tokens[ctx->i][0] == 'G'))
+		|| tokens[ctx->i][0] == 'M' || tokens[ctx->i][0] == 'G'
+		|| tokens[ctx->i][0] == 'P'))
 	{
 		mstr = tokens[ctx->i];
 		ctx->i++;

@@ -1,0 +1,38 @@
+A 0.2 255,255,255
+
+C 0,2,8 0,-0.2,-1 70
+
+L -5,5,5 0.7 255,255,255
+L 5,5,5 0.5 200,200,255
+
+# Ground plane with checker pattern
+pl 0,-1,0 0,1,0 180,180,180 L tx:checker:1
+
+# Phong material showcase - different shininess values
+# Low shininess (rough surface)
+sp -4,0,-2 1.0 220,20,60 P:8
+
+# Medium-low shininess
+sp -2,0,-2 1.0 255,140,0 P:16
+
+# Default shininess
+sp 0,0,-2 1.0 100,200,100 P:32
+
+# Medium-high shininess
+sp 2,0,-2 1.0 100,149,237 P:64
+
+# High shininess (very shiny/polished)
+sp 4,0,-2 1.0 255,105,180 P:128
+
+# Back row - comparison with other materials
+# Phong vs Metal vs Lambertian
+sp -3,0,-5 0.8 200,100,50 P:64
+sp 0,0,-5 0.8 200,100,50 M
+sp 3,0,-5 0.8 200,100,50 L
+
+# Floating Phong spheres with different colors
+sp -2,2,-3 0.6 255,215,0 P:96
+sp 2,2,-3 0.6 147,112,219 P:48
+
+# Large background sphere with low shininess
+sp 0,1,-10 3.0 70,130,180 P:16
