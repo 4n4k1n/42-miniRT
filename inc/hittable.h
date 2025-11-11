@@ -32,6 +32,19 @@ typedef struct s_plane_basis
 	double	hs;
 }	t_plane_basis;
 
+typedef struct s_sphere_hit
+{
+	t_vec3		oc;
+	double		radius;
+	t_hit_range	range;
+}	t_sphere_hit;
+
+typedef struct s_tri_hit_ctx
+{
+	t_hit_range	range;
+	t_tri_calc	calc;
+}	t_tri_hit_ctx;
+
 typedef struct s_hit_record
 {
 	t_vec3		p;
@@ -85,20 +98,20 @@ typedef struct s_shadow_calc
 	double			diffuse;
 }	t_shadow_calc;
 
-int				hit_sphere_obj(const t_sphere *s, t_ray *r, double tmin,
-					double tmax, t_hit_record *rec);
-int				hit_plane_obj(const t_plane *pl, t_ray *r, double tmin,
-					double tmax, t_hit_record *rec);
+int				hit_sphere_obj(const t_sphere *s, t_ray *r, t_hit_range range,
+					t_hit_record *rec);
+int				hit_plane_obj(const t_plane *pl, t_ray *r, t_hit_range range,
+					t_hit_record *rec);
 int				hit_cylinder_obj(const t_cylinder *cyl, t_ray *r, double tmin,
 					double tmax, t_hit_record *rec);
 int				hit_pyramid_obj(const t_pyramid *py, t_ray *r, double tmin,
 					double tmax, t_hit_record *rec);
 int				hit_cone_obj(const t_cone *co, t_ray *r, double tmin,
 					double tmax, t_hit_record *rec);
-int				hit_triangle_obj(const t_triangle *tri, t_ray *r, double tmin,
-					double tmax, t_hit_record *rec);
-int				hit_triangle_test(const t_triangle *tri, t_ray *r, double tmin,
-					double tmax, t_hit_record *rec, t_tri_calc calc);
+int				hit_triangle_obj(const t_triangle *tri, t_ray *r,
+					t_hit_range range, t_hit_record *rec);
+int				hit_triangle_test(const t_triangle *tri, t_ray *r,
+					t_hit_record *rec, t_tri_hit_ctx ctx);
 void			set_face_normal(t_hit_record *rec, const t_ray *r,
 					const t_vec3 *outw);
 int				hittable_hit(const t_obj *o, t_ray *r, double min, double max,

@@ -24,12 +24,16 @@ void	set_face_normal(t_hit_record *rec, const t_ray *r, const t_vec3 *outw)
  */
 int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record *rec)
 {
+	t_hit_range	range;
+
 	if (!o || !rec)
 		return (0);
+	range.tmin = min;
+	range.tmax = max;
 	if (o->type == SPHERE)
-		return (hit_sphere_obj(&o->data.sphere, r, min, max, rec));
+		return (hit_sphere_obj(&o->data.sphere, r, range, rec));
 	if (o->type == PLANE)
-		return (hit_plane_obj(&o->data.plane, r, min, max, rec));
+		return (hit_plane_obj(&o->data.plane, r, range, rec));
 	if (o->type == CYLINDER)
 		return (hit_cylinder_obj(&o->data.cylinder, r, min, max, rec));
 	if (o->type == PYRAMID)
@@ -37,7 +41,7 @@ int	hittable_hit(const t_obj *o, t_ray *r, double min, double max, t_hit_record 
 	if (o->type == CONE)
 		return (hit_cone_obj(&o->data.cone, r, min, max, rec));
 	if (o->type == TRIANGLE)
-		return (hit_triangle_obj(&o->data.triangle, r, min, max, rec));
+		return (hit_triangle_obj(&o->data.triangle, r, range, rec));
 	return (0);
 }
 

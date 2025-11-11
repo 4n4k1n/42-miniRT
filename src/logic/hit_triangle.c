@@ -17,8 +17,8 @@
  * Fast intersection test using barycentric coordinates
  * Returns 1 if hit, 0 otherwise
  */
-int	hit_triangle_obj(const t_triangle *tri, t_ray *r, double tmin, \
-		double tmax, t_hit_record *rec)
+int	hit_triangle_obj(const t_triangle *tri, t_ray *r, t_hit_range range,
+	t_hit_record *rec)
 {
 	t_vec3	e1;
 	t_vec3	e2;
@@ -35,12 +35,12 @@ int	hit_triangle_obj(const t_triangle *tri, t_ray *r, double tmin, \
 	if (fabs(det) < 1e-8)
 		return (0);
 	tvec = vec3_sub(r->origin, tri->v0);
-	return (hit_triangle_test(tri, r, tmin, tmax, rec, \
-		(t_tri_calc){e1, e2, p, tvec, det, 0, 0}));
+	return (hit_triangle_test(tri, r, rec,
+			(t_tri_hit_ctx){range, (t_tri_calc){e1, e2, p, tvec, det, 0, 0}}));
 }
 
-int	hit_triangle_test(const t_triangle *tri, t_ray *r, double tmin, \
-		double tmax, t_hit_record *rec, t_tri_calc calc)
+int	hit_triangle_test(const t_triangle *tri, t_ray *r, t_hit_record *rec,
+	t_tri_hit_ctx ctx)
 {
 	double	inv_det;
 	double	u;
@@ -48,20 +48,20 @@ int	hit_triangle_test(const t_triangle *tri, t_ray *r, double tmin, \
 	double	v;
 	double	t;
 
-	inv_det = 1.0 / calc.det;
-	u = inv_det * vec3_dot(calc.tvec, calc.p);
+	inv_det = 1.0 / ctx.calc.det;
+	u = inv_det * vec3_dot(ctx.calc.tvec, ctx.calc.p);
 	if (u < 0.0 || u > 1.0)
 		return (0);
-	q = vec3_cross(calc.tvec, calc.e1);
+	q = vec3_cross(ctx.calc.tvec, ctx.calc.e1);
 	v = inv_det * vec3_dot(r->direction, q);
 	if (v < 0.0 || u + v > 1.0)
 		return (0);
-	t = inv_det * vec3_dot(calc.e2, q);
-	if (t < tmin || t > tmax)
+	t = inv_det * vec3_dot(ctx.calc.e2, q);
+	if (t < ctx.range.tmin || t > ctx.range.tmax)
 		return (0);
 	rec->t = t;
 	rec->p = vec3_add(r->origin, vec3_multiply(r->direction, t));
-	rec->normal = vec3_normalize(vec3_cross(calc.e1, calc.e2));
+	rec->normal = vec3_normalize(vec3_cross(ctx.calc.e1, ctx.calc.e2));
 	set_face_normal(rec, r, &rec->normal);
 	rec->rgb = tri->rgb;
 	rec->mat = tri->mat;
