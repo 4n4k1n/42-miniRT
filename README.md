@@ -769,6 +769,7 @@ miniRT/
 │   ├── 10000_spheres.rt  # BVH benchmark
 │   └── ...
 ├── docs/                  # Documentation
+│   ├── CODE_DOCUMENTATION.md  # Detailed code documentation
 │   ├── high-level_application.svg
 │   ├── local_mode.svg
 │   ├── master_mode.svg
@@ -1048,6 +1049,18 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) for detai
 ![10K Spheres](screenshots/10k_spheres.png)
 
 </div>
+
+---
+
+## Developer Documentation
+
+For detailed code documentation, see:
+- **[Code Documentation](docs/CODE_DOCUMENTATION.md)** - Comprehensive guide to the codebase
+  - Architecture overview
+  - Data structure reference
+  - Module documentation
+  - Function reference
+  - Adding new features
 
 ---
 
