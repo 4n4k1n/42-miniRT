@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 15:34:10 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 22:23:49 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/11 22:48:00 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,6 @@ void		print_usage(char *prog);
 uint32_t	get_port(int ac, char **av);
 int			run_local(char *scene_file);
 int			set_triangle_tangent_space(t_hit_record *rec, t_vec3 *e1);
-void	translate_settings(t_data *data);
+void		translate_settings(t_data *data);
 
 #endif
