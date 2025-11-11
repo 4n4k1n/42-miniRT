@@ -17,7 +17,8 @@
  * Formula: new_vec = vec / t for each component
  * Inline version for performance
  */
-inline t_vec3	vec3_divide(const t_vec3 a, const double t)
+__attribute__((always_inline)) inline t_vec3	vec3_divide(const t_vec3 a,
+	const double t)
 {
 	return ((t_vec3){a.x / t, a.y / t, a.z / t});
 }

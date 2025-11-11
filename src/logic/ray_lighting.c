@@ -45,8 +45,9 @@ int	is_in_shadow(t_data *data, t_shadow_calc *sc)
 	return (0);
 }
 
-void	add_light_sample(t_rgb *light_contrib, t_light *light,
-		const t_hit_record *rec, double diffuse)
+__attribute__((always_inline)) inline void	add_light_sample(
+	t_rgb *light_contrib, t_light *light, const t_hit_record *rec,
+	double diffuse)
 {
 	light_contrib->r += (light->color.r / 255.0) * (rec->rgb.r
 			/ 255.0) * light->intensity * diffuse * 255.0;

@@ -21,7 +21,7 @@ double			sqrt(double x);
  * Formula: |vec| = √(x² + y² + z²)
  * Returns scalar length of the vector
  */
-inline double	vec3_sqrt(const t_vec3 vec)
+__attribute__((always_inline)) inline double	vec3_sqrt(const t_vec3 vec)
 {
 	return (sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z));
 }

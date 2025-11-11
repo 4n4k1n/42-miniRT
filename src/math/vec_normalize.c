@@ -17,7 +17,7 @@
  * Formula: normalized = vec / |vec|
  * Returns original vector if length is zero
  */
-inline t_vec3	vec3_normalize(const t_vec3 v)
+__attribute__((always_inline)) inline t_vec3	vec3_normalize(const t_vec3 v)
 {
 	double	len;
 

@@ -17,7 +17,8 @@
  * Sets x, y, z components to given values
  * Returns new vector by value
  */
-inline t_vec3	vec3_init(const double x, const double y, const double z)
+__attribute__((always_inline)) inline t_vec3	vec3_init(const double x,
+	const double y, const double z)
 {
 	return ((t_vec3){x, y, z});
 }

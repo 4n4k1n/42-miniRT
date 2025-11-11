@@ -12,7 +12,8 @@
 
 #include "mini_rt.h"
 
-double	clamp(double x, double minv, double maxv)
+__attribute__((always_inline)) inline double	clamp(double x, double minv,
+	double maxv)
 {
 	if (x < minv)
 		return (minv);

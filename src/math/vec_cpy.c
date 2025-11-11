@@ -17,7 +17,7 @@
  * Returns new vector with same values
  * Inline version for performance
  */
-inline t_vec3	vec3_cpy(const t_vec3 vec)
+__attribute__((always_inline)) inline t_vec3	vec3_cpy(const t_vec3 vec)
 {
 	return (vec);
 }

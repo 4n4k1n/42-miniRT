@@ -17,7 +17,8 @@
  * Formula: a×b = (ay*bz-az*by, az*bx-ax*bz, ax*by-ay*bx)
  * Returns vector perpendicular to both input vectors
  */
-inline t_vec3	vec3_cross(const t_vec3 a, const t_vec3 b)
+__attribute__((always_inline)) inline t_vec3	vec3_cross(const t_vec3 a,
+	const t_vec3 b)
 {
 	return ((t_vec3){a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y
 		- a.y * b.x});

@@ -17,7 +17,8 @@
  * Offsets point slightly along normal in direction of the scattered ray
  * Prevents self-intersection artifacts in ray tracing
  */
-t_vec3	apply_surface_bias(t_vec3 point, t_vec3 direction, t_vec3 normal)
+__attribute__((always_inline)) inline t_vec3	apply_surface_bias(t_vec3 point,
+	t_vec3 direction, t_vec3 normal)
 {
 	double	eps;
 	double	sign;

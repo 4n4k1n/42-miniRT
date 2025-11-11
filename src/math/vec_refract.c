@@ -12,7 +12,8 @@
 
 #include "mini_rt.h"
 
-t_vec3	vec3_refract(const t_vec3 v, const t_vec3 n, double etai_over_etat)
+__attribute__((always_inline)) inline t_vec3	vec3_refract(const t_vec3 v,
+	const t_vec3 n, double etai_over_etat)
 {
 	t_vec3	uv;
 	double	cos_theta;

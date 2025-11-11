@@ -12,7 +12,8 @@
 
 #include "mini_rt.h"
 
-double	get_refraction_index(const t_material *self, int front_face)
+__attribute__((always_inline)) inline double	get_refraction_index(
+	const t_material *self, int front_face)
 {
 	if (front_face)
 		return (1.0 / self->refraction_index);
@@ -20,7 +21,7 @@ double	get_refraction_index(const t_material *self, int front_face)
 		return (self->refraction_index);
 }
 
-double	get_sin_theta(double cos_theta)
+__attribute__((always_inline)) inline double	get_sin_theta(double cos_theta)
 {
 	double	sin_theta_sq;
 
@@ -47,7 +48,8 @@ static t_rgb	get_checker_color(const t_material *self, double u, double v)
 		return (self->texture_a);
 }
 
-t_rgb	get_texture_color(const t_material *self, double u, double v)
+__attribute__((always_inline)) inline t_rgb	get_texture_color(
+	const t_material *self, double u, double v)
 {
 	if (self->texture_type == CHECKER)
 		return (get_checker_color(self, u, v));

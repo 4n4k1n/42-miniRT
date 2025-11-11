@@ -12,7 +12,8 @@
 
 #include "mini_rt.h"
 
-inline t_rgb	rgb_multiply(const t_rgb color, const double t)
+__attribute__((always_inline)) inline t_rgb	rgb_multiply(const t_rgb color,
+	const double t)
 {
 	return ((t_rgb){color.r * t, color.g * t, color.b * t});
 }
