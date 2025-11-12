@@ -3,15 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   send_file.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 12:37:54 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 09:52:50 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 17:17:04 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/*
+ * Read an entire file into a malloc'd buffer. On success returns pointer and
+ * sets file_size. On error returns NULL and prints a message.
+ */
 static char	*read_file(char *path, size_t *file_size)
 {
 	int			fd;
@@ -34,6 +38,14 @@ static char	*read_file(char *path, size_t *file_size)
 	return (file_content);
 }
 
+/**
+ * Send the contents of a file over socket preceded by MSG_SCENE_FILE header.
+ * Reads the file into memory, sends a header with payload size and then the
+ * file bytes (including terminating NUL). Returns 0 on success, 1 on error.
+ * @param path filesystem path to the file
+ * @param socket_fd connected socket descriptor
+ * @return 0 on success, 1 on failure
+ */
 int	send_file(char *path, int socket_fd)
 {
 	char			*file_content;
