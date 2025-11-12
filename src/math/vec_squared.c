@@ -3,19 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   vec_squared.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 14:26:38 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 10:51:20 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 16:13:00 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Calculates the squared length of a vector
- * Formula: |vec|² = x² + y² + z²
- * Used to avoid expensive sqrt operations when comparing lengths
+ * Compute the squared length of a 3D vector.
+ * This avoids the cost of sqrt when only relative lengths or comparisons are
+ * required. Returns x*x + y*y + z*z.
+ * @param vec input vector
+ * @return squared magnitude of vec
  */
 __attribute__((always_inline)) inline double	vec3_squared(const t_vec3 vec)
 {
