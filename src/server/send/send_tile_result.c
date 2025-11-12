@@ -3,15 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   send_tile_result.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 14:24:27 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 09:55:06 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 17:15:32 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Send a completed tile result back to the master/receiver.
+ * Allocates a network-order copy of the pixel buffer, converts each pixel to
+ * network byte order, sends a MSG_TILE_COMPLETE header with total payload
+ * size (t_tile + pixel bytes), then transmits the tile metadata and pixels.
+ * Frees the temporary buffer on completion.
+ * @param socket_fd connected socket to send to
+ * @param tile_result tile metadata in host byte order
+ * @param pixels pointer to host-order pixel buffer (uint32_t per pixel)
+ */
 void	send_tile_result(int socket_fd, t_tile *tile_result, uint32_t *pixels)
 {
 	uint32_t	pixel_bytes;
