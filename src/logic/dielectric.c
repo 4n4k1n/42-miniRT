@@ -6,12 +6,18 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 00:00:00 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 00:00:00 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 13:35:42 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Schlick's approximation for Fresnel reflectance.
+ * @param cosine angle between incident ray and surface normal (cos theta)
+ * @param ref_idx relative index of refraction
+ * @return approximate reflectance in [0,1]
+ */
 static double	schlick_reflectance(double cosine, double ref_idx)
 {
 	double	r0;
@@ -21,6 +27,15 @@ static double	schlick_reflectance(double cosine, double ref_idx)
 	return (r0 + (1.0 - r0) * pow(1.0 - cosine, 5.0));
 }
 
+/**
+ * Scatter function for dielectric (transparent) materials.
+ * Chooses reflection or refraction using total internal reflection
+ * and Schlick's reflectance probability. Sets scattered ray origin/direction
+ * and attenuation modulated by the underlying texture/color.
+ * @param self material descriptor (contains refraction index, textures)
+ * @param ctx  scatter context (reads r_in, rec; writes scattered, attenuation)
+ * @return 1 always (ray continues as either reflection or refraction)
+ */
 static int	dielectric_scatter(const t_material *self,
 	struct s_scatter_ctx *ctx)
 {
@@ -49,6 +64,11 @@ static int	dielectric_scatter(const t_material *self,
 	return (1);
 }
 
+/**
+ * Allocates and initializes a dielectric material.
+ * @param refraction_index index of refraction for the material
+ * @return pointer to allocated t_material or NULL on OOM
+ */
 t_material	*material_dielectric(double refraction_index)
 {
 	t_material	*m;
