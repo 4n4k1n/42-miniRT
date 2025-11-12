@@ -3,15 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   camera.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:30 by apregitz          #+#    #+#             */
-/*   Updated: 2025/11/11 22:43:33 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 13:38:29 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Builds orthonormal camera basis vectors from the stored pitch/yaw.
+ * forward: unit forward vector computed from spherical angles (pitch/yaw)
+ * right:   unit right vector (cross(forward, world_up))
+ * up:      unit up vector (cross(right, forward))
+ * @param data   global scene with camera angles
+ * @param forward out forward vector
+ * @param right   out right vector
+ * @param up      out up vector
+ */
 void	get_camera_vectors(t_data *data, t_vec3 *forward,
 	t_vec3 *right, t_vec3 *up)
 {
@@ -23,6 +33,14 @@ void	get_camera_vectors(t_data *data, t_vec3 *forward,
 	*up = vec3_normalize(vec3_cross(*right, *forward));
 }
 
+/**
+ * Recomputes camera viewport vectors and pixel mapping state.
+ * Uses camera orientation/pitch/yaw and focal distance to compute:
+ *  - viewport_u / viewport_v: world-space viewport extents
+ *  - pixel_delta_u / pixel_delta_v: per-pixel step vectors
+ *  - viewport_upper_left / pixel00_loc: anchor locations for pixel rays
+ * @param data global scene containing camera params and image defines
+ */
 void	update_camera(t_data *data)
 {
 	t_init_tmp	tmp;
@@ -50,9 +68,11 @@ void	update_camera(t_data *data)
 }
 
 /**
- * Calculates image height based on width and aspect ratio
- * Formula: height = width / aspect_ratio
- * Ensures minimum height of 1 pixel
+ * Calculates image height given requested width and aspect ratio.
+ * height = width / aspect_ratio with a minimum clamp to 1.
+ * @param width requested image width in pixels
+ * @param ra aspect ratio (width / height)
+ * @return computed integer image height (>= 1)
  */
 static int	get_image_height(int width, double ra)
 {
@@ -65,10 +85,14 @@ static int	get_image_height(int width, double ra)
 }
 
 /**
- * Initializes camera parameters for ray tracing
- * Sets up viewport dimensions, pixel deltas, and starting pixel location
- * Creates coordinate system for converting screen pixels to world rays
- * Uses parsed camera data from scene file (position, orientation, FOV)
+ * Initialize camera fields derived from parsed scene parameters.
+ * Computes:
+ *  - image width/height
+ *  - camera pitch/yaw from orientation vector
+ *  - viewport physical size from FOV (camera.foc used as FOV degrees)
+ *  - focal length and viewport dimensions
+ * Then calls update_camera to finalize pixel mapping.
+ * @param data global scene and camera parameters
  */
 void	init_camera(t_data *data)
 {
