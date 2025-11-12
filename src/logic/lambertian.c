@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   lambertian.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/09 16:11:37 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/09 16:11:38 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:52:33 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Returns Lambertian texture color (checker if enabled, else white).
+ * @param self material
+ * @param rec hit record (uses u,v)
+ * @return texture RGB
+ */
 static t_rgb	get_lambertian_texture(const t_material *self,
 	const t_hit_record *rec)
 {
@@ -33,6 +39,13 @@ static t_rgb	get_lambertian_texture(const t_material *self,
 	return ((t_rgb){255.0, 255.0, 255.0});
 }
 
+/**
+ * Lambertian scatter: random hemisphere dir, sets ray & attenuation.
+ * Applies checker texture if present.
+ * @param self material
+ * @param ctx scatter context (reads rec, writes scattered/attenuation)
+ * @return 1 always
+ */
 static int	lambertian_scatter(const t_material *self,
 	struct s_scatter_ctx *ctx)
 {
@@ -51,6 +64,11 @@ static int	lambertian_scatter(const t_material *self,
 	return (1);
 }
 
+/**
+ * Allocates Lambertian material (diffuse).
+ * @param albedo base color
+ * @return material or NULL
+ */
 t_material	*material_lambertian(t_rgb albedo)
 {
 	t_material	*m;

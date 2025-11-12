@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   metal.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 13:51:50 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/07 13:51:51 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:51:37 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Returns metal texture color (checker if enabled, else white).
+ * @param self material
+ * @param rec hit record (uses u,v)
+ * @return texture RGB
+ */
 static t_rgb	get_metal_texture(const t_material *self,
 	const t_hit_record *rec)
 {
@@ -33,6 +39,13 @@ static t_rgb	get_metal_texture(const t_material *self,
 	return ((t_rgb){255.0, 255.0, 255.0});
 }
 
+/**
+ * Computes reflected + fuzzed scatter direction for metal.
+ * @param dir output scatter direction
+ * @param self material (uses fuzz)
+ * @param r_in incoming ray
+ * @param rec hit info (normal)
+ */
 static void	compute_metal_scatter(t_vec3 *dir, const t_material *self,
 	const t_ray *r_in, const t_hit_record *rec)
 {
@@ -42,6 +55,13 @@ static void	compute_metal_scatter(t_vec3 *dir, const t_material *self,
 	*dir = vec3_add(reflected, vec3_multiply(random_unit_vec3(), self->fuzz));
 }
 
+/**
+ * Performs metal scattering: sets scattered ray and attenuation.
+ * Returns 1 if the scattered ray goes outward.
+ * @param self material
+ * @param ctx scatter context
+ * @return 1 continue, 0 absorb
+ */
 static int	process_metal(const t_material *self, struct s_scatter_ctx *ctx)
 {
 	t_vec3	dir;
@@ -58,11 +78,23 @@ static int	process_metal(const t_material *self, struct s_scatter_ctx *ctx)
 	return (vec3_dot(ctx->scattered->direction, ctx->rec->normal) > 0.0);
 }
 
+/**
+ * Wrapper scatter function for metal.
+ * @param self material
+ * @param ctx scatter context
+ * @return process_metal result
+ */
 static int	metal_scatter(const t_material *self, struct s_scatter_ctx *ctx)
 {
 	return (process_metal(self, ctx));
 }
 
+/**
+ * Allocates a metal material with fuzz clamped to [0,1].
+ * @param albedo base color
+ * @param fuzz roughness factor
+ * @return material pointer or NULL
+ */
 t_material	*material_metal(t_rgb albedo, double fuzz)
 {
 	t_material	*m;
