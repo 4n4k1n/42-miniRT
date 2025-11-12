@@ -3,19 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   vec_multiply.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 14:16:31 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 10:47:46 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 16:17:54 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Multiplies vector by scalar, returns new vector
- * Formula: new_vec = vec * t for each component
- * Inline version for performance
+ * Scale a 3D vector by a scalar.
+ * Performs a component-wise multiplication of vector 'a' with scalar 't'.
+ * Returns the resulting vector. Marked inline to allow the compiler to
+ * optimize this small hot-path operation.
+ * @param a input vector
+ * @param t scalar multiplier
+ * @return scaled vector (a * t)
  */
 __attribute__((always_inline)) inline t_vec3	vec3_multiply(const t_vec3 a,
 	double t)
