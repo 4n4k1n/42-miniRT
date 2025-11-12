@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_hooks.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 15:32:53 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 18:20:47 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 			return ;
 		handle_movement(data, keydata, move_distance);
 		update_camera(data);
-		if (data->master && BONUS)
+		if (data->master && !data->is_local)
 			broadcast_update(data->master, 1);
 		else
 			render(data);
