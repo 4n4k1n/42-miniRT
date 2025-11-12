@@ -6,12 +6,20 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:32:34 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/31 11:27:55 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 13:05:22 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Solves the quadratic for a sphere intersection and returns the nearest
+ * valid root within the provided range.
+ * @param sh  precomputed sphere hit data (oc, radius, range)
+ * @param r   ray to test
+ * @param root out parameter receiving the chosen t
+ * @return 1 if a valid root was found, 0 otherwise
+ */
 static int	solve_sphere_quad(t_sphere_hit *sh, t_ray *r, double *root)
 {
 	double	quad[3];
@@ -34,12 +42,25 @@ static int	solve_sphere_quad(t_sphere_hit *sh, t_ray *r, double *root)
 	return (1);
 }
 
+/**
+ * Computes spherical UV coordinates from the outward-facing normal.
+ * u is in [0,1), v in [0,1]
+ * @param outward outward unit normal at the hit point
+ * @param rec     hit record to write u/v
+ */
 static void	compute_sphere_uv(t_vec3 outward, t_hit_record *rec)
 {
 	rec->u = 0.5 + atan2(outward.z, outward.x) / (2.0 * M_PI);
 	rec->v = 0.5 - asin(outward.y) / M_PI;
 }
 
+/**
+ * Builds a stable tangent / bitangent basis at the sphere surface point.
+ * Chooses a fallback axis to avoid degeneracy
+ *  when the normal is nearly vertical.
+ * @param outward outward unit normal at the hit point
+ * @param rec     hit record to write tangent and bitangent
+ */
 static void	compute_tangent_basis(t_vec3 outward, t_hit_record *rec)
 {
 	t_vec3	tmp;
@@ -51,6 +72,8 @@ static void	compute_tangent_basis(t_vec3 outward, t_hit_record *rec)
 	rec->tangent = vec3_normalize(vec3_cross(tmp, outward));
 	rec->bitangent = vec3_cross(outward, rec->tangent);
 }
+
+// ...existing code...
 
 /**
  * Tests if a ray intersects with a sphere object
