@@ -3,15 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   bump.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 14:58:42 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 13:53:34 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 13:44:01 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Normalizes texture coordinates into the [0,1) range using wrapping.
+ * @param u pointer to horizontal coordinate (in/out)
+ * @param v pointer to vertical coordinate (in/out)
+ */
 static void	normalize_uv(double *u, double *v)
 {
 	while (*u < 0.0)
@@ -24,6 +29,13 @@ static void	normalize_uv(double *u, double *v)
 		*v = *v - floor(*v);
 }
 
+/**
+ * Computes luminance (luma) from an interleaved RGBA pixel array at idx.
+ * Expects pixels in RGBA order and returns luma in [0,1].
+ * @param pixels raw pixel buffer (4 bytes per pixel)
+ * @param idx byte index of the pixel's R component
+ * @return luma value [0,1]
+ */
 static double	calc_luma(unsigned char *pixels, size_t idx)
 {
 	double	r;
@@ -36,6 +48,14 @@ static double	calc_luma(unsigned char *pixels, size_t idx)
 	return (0.2126 * r + 0.7152 * g + 0.0722 * bl);
 }
 
+/**
+ * Samples the bump map and returns the height (luma) at UV using nearest texel.
+ * Safely handles missing bump data by returning 0.0.
+ * @param b bump map descriptor (pixels, width, height)
+ * @param u horizontal texture coordinate
+ * @param v vertical texture coordinate
+ * @return height value in [0,1]
+ */
 static inline double	bump_height(const t_bump *b, double u, double v)
 {
 	uint32_t	ix;
@@ -52,8 +72,16 @@ static inline double	bump_height(const t_bump *b, double u, double v)
 }
 
 /**
- * Perturbs a normal vector given tangent/bitangent basis and UV
- * Uses central finite differences and an amplified strength for visibility
+ * Perturbs a surface normal using the provided tangent/bitangent basis and UV.
+ * Uses central differences on the bump map to approximate partial derivatives,
+ * scales by bump->strength (amplified by a factor for visual clarity) and
+ * returns a normalized perturbed normal. If no bump map is present the
+ * original normal is returned unchanged.
+ * @param ctx context containing bump map pointer (b), original normal (n),
+ *            tangent (t), bitangent (bta)
+ * @param u   texture u coordinate
+ * @param v   texture v coordinate
+ * @return perturbed unit normal
  */
 t_vec3	bump_perturb_from_uv(t_bump_ctx *ctx, double u, double v)
 {
