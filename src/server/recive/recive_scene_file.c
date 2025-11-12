@@ -3,15 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   recive_scene_file.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 22:07:35 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 09:47:42 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 16:45:30 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Receive a scene file payload from the socket.
+ * Expects a MSG_SCENE_FILE message header containing the payload size,
+ * allocates a buffer large enough for the file contents plus a terminating
+ * null byte, reads the payload, null-terminates it and returns the pointer.
+ * On allocation failure returns NULL after printing an error.
+ * Caller is responsible for freeing the returned buffer.
+ * @param socket_fd connected socket descriptor
+ * @return pointer to malloc'd null-terminated scene file contents, or NULL
+ */
 char	*recive_scene_file(int socket_fd)
 {
 	t_msg_header	header;

@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   recive_settings.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 17:58:32 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/13 18:27:27 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/11/12 16:45:18 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Receive renderer settings from the socket.
+ * Expects a MSG_SETTINGS header, reads a t_settings payload and converts all
+ * integer fields from network to host byte order. Returns the populated
+ * settings structure.
+ * @param socket_fd connected socket descriptor
+ * @return t_settings populated from the remote peer
+ */
 t_settings	recive_settings(int socket_fd)
 {
 	t_msg_header	header;
