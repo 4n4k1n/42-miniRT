@@ -3,15 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   main_local.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:30:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 22:42:16 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 15:42:17 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Initialize runtime data for local (non-distributed) execution.
+ * - Translates settings to runtime defines
+ * - Parses the scene file into data
+ * - Optionally builds BVH for non-plane objects
+ * - Initializes camera and AA settings
+ * @param data pointer to t_data to populate
+ * @param scene_file path to the scene description file
+ * @return 0 on success, non-zero on failure
+ */
 static int	init_data_local(t_data *data, char *scene_file)
 {
 	translate_settings(data);
@@ -31,6 +41,12 @@ static int	init_data_local(t_data *data, char *scene_file)
 	return (0);
 }
 
+/**
+ * Initialize the MLX context and create the window + image for rendering.
+ * On failure this function also frees parsed scene resources.
+ * @param data application data containing desired image dimensions
+ * @return 0 on success, non-zero on failure
+ */
 static int	init_mlx_local(t_data *data)
 {
 	mlx_set_setting(MLX_MAXIMIZED, false);
@@ -54,6 +70,12 @@ static int	init_mlx_local(t_data *data)
 	return (0);
 }
 
+/**
+ * Cleanup routine for local execution path.
+ * Frees BVH, object and light lists, destroys MLX image/window/context and
+ * shuts down thread pool / synchronization primitives.
+ * @param data application data to clean up
+ */
 static void	cleanup_local(t_data *data)
 {
 	if (data->bvh_root)
@@ -65,6 +87,13 @@ static void	cleanup_local(t_data *data)
 	cleanup_data(data);
 }
 
+/**
+ * Run the renderer in local single-machine mode.
+ * Initializes scene and MLX, spawns worker threads, installs input hooks,
+ * triggers the initial render and enters the MLX event loop. Cleans up on exit.
+ * @param scene_file path to the scene description file
+ * @return 0 on success, non-zero on failure
+ */
 int	run_local(char *scene_file)
 {
 	t_data	data;
