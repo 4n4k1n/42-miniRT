@@ -6,12 +6,20 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 13:50:02 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/06 13:43:11 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:32:41 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Parses required plane fields and allocates the object.
+ * Indices: 1=point, 2=normal, 3=rgb.
+ * Normal must be non-zero and in [-1,1]. Sets bump = NULL.
+ * @param tokens token array (pl ...)
+ * @param out receives allocated plane object
+ * @return 0 success, 1 error
+ */
 static int	parse_plane_core(char **tokens, t_obj **out)
 {
 	t_obj	*o;
@@ -33,6 +41,15 @@ static int	parse_plane_core(char **tokens, t_obj **out)
 	return (0);
 }
 
+/**
+ * Parses optional material and bump tokens.
+ * Bump must be last: "bm:<path>[:strength]".
+ * Decrements len if bump is consumed, then parses material.
+ * @param tokens token array
+ * @param len in/out token count (may be decremented)
+ * @param o plane to update
+ * @return 0 success, 1 error
+ */
 static int	parse_plane_extras(char **tokens, int *len, t_obj *o)
 {
 	if (*len >= 5 && ft_strncmp(tokens[*len - 1], "bm:", 3) == 0)
