@@ -6,12 +6,21 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 11:31:15 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/29 15:20:40 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 13:07:40 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Möller–Trumbore test for a single triangle.
+ * Computes intersection t and face normal if hit.
+ * @param r    Ray to test
+ * @param tri  Array of three triangle vertices
+ * @param t    Out: intersection distance along the ray
+ * @param n    Out: computed (possibly zero) normal for the triangle
+ * @return 1 when intersection found, 0 otherwise
+ */
 static int	tri_hit(t_ray *r, t_vec3 tri[3], double *t, t_vec3 *n)
 {
 	t_py_tri_calc	calc;
@@ -35,6 +44,11 @@ static int	tri_hit(t_ray *r, t_vec3 tri[3], double *t, t_vec3 *n)
 	return (*t > 0.0);
 }
 
+/**
+ * Builds pyramid vertices (apex + base corners) and local basis.
+ * @param py  Pyramid geometry (center, axis, base, height)
+ * @param v   Out: filled vertex set (apex, b0..b3)
+ */
 static void	build_vertices(const t_pyramid *py, t_py_verts *v)
 {
 	t_vec3		up;
@@ -50,6 +64,13 @@ static void	build_vertices(const t_pyramid *py, t_py_verts *v)
 	compute_base_corners(&basis, v);
 }
 
+/**
+ * Performs a triangle intersection and updates the best hit record if closer.
+ * @param r     Ray to test
+ * @param tri   Triangle vertices
+ * @param range Valid t range
+ * @param best  In/out best-hit accumulator
+ */
 static void	check_tri_hit(t_ray *r, t_vec3 tri[3], t_hit_range range,
 	t_py_best *best)
 {
@@ -65,6 +86,14 @@ static void	check_tri_hit(t_ray *r, t_vec3 tri[3], t_hit_range range,
 	}
 }
 
+/**
+ * Tests all four side faces and the base (two triangles) of the pyramid.
+ * Updates best when a closer hit is found.
+ * @param r     Ray to test
+ * @param v     Pyramid vertices (apex + base corners)
+ * @param range Valid t range
+ * @param best  In/out best-hit accumulator
+ */
 static void	test_all_faces(t_ray *r, t_py_verts *v, t_hit_range range,
 	t_py_best *best)
 {
@@ -93,9 +122,13 @@ static void	test_all_faces(t_ray *r, t_py_verts *v, t_hit_range range,
 }
 
 /**
- * Tests ray/axis-aligned pyramid with given center, axis, base and height
- * Computes UV and tangent basis at the hit for bump mapping
- * Returns 1 if hit, 0 if miss
+ * Tests ray/axis-aligned pyramid with given center, axis, base and height.
+ * Computes UV and tangent basis at the hit for bump mapping.
+ * @param py    Pyramid geometry
+ * @param r     Ray to test
+ * @param range Valid t range
+ * @param rec   Out: hit record to fill on success
+ * @return 1 if hit, 0 if miss
  */
 int	hit_pyramid_obj(const t_pyramid *py, t_ray *r, t_hit_range range,
 	t_hit_record *rec)
