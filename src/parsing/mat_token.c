@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   mat_token.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 11:06:47 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 15:00:35 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:27:45 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Selects and creates a material based on the first char of mstr.
+ * L=Lambertian, M=Metal (roughness 0), P=Phong, G=Glass.
+ * @param mstr token (e.g. "P:64")
+ * @param albedo base color
+ * @param out receives allocated material
+ * @return 0 success, 1 failure/unknown
+ */
 int	create_material_from_token(const char *mstr, t_rgb albedo,
 			t_material **out)
 {
@@ -26,6 +34,10 @@ int	create_material_from_token(const char *mstr, t_rgb albedo,
 	return (1);
 }
 
+/**
+ * Sets base_len, albedo pointer, and material pointer for sphere/plane.
+ * @return 0 if handled, 1 if type mismatch.
+ */
 static int	mat_base_sp_pl(t_obj *o, int *base_len,
 			t_rgb *albedo, t_material ***outp)
 {
@@ -45,6 +57,10 @@ static int	mat_base_sp_pl(t_obj *o, int *base_len,
 	return (0);
 }
 
+/**
+ * Sets base info for cylinder / pyramid / cone.
+ * @return 0 if handled, 1 if type mismatch.
+ */
 static int	mat_base_cycopc(t_obj *o, int *base_len,
 			t_rgb *albedo, t_material ***outp)
 {
@@ -69,6 +85,10 @@ static int	mat_base_cycopc(t_obj *o, int *base_len,
 	return (0);
 }
 
+/**
+ * Sets base info for triangle.
+ * @return 0 if handled, 1 if type mismatch.
+ */
 static int	mat_base_triangle(t_obj *o, int *base_len,
 			t_rgb *albedo, t_material ***outp)
 {
@@ -80,6 +100,10 @@ static int	mat_base_triangle(t_obj *o, int *base_len,
 	return (0);
 }
 
+/**
+ * Dispatch helper: finds matching object type and fills base info.
+ * @return 0 success, 1 no match / error.
+ */
 int	mat_base_for_obj(t_obj *o, int *base_len,
 			t_rgb *albedo, t_material ***outp)
 {
