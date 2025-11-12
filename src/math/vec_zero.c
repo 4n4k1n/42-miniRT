@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   vec_zero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 14:19:55 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/29 14:24:45 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/11/12 16:10:07 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Tests whether a 3D vector is (approximately) zero.
+ * Uses a small epsilon to account for floating point imprecision. Returns
+ * non-zero when all components have absolute value below the threshold.
+ * @param v pointer to vector to test
+ * @return non-zero if vector is near zero, zero otherwise
+ */
 int	vec3_near_zero(const t_vec3 *v)
 {
 	double	s;
