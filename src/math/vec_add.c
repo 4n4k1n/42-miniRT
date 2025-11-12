@@ -3,19 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   vec_add.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 13:32:23 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 10:42:35 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 16:21:10 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Adds two vectors, modifying the destination vector
- * Formula: dst = dst + src for each component
- * Returns pointer to modified destination
+ * Component-wise addition of two 3D vectors.
+ * Computes the sum a + b and returns the resulting vector. Marked inline to
+ * encourage the compiler to inline this small hot-path operation.
+ * @param a first addend vector
+ * @param b second addend vector
+ * @return vector containing component-wise sum (a + b)
  */
 __attribute__((always_inline)) inline t_vec3	vec3_add(const t_vec3 a,
 	const t_vec3 b)
