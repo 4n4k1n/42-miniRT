@@ -3,15 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   hit_plane.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:32:34 by apregitz          #+#    #+#             */
-/*   Updated: 2025/11/10 22:40:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 13:13:17 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Computes planar UV coordinates for a hit point on the plane.
+ * Projects the hit displacement from the plane origin onto the provided
+ * tangent and the record's bitangent, then wraps each coordinate into [0,1).
+ * @param hp   hit position on the plane
+ * @param pl   plane geometry (uses cords as plane origin)
+ * @param tan  tangent vector for the plane surface
+ * @param rec  hit record to write u/v
+ */
 static void	compute_plane_uv(t_vec3 hp, const t_plane *pl, t_vec3 tan,
 	t_hit_record *rec)
 {
@@ -27,6 +36,13 @@ static void	compute_plane_uv(t_vec3 hp, const t_plane *pl, t_vec3 tan,
 	rec->v = v - floor(v);
 }
 
+/**
+ * Builds a stable tangent / bitangent basis for the plane surface.
+ * Chooses a fallback axis to avoid degeneracy when the outward normal is
+ * nearly aligned with the world up vector.
+ * @param outward outward unit normal at the plane
+ * @param rec     hit record to write tangent and bitangent
+ */
 static void	compute_plane_tangent_basis(t_vec3 outward, t_hit_record *rec)
 {
 	t_vec3	tmp;
@@ -42,9 +58,14 @@ static void	compute_plane_tangent_basis(t_vec3 outward, t_hit_record *rec)
 }
 
 /**
- * Tests if a ray intersects with a plane
- * Computes UV and tangent basis at the hit for bump mapping
- * Returns 1 if hit, 0 if miss
+ * Tests if a ray intersects with a plane.
+ * Computes hit distance, hit point, tangent basis and UV for bump/texturing.
+ * Fills rec with bump, rgb, mat and sets face orientation.
+ * Returns 1 if hit, 0 if miss.
+ * @param pl    plane geometry
+ * @param r     ray to test
+ * @param range valid t range (tmin/tmax)
+ * @param rec   out hit record to fill on success
  */
 int	hit_plane_obj(const t_plane *pl, t_ray *r, t_hit_range range,
 	t_hit_record *rec)
