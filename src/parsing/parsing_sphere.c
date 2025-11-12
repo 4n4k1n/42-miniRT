@@ -6,12 +6,19 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 13:50:01 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/06 13:42:44 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:35:17 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Parses required sphere fields and allocates the object.
+ * Indices: 1=pos, 2=diameter, 3=rgb. Sets bump = NULL.
+ * @param tokens token array (sp ...)
+ * @param out receives allocated sphere object
+ * @return 0 success, 1 error
+ */
 static int	parse_sphere_core(char **tokens, t_obj **out)
 {
 	t_obj	*o;
@@ -32,6 +39,15 @@ static int	parse_sphere_core(char **tokens, t_obj **out)
 	return (0);
 }
 
+/**
+ * Parses optional material and bump tokens.
+ * Bump must be last: "bm:<path>[:strength]".
+ * Decrements len if bump is consumed, then parses material.
+ * @param tokens token array
+ * @param len in/out token count (may be decremented)
+ * @param o sphere to update
+ * @return 0 success, 1 error
+ */
 static int	parse_sphere_extras(char **tokens, int *len, t_obj *o)
 {
 	if (*len >= 5 && ft_strncmp(tokens[*len - 1], "bm:", 3) == 0)
