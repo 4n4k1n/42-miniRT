@@ -3,94 +3,136 @@
 /*                                                        :::      ::::::::   */
 /*   broadcast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/10/30 09:58:39 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 17:04:25 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
-void	register_worker(t_master *master, int socket_fd)
+/**
+ * Perform initial handshake and setup for a connected worker context.
+ * Registers the worker with the master, sends default settings and the scene
+ * file, then waits for the MSG_WORKER_READY header from the remote side.
+ * @param context worker connection context
+ * @param master master server state
+ * @return 1 on success (worker ready), 0 on failure
+ */
+static int	worker_setup(t_worker_context *context, t_master *master)
 {
-	int	i;
+	t_msg_header	header;
+	t_settings		settings;
 
-	pthread_mutex_lock(&master->workers_lock);
-	i = 0;
-	while (i < MAX_WORKER)
+	printf("Worker connected from socket: %d\n", context->worker_socket);
+	register_worker(master, context->worker_socket);
+	init_worker_settings(&settings);
+	send_settings(context->worker_socket, &settings);
+	send_file(master->scene_file, context->worker_socket);
+	header = recive_header(context->worker_socket);
+	if (header.msg_type != MSG_WORKER_READY)
+		return (0);
+	printf("Worker %d ready, waiting for render signal...\n",
+		context->worker_socket);
+	return (1);
+}
+
+/**
+ * Main per-worker thread loop: process jobs and wait for restart signals.
+ * Continues until the master requests shutdown.
+ * @param context worker connection context
+ * @param master master server state
+ */
+static void	worker_main(t_worker_context *context, t_master *master)
+{
+	printf("Worker %d starting render\n", context->worker_socket);
+	while (!master->shutdown)
 	{
-		if (master->worker_sockets[i] == -1)
-		{
-			master->worker_sockets[i] = socket_fd;
+		worker_render_loop(context, master);
+		worker_wait_for_restart(master, context->worker_socket);
+	}
+}
+
+/**
+ * Thread entry point for a worker handler.
+ * Executes setup, waits for the global start_render flag and then runs the
+ * main worker loop. Cleans up and notifies the worker on shutdown.
+ * @param arg pointer to t_worker_context
+ * @return NULL on thread exit
+ */
+void	*worker_thread_func(void *arg)
+{
+	t_worker_context	*context;
+	t_master			*master;
+
+	context = (t_worker_context *)arg;
+	master = context->master;
+	if (!worker_setup(context, master))
+		return (handle_worker_disconnect(context, master));
+	while (!master->start_render && !master->shutdown)
+		usleep(100000);
+	if (master->shutdown)
+		return (handle_worker_disconnect(context, master));
+	worker_main(context, master);
+	unregister_worker(master, context->worker_socket);
+	send_header(context->worker_socket, MSG_SHUTDOWN, 0);
+	return (close(context->worker_socket), free(context), NULL);
+}
+
+/**
+ * Main loop executed by a standalone worker client
+ * after connecting to the master.
+ * Receives top-level headers and
+ * delegates handling to handle_msg until shutdown.
+ * Tracks number of rendered tiles and prints final summary before exit.
+ * @param master_socket connected socket to master
+ * @param data local rendering context
+ * @return 0 on clean exit
+ */
+static int	worker_main_loop(int master_socket, t_data *data)
+{
+	uint32_t		tiles_rendered;
+	t_msg_header	header;
+
+	tiles_rendered = 0;
+	while (true)
+	{
+		header = recive_header(master_socket);
+		if (handle_msg(master_socket, data, &header, &tiles_rendered))
 			break ;
-		}
-		i++;
 	}
-	pthread_mutex_unlock(&master->workers_lock);
+	printf("Worker shutting down. Total tiles rendered: %d\n", tiles_rendered);
+	return (0);
 }
 
-void	unregister_worker(t_master *master, int socket_fd)
+/**
+ * Client-side entry point for running a worker that connects to a master.
+ * Connects, receives settings and scene, signals readiness and enters the
+ * main worker loop. Cleans up threads and scene data on exit.
+ * @param master_ip master IPv4 address string
+ * @param port TCP port to connect to
+ * @return 0 on success, non-zero on failure
+ */
+int	run_worker(char *master_ip, uint32_t port)
 {
-	int	i;
+	int		master_socket;
+	t_data	data;
 
-	pthread_mutex_lock(&master->workers_lock);
-	i = 0;
-	while (i < MAX_WORKER)
+	master_socket = connect_to_master(master_ip, port);
+	if (master_socket < 0)
+		return (1);
+	data.settings = recive_settings(master_socket);
+	if (setup_scene_file(master_socket, &data))
 	{
-		if (master->worker_sockets[i] == socket_fd)
-		{
-			master->worker_sockets[i] = -1;
-			break ;
-		}
-		i++;
+		close(master_socket);
+		return (1);
 	}
-	pthread_mutex_unlock(&master->workers_lock);
-}
-
-static void	send_broadcast(t_master *master, t_camera_update *cam_update)
-{
-	int	i;
-
-	i = 0;
-	while (i < MAX_WORKER)
-	{
-		if (master->worker_sockets[i] != -1)
-		{
-			send_header(master->worker_sockets[i], MSG_UPDATE,
-				sizeof(t_camera_update));
-			send_all(master->worker_sockets[i], cam_update,
-				sizeof(t_camera_update));
-			printf("Sent camera update to worker socket %d\n",
-				master->worker_sockets[i]);
-		}
-		i++;
-	}
-}
-
-void	broadcast_update(t_master *master, uint32_t update_value)
-{
-	t_camera_update	cam_update;
-
-	(void)update_value;
-	printf("\n=== Broadcasting Update & Restarting Render ===\n");
-	cam_update.x = master->data->camera.cords.x;
-	cam_update.y = master->data->camera.cords.y;
-	cam_update.z = master->data->camera.cords.z;
-	cam_update.pitch = master->data->camera.pitch;
-	cam_update.yaw = master->data->camera.yaw;
-	cam_update.aa_state = master->data->settings.aa_state;
-	cam_update.light_state = master->data->settings.light_state;
-	pthread_mutex_lock(&master->workers_lock);
-	send_broadcast(master, &cam_update);
-	pthread_mutex_unlock(&master->workers_lock);
-	reset_queue(master->queue);
-	pthread_mutex_lock(&master->restart_lock);
-	master->restart_render = true;
-	pthread_mutex_unlock(&master->restart_lock);
-	usleep(200000);
-	pthread_mutex_lock(&master->restart_lock);
-	master->restart_render = false;
-	pthread_mutex_unlock(&master->restart_lock);
-	printf("Queue reset: %zu tiles ready\n", master->queue->size);
+	send_header(master_socket, MSG_WORKER_READY, 0);
+	printf("ready to render\n");
+	worker_main_loop(master_socket, &data);
+	cleanup_data(&data);
+	close(master_socket);
+	free_scene(&data);
+	return (0);
 }

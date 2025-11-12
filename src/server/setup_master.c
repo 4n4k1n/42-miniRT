@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_master.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 10:01:22 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 22:56:54 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 17:06:37 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,19 @@ static bool	setup1(t_master *master, char *scene_file, t_data *d,
 	return (0);
 }
 
+/**
+ * Set up the master server state and start the accept thread.
+ * Initializes defines via translate_settings (done by caller), parses the
+ * scene, builds the tile queue, initializes MLX and mutexes, sets worker
+ * socket slots to -1 and creates the listening socket. Finally spawns the
+ * accept thread to handle incoming worker connections.
+ * On any failure the function performs appropriate cleanup before returning.
+ * @param master pointer to master state to populate
+ * @param data pointer to scene/runtime data used by master
+ * @param scene_file path to the scene file
+ * @param port TCP port to listen on
+ * @return 0 on success, 1 on error
+ */
 int	setup_master(t_master *master, t_data *data, char *scene_file,
 		uint32_t port)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   queue.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 23:17:51 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/07 11:31:42 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 17:06:13 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,16 @@ static void	fill_tiles(t_queue_tmp *tmp)
 	}
 }
 
+/**
+ * Initialize a tile queue for the given framebuffer dimensions and tile size.
+ * Allocates the tile array, initializes the mutex and fills the queue with
+ * tile descriptors covering the image area. The queue->current index is set
+ * to zero and queue->size holds the total number of tiles.
+ * @param queue pointer to queue to initialize (must be preallocated)
+ * @param width framebuffer width in pixels
+ * @param height framebuffer height in pixels
+ * @param tile_size tile size in pixels (square tiles)
+ */
 void	init_queue(t_queue *queue, uint32_t width, uint32_t height,
 		uint32_t tile_size)
 {
@@ -59,6 +69,14 @@ void	init_queue(t_queue *queue, uint32_t width, uint32_t height,
 	fill_tiles(&tmp);
 }
 
+/**
+ * Atomically obtain the next available tile job from the queue.
+ * If a job is available writes it into *tile, increments the queue current
+ * index and returns true. Otherwise returns false.
+ * @param queue pointer to job queue
+ * @param tile out parameter to receive the next tile
+ * @return true if a job was obtained, false if queue is exhausted
+ */
 bool	queue_next_job(t_queue *queue, t_tile *tile)
 {
 	bool	has_job;
@@ -76,6 +94,11 @@ bool	queue_next_job(t_queue *queue, t_tile *tile)
 	return (has_job);
 }
 
+/**
+ * Reset the job queue so tiles can be repartitioned/restarted.
+ * Sets current back to zero under the queue lock.
+ * @param queue pointer to job queue
+ */
 void	reset_queue(t_queue *queue)
 {
 	pthread_mutex_lock(&queue->lock);
@@ -83,6 +106,10 @@ void	reset_queue(t_queue *queue)
 	pthread_mutex_unlock(&queue->lock);
 }
 
+/**
+ * Destroy the queue: free tiles array and destroy associated mutex.
+ * @param queue pointer to queue to destroy
+ */
 void	destroy_queue(t_queue *queue)
 {
 	free(queue->tiles);
