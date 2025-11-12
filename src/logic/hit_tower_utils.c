@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   hit_tower_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 23:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/10 23:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:58:17 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Validates and normalizes the cylinder axis.
+ * Computes axis length and normalized axis into ch. Fails if zero-length.
+ * @param cyl cylinder geometry
+ * @param ch output hit helper (writes axis_len and axis)
+ * @return 1 valid, 0 invalid
+ */
 int	cyl_valid_axis(const t_cylinder *cyl, t_cyl_hit *ch)
 {
 	ch->axis_len = vec3_sqrt(cyl->norm);
@@ -21,6 +28,15 @@ int	cyl_valid_axis(const t_cylinder *cyl, t_cyl_hit *ch)
 	return (1);
 }
 
+/**
+ * Selects a valid quadratic root for the cylindrical side hit.
+ * Tries the near root, falls back to the far root and ensures s within half_h.
+ * On success fills ch->root and ch->point.
+ * @param ch precomputed quadratic values (a,h,c,disc,k_dot_a,d_dot_a ...)
+ * @param r ray (used to compute point)
+ * @param range valid t range
+ * @return 1 a valid root was selected, 0 otherwise
+ */
 int	cyl_select_root(t_cyl_hit *ch, t_ray *r, t_hit_range range)
 {
 	double	sq;
@@ -45,6 +61,14 @@ int	cyl_select_root(t_cyl_hit *ch, t_ray *r, t_hit_range range)
 	return (1);
 }
 
+/**
+ * Checks a cap intersection param and computes t to the cap plane.
+ * Uses sign for top/bottom and returns t>0 when a valid intersection exists.
+ * @param ctx cap check context (cyl, top flag)
+ * @param r ray to test
+ * @param ch cylinder hit helper (uses axis and half_h)
+ * @return 1 potential cap intersection (t>0), 0 otherwise
+ */
 int	cyl_cap_hit_check(t_cyl_cap_ctx *ctx, t_ray *r, t_cyl_hit *ch)
 {
 	double	sign;
@@ -65,6 +89,13 @@ int	cyl_cap_hit_check(t_cyl_cap_ctx *ctx, t_ray *r, t_cyl_hit *ch)
 	return (ctx->t > 0.0);
 }
 
+/**
+ * Tests and records a closer hit when found.
+ * Updates best with ch values if ch->root is within range and closer.
+ * @param ch candidate hit
+ * @param range valid t range
+ * @param best best-hit accumulator to update
+ */
 void	check_best_hit(t_cyl_hit *ch, t_hit_range range, t_cyl_best *best)
 {
 	if (ch->root >= range.tmin && ch->root <= range.tmax
@@ -77,6 +108,15 @@ void	check_best_hit(t_cyl_hit *ch, t_hit_range range, t_cyl_best *best)
 	}
 }
 
+/**
+ * Computes UV coordinates and auxiliary vectors for a cylinder hit.
+ * Builds a stable tangent from axis and a tmp vector, computes u from atan2
+ * and v from height projection.
+ * @param cyl cylinder geometry
+ * @param ch cylinder hit helper (uses axis and s)
+ * @param best_p hit point on the surface
+ * @param rec hit record to write u/v
+ */
 void	compute_cyl_uv(const t_cylinder *cyl, t_cyl_hit *ch, t_vec3 best_p,
 	t_hit_record *rec)
 {
