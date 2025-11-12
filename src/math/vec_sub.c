@@ -3,19 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   vec_sub.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 13:40:26 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/26 10:52:29 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 16:11:37 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Subtracts two vectors, returns new vector
- * Formula: new_vec = dst - src for each component
- * Inline version for performance
+ * Subtract two 3D vectors component-wise.
+ * Computes: result = a - b
+ * Marked inline and always_inline to encourage the compiler to inline the
+ * small hot-path vector math for performance-sensitive code.
+ * @param a minuend vector
+ * @param b subtrahend vector
+ * @return the vector difference (a - b)
  */
 __attribute__((always_inline)) inline t_vec3	vec3_sub(const t_vec3 a,
 	const t_vec3 b)
