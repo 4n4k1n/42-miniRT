@@ -3,15 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ray_shadow.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 13:21:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/07 13:21:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:44:49 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Adds Phong specular contribution for the current light sample.
+ * No-op unless the hit material is PHONG.
+ * @param ps packed inputs (light_contrib, light, rec, shadow calc)
+ */
 static void	add_phong_specular(t_phong_spec *ps)
 {
 	t_vec3	reflect_dir;
@@ -33,6 +38,14 @@ static void	add_phong_specular(t_phong_spec *ps)
 		* (ps->rec->mat->specular.b / 255.0) * spec_intensity * 255.0;
 }
 
+/**
+ * Builds a jittered shadow ray towards an area-light sample.
+ * Fills sample point, direction, distance; sets diffuse if unoccluded.
+ * @param data global scene
+ * @param light current light
+ * @param rec hit record
+ * @param sc shadow calculation scratch (out)
+ */
 static void	calc_shadow_sample(t_data *data, t_light *light,
 		const t_hit_record *rec, t_shadow_calc *sc)
 {
@@ -50,6 +63,14 @@ static void	calc_shadow_sample(t_data *data, t_light *light,
 	}
 }
 
+/**
+ * Monte-Carlo integrates the light over SHADOW_SAMPLES.
+ * Accumulates diffuse/specular into light_contrib and averages.
+ * @param data global scene
+ * @param light current light
+ * @param rec hit record
+ * @param light_contrib output accumulator (in/out)
+ */
 static void	process_light_samples(t_data *data, t_light *light,
 		const t_hit_record *rec, t_rgb *light_contrib)
 {
@@ -80,6 +101,14 @@ static void	process_light_samples(t_data *data, t_light *light,
 	}
 }
 
+/**
+ * Computes direct lighting at a hit point.
+ * Starts with ambient, then adds per-light soft-shadow contributions.
+ * Respects settings.light_state and empty light list.
+ * @param data global scene
+ * @param rec hit record
+ * @return accumulated RGB light
+ */
 t_rgb	calculate_direct_lighting(t_data *data, const t_hit_record *rec)
 {
 	t_rgb	total_light;
