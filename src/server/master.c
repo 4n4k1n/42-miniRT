@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   master.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 11:41:09 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 22:46:40 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 17:05:41 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Print master server startup statistics and install the MLX key hook.
+ * Displays scene info, resolution, tile counts and both local/public IPs.
+ * Also wires the data.master pointer and prepares internal state used later.
+ * @param r_master runtime master wrapper containing master + data
+ * @param scene_file file path of the scene being served
+ */
 static void	print_master_stats(t_run_master *r_master, char *scene_file)
 {
 	printf("\n=== Master Server Ready ===\n");
@@ -29,6 +36,12 @@ static void	print_master_stats(t_run_master *r_master, char *scene_file)
 	r_master->prev_workers = 0;
 }
 
+/**
+ * Wait loop that prints worker connection changes and detects user ENTER to
+ * start rendering.
+ * Uses select on stdin with a short timeout to periodically refresh counts.
+ * @param r_master runtime master wrapper containing master + data
+ */
 static void	connect_workers(t_run_master *r_master)
 {
 	while (1)
@@ -53,6 +66,15 @@ static void	connect_workers(t_run_master *r_master)
 	}
 }
 
+/**
+ * Start the master server: setup networking, accept workers and begin render.
+ * This initializes master state via setup_master, waits for operators to start
+ * (ENTER), notifies workers to begin and then enters the MLX event loop.
+ * On exit performs cleanup of threads, queue, mutexes and scene resources.
+ * @param scene_file path to the scene file to serve
+ * @param port TCP port to listen on for worker connections
+ * @return 0 on success, non-zero on failure
+ */
 int	run_master(char *scene_file, uint32_t port)
 {
 	t_run_master	r_master;

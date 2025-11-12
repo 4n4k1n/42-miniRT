@@ -6,14 +6,20 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 15:58:18 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 15:23:11 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Gets bounding box for any object type
+ * Dispatches to the appropriate bounding-box builder for the given object.
+ * This function selects the correct per-type bounds function and returns
+ * an axis-aligned bounding box that encloses the object. For planes a
+ * finite patch approximation is returned to keep BVH partitioning sane.
+ * @param obj pointer to the object whose bounds are requested
+ * @return axis-aligned bounding box for the object; for unknown types a
+ *         zero-sized box at the origin is returned
  */
 t_aabb	get_object_bounds(const t_obj *obj)
 {

@@ -6,12 +6,19 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 00:00:00 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 00:00:00 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 13:09:33 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Computes the four base corner positions for a pyramid base.
+ * Uses basis->bc as base center, basis->r and basis->f as orthogonal axes
+ * and basis->hw as half-width to build the four corner vertices.
+ * @param basis precomputed pyramid basis (r, f, bc, hw)
+ * @param v     out structure to receive b0..b3
+ */
 void	compute_base_corners(t_py_basis *basis, t_py_verts *v)
 {
 	v->b0 = vec3_add(vec3_add(basis->bc, vec3_multiply(basis->r, basis->hw)),
@@ -24,6 +31,13 @@ void	compute_base_corners(t_py_basis *basis, t_py_verts *v)
 			vec3_multiply(basis->f, -basis->hw));
 }
 
+/**
+ * Computes planar UV coordinates for a pyramid hit point.
+ * Projects the hit displacement onto the tangent/bitangent basis and wraps
+ * into [0,1) by subtracting floor. Useful for texturing the pyramid faces.
+ * @param py  pyramid geometry (used for center)
+ * @param rec hit record containing p, tangent and bitangent; writes u/v
+ */
 void	compute_uv(const t_pyramid *py, t_hit_record *rec)
 {
 	t_vec3	d;
@@ -38,6 +52,12 @@ void	compute_uv(const t_pyramid *py, t_hit_record *rec)
 	rec->v = v - floor(v);
 }
 
+/**
+ * Builds an orthonormal tangent / bitangent basis from the surface normal.
+ * Chooses a stable fallback axis to avoid degeneracy when the normal is
+ * nearly aligned with the world up vector.
+ * @param rec hit record to update (reads normal, writes tangent/bitangent)
+ */
 void	set_tangent_basis(t_hit_record *rec)
 {
 	t_vec3	tmp;

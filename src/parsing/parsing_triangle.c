@@ -1,17 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing_triangle.c                                  :+:      :+:    :+:  */
+/*   parsing_triangle.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 13:50:05 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/06 13:50:05 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:35:55 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Parses required triangle fields and allocates the object.
+ * Indices: 1=v0, 2=v1, 3=v2, 4=rgb. Sets no bump.
+ * @param tokens token array (tr ...)
+ * @param out receives allocated triangle object
+ * @return 0 success, 1 error
+ */
 static int	parse_triangle_core(char **tokens, t_obj **out)
 {
 	t_obj	*o;
@@ -32,6 +39,13 @@ static int	parse_triangle_core(char **tokens, t_obj **out)
 	return (0);
 }
 
+/**
+ * Parses optional material token (if len == 6).
+ * @param tokens token array
+ * @param len token count
+ * @param o triangle to update
+ * @return 0 success, 1 error
+ */
 static int	parse_triangle_extras(char **tokens, int len, t_obj *o)
 {
 	if (parse_material(tokens, len, o))

@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   monte_carlo_aa_helpers.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 13:26:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 22:30:08 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:50:03 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Clamps x into the inclusive range [minv, maxv].
+ * @param x value
+ * @param minv minimum
+ * @param maxv maximum
+ * @return clamped value
+ */
 __attribute__((always_inline)) inline double	clamp(double x, double minv,
 	double maxv)
 {
@@ -22,6 +29,11 @@ __attribute__((always_inline)) inline double	clamp(double x, double minv,
 	return (x);
 }
 
+/**
+ * Initializes AA accumulator with defaults.
+ * Zeroes all fields and sets min/max spp.
+ * @param aa anti-aliasing accumulator (out)
+ */
 void	init_aa(t_anti_aliasing *aa)
 {
 	ft_memset(aa, 0, sizeof(t_anti_aliasing));
@@ -29,6 +41,11 @@ void	init_aa(t_anti_aliasing *aa)
 	aa->max_spp = AA_MIN_SAMPLES * 8;
 }
 
+/**
+ * Updates running mean/variance (Welford) for current sample luma.
+ * Increments sample count n.
+ * @param aa anti-aliasing accumulator (in/out)
+ */
 void	update_variance(t_anti_aliasing *aa)
 {
 	aa->luma = (0.2126 * aa->sample.r + 0.7152 * aa->sample.g
@@ -40,6 +57,12 @@ void	update_variance(t_anti_aliasing *aa)
 	aa->m2 += aa->delta * aa->delta2;
 }
 
+/**
+ * Decides if more samples are required for the pixel.
+ * Requires at least min_spp, then stops when variance <= AA_VAR_EPS.
+ * @param aa anti-aliasing accumulator (in/out)
+ * @return 1 continue sampling, 0 stop
+ */
 int	should_continue(t_anti_aliasing *aa)
 {
 	if (aa->n >= aa->min_spp)
@@ -54,6 +77,14 @@ int	should_continue(t_anti_aliasing *aa)
 	return (1);
 }
 
+/**
+ * Jitters within the pixel, casts a ray, and accumulates the sample color.
+ * Updates acc_r/g/b for averaging and stores last sample in aa->sample.
+ * @param data global render state
+ * @param aa anti-aliasing accumulator (in/out)
+ * @param i row index (y)
+ * @param j column index (x)
+ */
 void	sample_pixel(t_data *data, t_anti_aliasing *aa, int i, int j)
 {
 	aa->off_u = random_double() - 0.5;

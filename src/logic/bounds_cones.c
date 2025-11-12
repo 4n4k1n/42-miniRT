@@ -6,12 +6,22 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 15:56:33 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 16:12:07 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 15:23:52 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Computes an axis-aligned bounding box for a finite cone.
+ * The cone is centered at co->cords, oriented along co->norm, has total
+ * height co->height and base radius co->diameter / 2. The box is computed
+ * by projecting the cone's extent onto each axis: a combination of the
+ * half-height contribution along the axis direction and the maximal radial
+ * extent perpendicular to that axis.
+ * @param co pointer to cone geometry (cords, norm, height, diameter)
+ * @return axis-aligned bounding box enclosing the cone
+ */
 t_aabb	get_cone_bounds(const t_cone *co)
 {
 	t_aabb	box;

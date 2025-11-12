@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   phong.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 00:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:48:22 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Returns Phong texture color (checker if enabled, else white).
+ * @param self material
+ * @param rec hit record (uses u,v)
+ * @return texture RGB
+ */
 static t_rgb	get_phong_texture(const t_material *self,
 	const t_hit_record *rec)
 {
@@ -33,6 +39,13 @@ static t_rgb	get_phong_texture(const t_material *self,
 	return ((t_rgb){255.0, 255.0, 255.0});
 }
 
+/**
+ * Phong scatter: reflects ray, sets scattered ray and attenuation.
+ * Applies checker texture if present.
+ * @param self material
+ * @param ctx scatter context (reads rec/r_in, writes scattered/attenuation)
+ * @return 1 (success)
+ */
 static int	phong_scatter(const t_material *self,
 	struct s_scatter_ctx *ctx)
 {
@@ -50,6 +63,13 @@ static int	phong_scatter(const t_material *self,
 	return (1);
 }
 
+/**
+ * Allocates Phong material.
+ * Shininess clamped to >= 1.0, texture defaults to NONE.
+ * @param albedo base albedo
+ * @param shininess specular exponent
+ * @return material pointer or NULL
+ */
 t_material	*material_phong(t_rgb albedo, double shininess)
 {
 	t_material	*m;

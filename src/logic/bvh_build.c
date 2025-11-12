@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   bvh_build.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/28 19:58:10 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 13:42:42 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Initializes a leaf BVH node by copying the provided object pointers into
+ * the node, setting child pointers to NULL and computing the node bounding box.
+ * @param node destination leaf node (must have objects array allocated)
+ * @param objects array of object pointers to store in the leaf
+ * @param count number of objects
+ */
 static void	init_leaf_node(t_bvh_node *node, t_obj **objects, int count)
 {
 	int	i;
@@ -28,6 +35,13 @@ static void	init_leaf_node(t_bvh_node *node, t_obj **objects, int count)
 	node->box = compute_bounds(objects, count);
 }
 
+/**
+ * Allocates and returns a BVH leaf node containing a copy of the supplied
+ * object pointer array. Returns NULL on allocation failure.
+ * @param objects array of object pointers
+ * @param count number of objects
+ * @return newly allocated leaf node or NULL
+ */
 t_bvh_node	*create_leaf(t_obj **objects, int count)
 {
 	t_bvh_node	*node;
@@ -45,6 +59,13 @@ t_bvh_node	*create_leaf(t_obj **objects, int count)
 	return (node);
 }
 
+/**
+ * Recursively builds a BVH from an array of object pointers.
+ * Splits along the longest axis using centroid partitioning until leaf size.
+ * @param objects array of object pointers (will be partially rearranged)
+ * @param count number of objects
+ * @return root node of built subtree or NULL on allocation failure
+ */
 static t_bvh_node	*build_bvh_recursive(t_obj **objects, int count)
 {
 	t_bvh_node	*node;
@@ -70,6 +91,13 @@ static t_bvh_node	*build_bvh_recursive(t_obj **objects, int count)
 	return (node);
 }
 
+/**
+ * Collects non-plane objects from the linked object list into the provided
+ * array. Planes are excluded because they are handled separately at runtime.
+ * @param list source object list
+ * @param objects destination array (must have capacity >= list->size)
+ * @return number of objects written into objects[]
+ */
 static int	collect_non_plane_objects(t_obj_list *list, t_obj **objects)
 {
 	t_obj	*cur;
@@ -87,8 +115,11 @@ static int	collect_non_plane_objects(t_obj_list *list, t_obj **objects)
 }
 
 /**
- * Builds BVH from object list
- * Excludes planes from BVH as they are infinite and should be tested separately
+ * Builds a BVH for the provided object list.
+ * Allocates a temporary array for non-plane objects, builds the tree and
+ * returns the root. Returns NULL on OOM or when no buildable objects exist.
+ * @param list linked list of scene objects
+ * @return root BVH node or NULL
  */
 t_bvh_node	*build_bvh(t_obj_list *list)
 {

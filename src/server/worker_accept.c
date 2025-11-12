@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   worker_accept.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 13:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 16:48:23 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Allocate and start a detached thread to handle a newly connected worker.
+ * On allocation failure the socket is closed and an error is reported.
+ * The new worker context holds the master pointer and the accepted socket.
+ * @param master pointer to master server state
+ * @param worker_socket accepted client socket descriptor
+ * @return NULL on success, or NULL after performing error handling on failure
+ */
 static void	*handle_new_worker(t_master *master, int worker_socket)
 {
 	t_worker_context	*context;
@@ -28,6 +36,13 @@ static void	*handle_new_worker(t_master *master, int worker_socket)
 	return (NULL);
 }
 
+/**
+ * Thread function that accepts incoming worker TCP connections.
+ * Loops until master->shutdown is set. For each accepted connection it
+ * enforces a maximum worker limit and spawns a handler thread.
+ * @param arg pointer to t_master structure
+ * @return NULL when the accept loop exits
+ */
 void	*accept_worker_threads(void *arg)
 {
 	t_master	*master;

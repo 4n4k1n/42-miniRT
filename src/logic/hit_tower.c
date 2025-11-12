@@ -3,15 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   hit_tower.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 11:32:34 by apregitz          #+#    #+#             */
-/*   Updated: 2025/11/10 23:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:56:46 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Tests a cylinder cap (top or bottom) for intersection and fills ch.
+ * Uses cyl_cap_hit_check to compute t/center; then verifies radius.
+ * @param cyl cylinder geometry
+ * @param r ray to test
+ * @param ch out hit container (filled on success)
+ * @param top 1 = top cap, 0 = bottom cap
+ * @return 1 hit found, 0 otherwise
+ */
 static int	cyl_cap_hit(const t_cylinder *cyl, t_ray *r, t_cyl_hit *ch,
 	int top)
 {
@@ -35,6 +44,16 @@ static int	cyl_cap_hit(const t_cylinder *cyl, t_ray *r, t_cyl_hit *ch,
 	return (1);
 }
 
+/**
+ * Tests the cylindrical side for intersection and computes shading info.
+ * Solves quadratic on the perpendicular components and selects a root.
+ * Fills ch->point, outward normal and other intermediate values.
+ * @param cyl cylinder geometry
+ * @param r ray to test
+ * @param range valid t range
+ * @param ch out hit container (filled on success)
+ * @return 1 hit on side, 0 otherwise
+ */
 static int	cyl_side_hit(const t_cylinder *cyl, t_ray *r, t_hit_range range,
 	t_cyl_hit *ch)
 {
@@ -63,6 +82,12 @@ static int	cyl_side_hit(const t_cylinder *cyl, t_ray *r, t_hit_range range,
 	return (1);
 }
 
+/**
+ * Populate hit record fields for the selected cylinder hit.
+ * Computes tangent/bitangent, UV, bump pointer, face orientation, rgb and mat.
+ * @param ctx context with cyl, ray, ch (cap/side) and best hit info
+ * @param rec output hit record to fill
+ */
 static void	set_cyl_record(t_cyl_record_ctx *ctx, t_hit_record *rec)
 {
 	t_vec3	proj;
@@ -82,6 +107,15 @@ static void	set_cyl_record(t_cyl_record_ctx *ctx, t_hit_record *rec)
 	rec->mat = ctx->cyl->mat;
 }
 
+/**
+ * Cylinder (tower) intersection entry point used by hittable.
+ * Tests side and both caps, selects the nearest valid hit and fills rec.
+ * @param cyl cylinder geometry
+ * @param r ray to test
+ * @param range valid t range (tmin/tmax)
+ * @param rec out hit record (filled on closest hit)
+ * @return 1 if hit found, 0 otherwise
+ */
 int	hit_cylinder_obj(const t_cylinder *cyl, t_ray *r, t_hit_range range,
 	t_hit_record *rec)
 {

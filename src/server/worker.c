@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   worker.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:35:40 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 11:25:34 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 16:51:45 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Perform initial handshake and setup for a connected worker context.
+ * Registers the worker with the master, sends default settings and the scene
+ * file, then waits for the MSG_WORKER_READY header from the remote side.
+ * @param context worker connection context
+ * @param master master server state
+ * @return 1 on success (worker ready), 0 on failure
+ */
 static int	worker_setup(t_worker_context *context, t_master *master)
 {
 	t_msg_header	header;
@@ -30,6 +38,12 @@ static int	worker_setup(t_worker_context *context, t_master *master)
 	return (1);
 }
 
+/**
+ * Main per-worker thread loop: process jobs and wait for restart signals.
+ * Continues until the master requests shutdown.
+ * @param context worker connection context
+ * @param master master server state
+ */
 static void	worker_main(t_worker_context *context, t_master *master)
 {
 	printf("Worker %d starting render\n", context->worker_socket);
@@ -40,6 +54,13 @@ static void	worker_main(t_worker_context *context, t_master *master)
 	}
 }
 
+/**
+ * Thread entry point for a worker handler.
+ * Executes setup, waits for the global start_render flag and then runs the
+ * main worker loop. Cleans up and notifies the worker on shutdown.
+ * @param arg pointer to t_worker_context
+ * @return NULL on thread exit
+ */
 void	*worker_thread_func(void *arg)
 {
 	t_worker_context	*context;
@@ -59,6 +80,16 @@ void	*worker_thread_func(void *arg)
 	return (close(context->worker_socket), free(context), NULL);
 }
 
+/**
+ * Main loop executed by a standalone worker client
+ * after connecting to the master.
+ * Receives top-level headers and
+ * delegates handling to handle_msg until shutdown.
+ * Tracks number of rendered tiles and prints final summary before exit.
+ * @param master_socket connected socket to master
+ * @param data local rendering context
+ * @return 0 on clean exit
+ */
 static int	worker_main_loop(int master_socket, t_data *data)
 {
 	uint32_t		tiles_rendered;
@@ -75,6 +106,14 @@ static int	worker_main_loop(int master_socket, t_data *data)
 	return (0);
 }
 
+/**
+ * Client-side entry point for running a worker that connects to a master.
+ * Connects, receives settings and scene, signals readiness and enters the
+ * main worker loop. Cleans up threads and scene data on exit.
+ * @param master_ip master IPv4 address string
+ * @param port TCP port to connect to
+ * @return 0 on success, non-zero on failure
+ */
 int	run_worker(char *master_ip, uint32_t port)
 {
 	int		master_socket;

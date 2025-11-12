@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:31:15 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 22:41:34 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:41:45 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Kicks off multi-threaded rendering and waits for workers to finish.
+ * Resets threads_done before and after.
+ * @param data global render state
+ * @return 0
+ */
 int	render_with_mt(t_data *data)
 {
 	int	checked;
@@ -30,6 +36,13 @@ int	render_with_mt(t_data *data)
 	return (0);
 }
 
+/**
+ * Computes color for one pixel without anti-aliasing.
+ * @param data global render state
+ * @param i row index (y)
+ * @param j column index (x)
+ * @return packed RGBA color
+ */
 uint32_t	without_aa(t_data *data, int i, int j)
 {
 	t_vec3	temp_offset;
@@ -48,6 +61,12 @@ uint32_t	without_aa(t_data *data, int i, int j)
 	return (rgb_to_uint32(&color));
 }
 
+/**
+ * Renders the full image to the MLX image.
+ * Uses multi-threading if enabled, otherwise scans rows sequentially.
+ * Prints progress per row and total time/fps.
+ * @param data global render state
+ */
 void	render(t_data *data)
 {
 	int	i;
@@ -77,6 +96,12 @@ void	render(t_data *data)
 		/ (double)(get_time_in_ms() - render_time));
 }
 
+/**
+ * Single-threaded tile renderer loop.
+ * Writes pixel colors for the given tile into data->pixels.
+ * @param data global render state
+ * @param tile tile region to render
+ */
 static void	render_tile_loop(t_data *data, t_tile *tile)
 {
 	uint32_t	i;
@@ -104,6 +129,13 @@ static void	render_tile_loop(t_data *data, t_tile *tile)
 	}
 }
 
+/**
+ * Renders a tile and returns a freshly allocated pixel buffer.
+ * Uses multi-threading by assigning the tile to all worker threads.
+ * @param data global render state
+ * @param tile tile region to render
+ * @return pointer to pixel buffer (tile->width*tile->height), or NULL on OOM
+ */
 uint32_t	*render_tile(t_data *data, t_tile *tile)
 {
 	int	thread_idx;

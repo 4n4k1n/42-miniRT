@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vec_sqrt.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 14:32:12 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/29 14:19:36 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/11/12 16:14:30 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@
 double			sqrt(double x);
 
 /**
- * Calculates the length (magnitude) of a vector
- * Formula: |vec| = √(x² + y² + z²)
- * Returns scalar length of the vector
+ * Calculate the Euclidean length (magnitude) of a 3D vector.
+ * Uses sqrt on the sum of squared components. Marked always_inline to hint
+ * the compiler to inline this small hot-path math function.
+ * @param vec input 3D vector
+ * @return length (>= 0.0) of the vector
  */
 __attribute__((always_inline)) inline double	vec3_sqrt(const t_vec3 vec)
 {

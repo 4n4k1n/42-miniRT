@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   send_settings.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:26:08 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/13 17:53:24 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/11/12 17:17:23 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Send renderer settings to a connected peer.
+ * Converts each integer field to network byte order and transmits a MSG_SETTINGS
+ * header followed by the serialized payload.
+ * @param socket_fd destination socket
+ * @param settings pointer to local settings (host order)
+ */
 void	send_settings(int socket_fd, t_settings *settings)
 {
 	t_settings	net_settings;

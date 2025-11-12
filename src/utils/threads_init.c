@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   threads_init.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/29 15:56:27 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/29 15:58:28 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/11/12 15:30:56 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Creates worker threads that run tile-based rendering (thread_job_worker).
+ * Each thread context is initialized with data/id and flags. On pthread_create
+ * failure the function joins already created threads and returns non-zero.
+ * @param data shared application data containing thread array and count
+ * @return 0 on success, non-zero on failure
+ */
 static int	create_worker_threads(t_data *data)
 {
 	int	i;
@@ -35,6 +42,13 @@ static int	create_worker_threads(t_data *data)
 	return (0);
 }
 
+/**
+ * Initializes thread pool for worker/tile-based rendering.
+ * Allocates the thread contexts array sized to the number of online CPUs,
+ * initializes per-thread mutex/cond variables and starts the worker threads.
+ * @param data shared application data to populate
+ * @return 0 on success, 1 on allocation or thread creation failure
+ */
 int	init_threads_worker(t_data *data)
 {
 	int	i;
@@ -53,6 +67,13 @@ int	init_threads_worker(t_data *data)
 	return (create_worker_threads(data));
 }
 
+/**
+ * Creates full-image rendering threads (thread_job).
+ * Same semantics as create_worker_threads but spawns threads that render
+ * entire rows instead of tiles. Joins created threads on failure.
+ * @param data shared application data containing thread array and count
+ * @return 0 on success, non-zero on failure
+ */
 static int	create_threads(t_data *data)
 {
 	int	i;
@@ -76,6 +97,13 @@ static int	create_threads(t_data *data)
 	return (0);
 }
 
+/**
+ * Initializes thread pool for full-image rendering.
+ * Allocates per-thread contexts for the number of online processors,
+ * initializes synchronization primitives and starts the rendering threads.
+ * @param data shared application data to populate
+ * @return 0 on success, 1 on allocation or thread creation failure
+ */
 int	init_threads(t_data *data)
 {
 	int	i;

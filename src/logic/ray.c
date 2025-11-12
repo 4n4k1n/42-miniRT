@@ -3,15 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 13:54:21 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:42:53 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Traces the current ray and writes vars->rec on hit.
+ * Uses BVH when enabled, otherwise brute-force world_hit.
+ * @param data global scene data
+ * @param vars ray-color working state (reads current_ray, writes rec)
+ * @return 1 if a hit is found, 0 otherwise
+ */
 static int	check_hit(t_data *data, t_ray_color_vars *vars)
 {
 	t_bvh_ctx	bvh_ctx;
@@ -32,6 +39,15 @@ static int	check_hit(t_data *data, t_ray_color_vars *vars)
 	return (0);
 }
 
+// ...existing code...
+
+/**
+ * Processes material scatter at the hit point.
+ * Updates throughput and current_ray; applies Russian roulette for depth >= 3.
+ * @param data global scene data
+ * @param vars ray-color state (uses rec, updates current_ray/throughput/depth)
+ * @return 1 to continue path tracing, 0 to terminate
+ */
 static int	process_scatter(t_data *data, t_ray_color_vars *vars)
 {
 	struct s_scatter_ctx	ctx;
@@ -61,6 +77,16 @@ static int	process_scatter(t_data *data, t_ray_color_vars *vars)
 	return (1);
 }
 
+// ...existing code...
+
+/**
+ * Handles shading when a hit occurs.
+ * Applies bump, computes direct light on primary, and either scatters
+ * or accumulates remaining direct light.
+ * @param data global scene data
+ * @param vars ray-color state for the current path
+ * @return final accumulated color, or {-1,-1,-1} to indicate continue
+ */
 static t_rgb	process_hit(t_data *data, t_ray_color_vars *vars)
 {
 	t_rgb	simple_shading;
@@ -85,6 +111,16 @@ static t_rgb	process_hit(t_data *data, t_ray_color_vars *vars)
 	return (vars->final_color);
 }
 
+// ...existing code...
+
+/**
+ * Computes the path-traced color for a given ray.
+ * Iteratively traces bounces up to max_depth, accumulating contributions.
+ * @param initial_ray input camera or scattered ray
+ * @param data global scene data
+ * @param max_depth maximum bounce count
+ * @return final accumulated RGB color
+ */
 t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 {
 	t_ray_color_vars	vars;

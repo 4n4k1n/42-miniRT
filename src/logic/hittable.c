@@ -3,19 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   hittable.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 14:12:26 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:54:12 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Determines if ray hits front or back face of surface
- * Sets normal vector to point against ray direction
- * Used for proper lighting calculations
+ * Determines whether a ray hits the front or back face of a surface and
+ * sets the hit record normal to point against the ray direction.
+ *
+ * @param rec hit record to update (front_face and normal)
+ * @param r incoming ray
+ * @param outw outward-facing normal computed by the geometry
  */
 __attribute__((always_inline)) inline void	set_face_normal(t_hit_record *rec,
 	const t_ray *r, const t_vec3 *outw)
@@ -31,9 +34,14 @@ __attribute__((always_inline)) inline void	set_face_normal(t_hit_record *rec,
 }
 
 /**
- * Generic hit test function for any object type
- * Dispatches to appropriate hit function based on object type
- * Currently only supports spheres, expandable for other shapes
+ * Generic hit dispatcher for all object types.
+ * Calls the appropriate shape-specific hit function based on o->type.
+ *
+ * @param o object to test against
+ * @param r ray to cast
+ * @param range acceptable hit t range (tmin/tmax)
+ * @param rec output hit record (filled on hit)
+ * @return 1 if the object was hit, 0 otherwise
  */
 int	hittable_hit(const t_obj *o, t_ray *r, t_hit_range range,
 	t_hit_record *rec)
@@ -56,10 +64,14 @@ int	hittable_hit(const t_obj *o, t_ray *r, t_hit_range range,
 }
 
 /**
- * Tests ray intersection against all objects in the scene
- * Uses BVH if available, falls back to linear search
- * Finds closest intersection within distance range [min, max]
- * Returns 1 if any object hit, 0 otherwise
+ * Brute-force world hit test over an object list.
+ * Iterates all objects and keeps the closest valid hit within range.
+ *
+ * @param list linked list of objects
+ * @param r ray to cast
+ * @param range hit range (tmin/tmax)
+ * @param out receives closest hit record if any
+ * @return 1 if any hit was found, 0 otherwise
  */
 int	world_hit(const t_obj_list *list, t_ray *r, t_hit_range range,
 	t_hit_record *out)
@@ -88,6 +100,13 @@ int	world_hit(const t_obj_list *list, t_ray *r, t_hit_range range,
 	return (hit_any);
 }
 
+/**
+ * Helper that checks plane objects in the list (planes are excluded from BVH)
+ * Updates the provided range/out/hit_any when a closer plane hit is found.
+ *
+ * @param ctx pointer to t_plane_check context containing objects, ray, range,
+ *            out record and hit_any flag
+ */
 static void	check_plane_hits(t_plane_check *ctx)
 {
 	t_hit_record	temp_rec;
@@ -108,8 +127,13 @@ static void	check_plane_hits(t_plane_check *ctx)
 }
 
 /**
- * Tests ray intersection using BVH acceleration structure
- * Also tests planes separately as they are excluded from BVH
+ * World hit test using BVH acceleration structure.
+ * Queries the BVH first, then checks plane objects separately because
+ * planes are kept out of the BVH. Returns the closest hit overall.
+ *
+ * @param bvh_ctx BVH query context (bvh root, objects list, ray, range)
+ * @param out receives closest hit record if any
+ * @return 1 if any hit was found, 0 otherwise
  */
 int	world_hit_bvh(t_bvh_ctx *bvh_ctx, t_hit_record *out)
 {

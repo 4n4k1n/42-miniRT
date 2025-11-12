@@ -3,15 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   ray_helpers.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 13:15:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/07 13:15:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:47:19 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Samples bump texture at wrapped UV coordinates.
+ * Wraps u,v into [0,1) and returns the RGB at that pixel.
+ * Falls back to white if texture is missing.
+ * @param b bump map
+ * @param u horizontal UV
+ * @param v vertical UV
+ * @return sampled RGB color
+ */
 t_rgb	sample_bump_rgb(const t_bump *b, double u, double v)
 {
 	uint32_t	ix;
@@ -39,6 +48,12 @@ t_rgb	sample_bump_rgb(const t_bump *b, double u, double v)
 		(double)b->pixels[idx + 2]});
 }
 
+/**
+ * Applies bump mapping to the hit record in vars.
+ * Perturbs the normal from bump map and orients it to face the ray.
+ * Also replaces surface rgb with the sampled bump color at (u,v).
+ * @param vars ray-color state (reads rec, writes rec.normal/front_face/rgb)
+ */
 void	apply_bump_mapping(t_ray_color_vars *vars)
 {
 	t_bump_ctx	ctx;
@@ -57,6 +72,12 @@ void	apply_bump_mapping(t_ray_color_vars *vars)
 			vars->rec.v);
 }
 
+/**
+ * Russian roulette termination for low-throughput paths.
+ * When brightness < 0.1, randomly terminates the path and rescales throughput.
+ * @param vars ray-color state (uses/updates throughput)
+ * @return 1 if terminated, 0 to continue
+ */
 int	russian_roulette(t_ray_color_vars *vars)
 {
 	vars->max_throughput = fmax(fmax(vars->throughput.r,

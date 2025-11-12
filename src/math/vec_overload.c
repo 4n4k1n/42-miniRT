@@ -3,19 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   vec_overload.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 14:07:06 by apregitz          #+#    #+#             */
-/*   Updated: 2025/10/29 14:20:48 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/11/12 16:16:02 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Negates all components of a vector, returns new vector
- * Formula: new_vec = -vec for each component
- * Inline version for performance
+ * Negates a 3D vector (component-wise).
+ * Returns a new vector with each component multiplied by -1.
+ * Marked inline to encourage compiler inlining for hot-path math.
+ * @param a input vector
+ * @return negated vector (-a)
  */
 __attribute__((always_inline)) inline t_vec3	vec3_overload(const t_vec3 a)
 {

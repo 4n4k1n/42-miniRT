@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   socket.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 10:54:08 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 11:20:43 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 17:06:48 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Create, bind and listen on a TCP socket on the specified port.
+ * Sets SO_REUSEADDR on the socket and starts listening with a backlog.
+ * Returns the listening socket file descriptor on success, or a negative
+ * value on failure.
+ * @param port TCP port to bind to (host order)
+ * @return listening socket fd or negative on error
+ */
 int	setup_listen_socket(uint32_t port)
 {
 	int					socket_fd;

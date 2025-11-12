@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   ray_lighting.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 13:16:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/11 22:08:25 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:46:13 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Computes ambient term modulated by the surface albedo.
+ * @param data scene (uses ambiente color and intensity)
+ * @param rec hit record (uses rgb)
+ * @return ambient RGB contribution
+ */
 t_rgb	get_ambient_light(t_data *data, const t_hit_record *rec)
 {
 	t_rgb	ambient;
@@ -25,6 +31,13 @@ t_rgb	get_ambient_light(t_data *data, const t_hit_record *rec)
 	return (ambient);
 }
 
+/**
+ * Tests if the shadow ray is occluded before reaching the light sample.
+ * Uses BVH if enabled; otherwise checks the object list.
+ * @param data scene data (BVH, objects)
+ * @param sc shadow calculation context (shadow_ray/distance set by caller)
+ * @return 1 if in shadow (occluded), 0 if visible
+ */
 int	is_in_shadow(t_data *data, t_shadow_calc *sc)
 {
 	t_bvh_ctx	bvh_ctx;
@@ -45,6 +58,13 @@ int	is_in_shadow(t_data *data, t_shadow_calc *sc)
 	return (0);
 }
 
+/**
+ * Adds diffuse light contribution for one unoccluded light sample.
+ * @param light_contrib accumulator to add into
+ * @param light current light
+ * @param rec hit record (uses surface color)
+ * @param diffuse lambert term (max(N·L, 0))
+ */
 __attribute__((always_inline)) inline void	add_light_sample(
 	t_rgb *light_contrib, t_light *light, const t_hit_record *rec,
 	double diffuse)
@@ -57,6 +77,13 @@ __attribute__((always_inline)) inline void	add_light_sample(
 			/ 255.0) * light->intensity * diffuse * 255.0;
 }
 
+/**
+ * Blends a sky gradient along the ray direction and modulates by final.
+ * White-to-blue gradient; used when no surface is hit.
+ * @param final accumulated color so far
+ * @param current_ray ray being shaded
+ * @return final * sky_color
+ */
 t_rgb	calculate_final_color(t_rgb *final, t_ray *current_ray)
 {
 	t_vec3	unit_direction;

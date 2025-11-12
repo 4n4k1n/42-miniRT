@@ -3,15 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   worker_run.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/30 13:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 16:50:13 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Establish a TCP connection to the master server.
+ * Creates a socket and connects to the provided IPv4 address and port.
+ * Prints status to stdout and returns the socket fd on success.
+ * @param master_ip dotted IPv4 address string of the master
+ * @param port network port to connect to
+ * @return connected socket file descriptor, or negative on error
+ */
 int	connect_to_master(char *master_ip, uint32_t port)
 {
 	int					master_socket;
@@ -34,6 +42,15 @@ int	connect_to_master(char *master_ip, uint32_t port)
 	return (master_socket);
 }
 
+/**
+ * Receive the scene file and initialize the local rendering data.
+ * Downloads the scene payload from the master, writes it to scene.rt,
+ * parses it into the provided data structure, optionally builds a BVH and
+ * initializes camera and thread pool for worker tile rendering.
+ * @param master_socket connected master socket
+ * @param data pointer to t_data to populate
+ * @return 0 on success, 1 on failure
+ */
 int	setup_scene_file(int master_socket, t_data *data)
 {
 	char	*scene_content;
@@ -63,6 +80,13 @@ int	setup_scene_file(int master_socket, t_data *data)
 	return (0);
 }
 
+/**
+ * Apply a camera update message to the local t_data camera state.
+ * Overwrites camera position, orientation and a few settings then updates
+ * derived camera matrices so subsequent renders use the new pose.
+ * @param data pointer to local rendering data
+ * @param cam_update pointer to received camera update payload
+ */
 void	handle_camera_update(t_data *data, t_camera_update *cam_update)
 {
 	data->camera.cords.x = cam_update->x;
@@ -76,6 +100,15 @@ void	handle_camera_update(t_data *data, t_camera_update *cam_update)
 	printf("Received camera update from master, ready for new render...\n");
 }
 
+/**
+ * Process a single render tile: receive assignment, render it locally and
+ * send the result back to the master.
+ * Allocates a pixel buffer for the tile result, sends it and frees it.
+ * @param master_socket connected master socket
+ * @param data rendering data/context used for rendering the tile
+ * @param tiles_rendered pointer to a counter incremented after success
+ * @return 0 on success, 1 on failure
+ */
 int	process_tile_render(int master_socket, t_data *data,
 	uint32_t *tiles_rendered)
 {
@@ -104,6 +137,16 @@ int	process_tile_render(int master_socket, t_data *data,
 	return (0);
 }
 
+/**
+ * Handle an incoming top-level message from the master.
+ * Supports shutdown, camera update and render-tile commands. Delegates
+ * to helpers for processing tile rendering messages.
+ * @param master_socket connected master socket
+ * @param data rendering state
+ * @param header already-received message header (msg_type)
+ * @param tiles_rendered pointer to counter tracking completed tiles
+ * @return 1 when the worker should stop, 0 to continue
+ */
 int	handle_msg(int master_socket, t_data *data,
 	t_msg_header *header, uint32_t *tiles_rendered)
 {

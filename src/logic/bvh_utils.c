@@ -3,15 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   bvh_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 00:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/28 00:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 13:40:04 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
+/**
+ * Returns the index of the longest axis of the AABB.
+ * 0 = x, 1 = y, 2 = z
+ * @param box axis-aligned bounding box
+ * @return index of longest axis
+ */
 int	get_longest_axis(t_aabb *box)
 {
 	double	dx;
@@ -28,6 +34,12 @@ int	get_longest_axis(t_aabb *box)
 	return (2);
 }
 
+/**
+ * Computes the centroid component of an object bounding box on the given axis.
+ * @param obj object pointer
+ * @param axis axis index (0=x,1=y,2=z)
+ * @return centroid coordinate along axis
+ */
 double	get_centroid_component(t_obj *obj, int axis)
 {
 	t_aabb	box;
@@ -42,6 +54,11 @@ double	get_centroid_component(t_obj *obj, int axis)
 	return (centroid.z);
 }
 
+/**
+ * Swaps two object pointers.
+ * @param a pointer to first object pointer
+ * @param b pointer to second object pointer
+ */
 void	swap_objects(t_obj **a, t_obj **b)
 {
 	t_obj	*temp;
@@ -51,6 +68,14 @@ void	swap_objects(t_obj **a, t_obj **b)
 	*b = temp;
 }
 
+/**
+ * Partitions an array of object pointers by centroid along axis using a pivot.
+ * Returns the partition index (first index of right partition).
+ * @param objects array of object pointers
+ * @param count number of objects
+ * @param axis axis index to partition along
+ * @return partition index
+ */
 int	partition_objects(t_obj **objects, int count, int axis)
 {
 	double	pivot;
@@ -74,6 +99,12 @@ int	partition_objects(t_obj **objects, int count, int axis)
 	}
 }
 
+/**
+ * Computes the union AABB of the provided objects.
+ * @param objects array of object pointers
+ * @param count number of objects
+ * @return combined axis-aligned bounding box
+ */
 t_aabb	compute_bounds(t_obj **objects, int count)
 {
 	t_aabb	box;

@@ -3,19 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   hit_triangle.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/28 21:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/10/28 21:00:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 12:55:27 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mini_rt.h"
 
 /**
- * Möller-Trumbore ray-triangle intersection algorithm
- * Fast intersection test using barycentric coordinates
- * Returns 1 if hit, 0 otherwise
+ * Möller-Trumbore ray-triangle intersection entry.
+ * Builds edge vectors and preliminary values, returns 1 on hit.
+ * @param tri triangle geometry
+ * @param r ray to test
+ * @param range valid t range
+ * @param rec out hit record
+ * @return 1 if intersection found, 0 otherwise
  */
 int	hit_triangle_obj(const t_triangle *tri, t_ray *r, t_hit_range range,
 	t_hit_record *rec)
@@ -39,6 +43,15 @@ int	hit_triangle_obj(const t_triangle *tri, t_ray *r, t_hit_range range,
 			(t_tri_hit_ctx){range, (t_tri_calc){e1, e2, p, tvec, det, 0, 0}}));
 }
 
+/**
+ * Performs the full Möller-Trumbore tests using precomputed ctx.
+ * Computes barycentric u,v and t, fills rec on success.
+ * @param tri triangle geometry
+ * @param r ray
+ * @param rec out hit record
+ * @param ctx precomputed test context (edges, p, tvec, det, range)
+ * @return 1 if hit within range and barycentrics, 0 otherwise
+ */
 int	hit_triangle_test(const t_triangle *tri, t_ray *r, t_hit_record *rec,
 	t_tri_hit_ctx ctx)
 {
@@ -68,6 +81,14 @@ int	hit_triangle_test(const t_triangle *tri, t_ray *r, t_hit_record *rec,
 	return (set_triangle_tangent_space(rec, &ctx.calc.e1));
 }
 
+/**
+ * Builds a simple tangent space for the triangle hit.
+ * Uses edge e1 as tangent, computes bitangent from normal.
+ * Sets u/v to 0 and clears bump pointer.
+ * @param rec hit record to update (tangent/bitangent/u/v/bump)
+ * @param e1 first edge of the triangle (used for tangent)
+ * @return 1 always
+ */
 int	set_triangle_tangent_space(t_hit_record *rec, t_vec3 *e1)
 {
 	t_vec3	tan;
