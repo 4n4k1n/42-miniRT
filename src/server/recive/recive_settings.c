@@ -37,5 +37,9 @@ t_settings	recive_settings(int socket_fd)
 	settings.scale = ntohl(settings.scale);
 	settings.shadow_samples = ntohl(settings.shadow_samples);
 	settings.use_bvh = ntohl(settings.use_bvh);
+	settings.width = ntohl(settings.width);
+	settings.height = ntohl(settings.height);
+	settings.aspect_ratio_int = ntohl(settings.aspect_ratio_int);
+	settings.aa_max_samples = ntohl(settings.aa_max_samples);
 	return (settings);
 }

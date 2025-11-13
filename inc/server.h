@@ -186,7 +186,7 @@ void				broadcast_update(t_master *master, uint32_t update_value);
 void				register_worker(t_master *master, int socket_fd);
 void				unregister_worker(t_master *master, int socket_fd);
 
-void				init_worker_settings(t_settings *settings);
+void				init_worker_settings(t_settings *settings, t_data *data);
 void				*handle_worker_disconnect(t_worker_context *context,
 						t_master *master);
 void				process_tile_job(t_worker_context *context,

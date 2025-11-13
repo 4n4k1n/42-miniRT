@@ -324,6 +324,10 @@ typedef struct s_settings
 	uint32_t					shadow_samples;
 	uint32_t					depth;
 	uint32_t					use_bvh;
+	uint32_t					width;
+	uint32_t					height;
+	uint32_t					aspect_ratio_int;
+	uint32_t					aa_max_samples;
 }								t_settings;
 
 typedef struct s_master			t_master;
