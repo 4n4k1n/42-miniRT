@@ -73,8 +73,10 @@ static int	handle_special_keys(t_data *data, mlx_key_data_t k, float *dist)
 	else if (k.key == MLX_KEY_RIGHT_BRACKET)
 		return (*dist *= 1.2, 1);
 	else if (k.key == MLX_KEY_R)
-		return (data->settings.aa_state = !data->settings.aa_state,
-			render(data), 1);
+	{
+		data->settings.aa_state = !data->settings.aa_state;
+		return (0);
+	}
 	else if (k.key == MLX_KEY_L)
 		data->settings.light_state = !data->settings.light_state;
 	return (0);
