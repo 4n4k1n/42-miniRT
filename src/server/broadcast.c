@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   broadcast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/15 13:32:09 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 15:17:11 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,14 @@ static void	send_broadcast(t_master *master, t_update update)
 		{
 			send_header(master->worker_sockets[i], MSG_UPDATE,
 				sizeof(t_update));
-			send_all(master->worker_sockets[i], &update,
-				sizeof(t_update));
+			send_all(master->worker_sockets[i], &update, sizeof(t_update));
 			printf("Sent camera update to worker socket %d\n",
 				master->worker_sockets[i]);
 		}
 		i++;
 	}
 }
+
 /**
  * Broadcast a camera/state update to all workers and restart the render.
  * Prepares a t_camera_update from master's current scene camera and settings,
