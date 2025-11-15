@@ -1,0 +1,30 @@
+# Suppress glibc ld.so word-sized strncmp reads during RPATH expansion
+{
+   glibc-ldso-strncmp-is_dst
+   Memcheck:Addr8
+   fun:strncmp
+   fun:is_dst
+   obj:*/ld-*.so*
+}
+{
+   glibc-ldso-strncmp-dst-substitute
+   Memcheck:Addr8
+   fun:strncmp
+   fun:is_dst
+   fun:_dl_dst_substitute
+   obj:*/ld-*.so*
+}
+{
+   glibc-ldso-strncmp-fillin-rpath
+   Memcheck:Addr8
+   fun:strncmp
+   fun:fillin_rpath*
+   obj:*/ld-*.so*
+}
+{
+   glibc-ldso-strncmp-decompose-rpath
+   Memcheck:Addr8
+   fun:strncmp
+   fun:decompose_rpath
+   obj:*/ld-*.so*
+}
