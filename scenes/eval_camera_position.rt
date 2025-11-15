@@ -1,0 +1,29 @@
+# Camera Position and Direction Test Scene
+# Tests: camera along x, y, z axes and random position, all pointing at origin
+
+# Ambient lighting
+A   0.3   255,255,255
+
+# TEST 1: Camera extending along x axis, pointing at origin {0,0,0}
+# Camera at position (20, 0, 0) looking toward (-1, 0, 0) direction
+C   20,0,0   -1,0,0   70
+
+# Light sources - multiple lights for good visibility from all angles
+L   15,15,15   0.6   255,255,255
+L   -15,15,-15   0.4   200,200,255
+
+# Random scene with objects around origin
+# Center sphere at origin - red
+sp  0,0,0   2   255,100,100
+
+# Spheres arranged around origin
+sp  3,3,0   1.5   100,255,100
+sp  -3,3,0   1.5   100,100,255
+sp  0,3,3   1.5   255,255,100
+sp  0,-3,-3   1.5   255,100,255
+
+# Plane below - gray
+pl  0,-5,0   0,1,0   150,150,150
+
+# Cylinder - cyan
+cy  5,0,0   0,1,0   1   6   100,255,255

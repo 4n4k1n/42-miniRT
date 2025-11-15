@@ -1,0 +1,28 @@
+# Camera Position and Direction Test Scene - Y Axis
+# TEST 2: Camera extending along y axis, pointing at origin {0,0,0}
+
+# Ambient lighting
+A   0.3   255,255,255
+
+# Camera at position (0, 20, 0) looking toward (0, -1, 0) direction
+C   0,20,0   0,-1,0   70
+
+# Light sources
+L   15,15,15   0.6   255,255,255
+L   -15,15,-15   0.4   200,200,255
+
+# Random scene with objects around origin
+# Center sphere at origin - red
+sp  0,0,0   2   255,100,100
+
+# Spheres arranged around origin
+sp  3,3,0   1.5   100,255,100
+sp  -3,3,0   1.5   100,100,255
+sp  0,3,3   1.5   255,255,100
+sp  0,-3,-3   1.5   255,100,255
+
+# Plane to the side - gray
+pl  -8,0,0   1,0,0   150,150,150
+
+# Cylinder - cyan
+cy  0,0,5   1,0,0   1   6   100,255,255

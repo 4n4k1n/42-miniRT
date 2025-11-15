@@ -1,0 +1,30 @@
+# Camera Position and Direction Test Scene - Random Position
+# TEST 4: Camera at random position (not on axis or diagonal), pointing at origin {0,0,0}
+
+# Ambient lighting
+A   0.3   255,255,255
+
+# Camera at random position (7, 13, -5) looking at origin
+# Direction vector normalized: pointing from camera to origin
+# Direction: (0-7, 0-13, 0-(-5)) = (-7, -13, 5) normalized ≈ (-0.456, -0.847, 0.326)
+C   7,13,-5   -0.456,-0.847,0.326   70
+
+# Light sources
+L   15,15,15   0.6   255,255,255
+L   -15,15,-15   0.4   200,200,255
+
+# Random scene with objects around origin
+# Center sphere at origin - red
+sp  0,0,0   2   255,100,100
+
+# Spheres arranged around origin
+sp  3,3,0   1.5   100,255,100
+sp  -3,3,0   1.5   100,100,255
+sp  0,3,3   1.5   255,255,100
+sp  0,-3,-3   1.5   255,100,255
+
+# Plane below - gray
+pl  0,-5,0   0,1,0   150,150,150
+
+# Cylinder - cyan
+cy  5,0,0   0,1,0   1   6   100,255,255
