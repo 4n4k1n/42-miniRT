@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 18:52:57 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/15 15:16:20 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 15:24:43 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	rt_error(const char *msg)
 	return (1);
 }
 
-static void	free_bump(t_obj *cur)
+void	free_bump_list(t_obj *cur)
 {
 	if (cur->type == SPHERE && cur->data.sphere.bump)
 		free_bump(cur->data.sphere.bump);
@@ -70,7 +70,7 @@ static void	free_objects(t_obj_list *lst)
 			free(cur->data.pyramid.mat);
 		if (cur->type == CONE && cur->data.cone.mat)
 			free(cur->data.cone.mat);
-		free_bump(cur);
+		free_bump_list(cur);
 		free(cur);
 		cur = nx;
 	}

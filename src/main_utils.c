@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:30:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 15:41:21 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 15:25:18 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	cleanup_objects(t_obj_list *objects)
 			free(current->data.cylinder.mat);
 		if (current->type == TRIANGLE && current->data.triangle.mat)
 			free(current->data.triangle.mat);
+		free_bump_list(current);
 		free(current);
 		current = next;
 	}

@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 15:34:59 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 15:35:01 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 15:24:53 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ char	*trim_and_strip(char *s);
 int		vec_in_range(t_vec3 *vec, double min, double max);
 int		in_range_d(double v, double min, double max);
 int		vec_non_zero(t_vec3 v);
+void	free_bump_list(t_obj *cur);
 
 // List
 t_obj	*obj_new(t_obj_type type);
