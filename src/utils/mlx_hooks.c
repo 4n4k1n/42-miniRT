@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 18:20:47 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 09:36:31 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		handle_movement(data, keydata, move_distance);
 		update_camera(data);
 		if (data->master && !data->is_local)
-			broadcast_update(data->master, 1);
+			broadcast_update(data->master, keydata.key);
 		else
 			render(data);
 	}

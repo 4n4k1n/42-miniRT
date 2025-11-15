@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 15:35:13 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 15:35:14 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/14 19:29:36 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ typedef enum e_updated_scene_type
 	LOOK_LEFT,
 	LOOK_RIGHT,
 	UPDATE_LIGHT,
-	UPDATE_RENDERING
+	UPDATE_RENDERING,
+	DIST_INCREASE,
+	DIST_DECREASE
 }					t_updated_scene_type;
 
 typedef struct s_msg_header
@@ -198,8 +200,6 @@ void				worker_wait_for_restart(t_master *master,
 
 int					connect_to_master(char *master_ip, uint32_t port);
 int					setup_scene_file(int master_socket, t_data *data);
-void				handle_camera_update(t_data *data,
-						t_camera_update *cam_update);
 int					process_tile_render(int master_socket, t_data *data,
 						uint32_t *tiles_rendered);
 int					handle_msg(int master_socket, t_data *data,
@@ -209,5 +209,7 @@ char				*get_ip_address(void);
 char				*get_public_ip(void);
 
 int					init_threads_worker(t_data *data);
+
+void	handle_camera_update(t_data *data, uint32_t update);
 
 #endif

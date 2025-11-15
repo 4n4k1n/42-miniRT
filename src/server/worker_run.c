@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   worker_run.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 16:50:13 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/14 16:50: by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,26 +81,6 @@ int	setup_scene_file(int master_socket, t_data *data)
 }
 
 /**
- * Apply a camera update message to the local t_data camera state.
- * Overwrites camera position, orientation and a few settings then updates
- * derived camera matrices so subsequent renders use the new pose.
- * @param data pointer to local rendering data
- * @param cam_update pointer to received camera update payload
- */
-void	handle_camera_update(t_data *data, t_camera_update *cam_update)
-{
-	data->camera.cords.x = cam_update->x;
-	data->camera.cords.y = cam_update->y;
-	data->camera.cords.z = cam_update->z;
-	data->camera.pitch = cam_update->pitch;
-	data->camera.yaw = cam_update->yaw;
-	data->settings.aa_state = cam_update->aa_state;
-	data->settings.light_state = cam_update->light_state;
-	update_camera(data);
-	printf("Received camera update from master, ready for new render...\n");
-}
-
-/**
  * Process a single render tile: receive assignment, render it locally and
  * send the result back to the master.
  * Allocates a pixel buffer for the tile result, sends it and frees it.
@@ -150,7 +130,7 @@ int	process_tile_render(int master_socket, t_data *data,
 int	handle_msg(int master_socket, t_data *data,
 	t_msg_header *header, uint32_t *tiles_rendered)
 {
-	t_camera_update	cam_update;
+	t_update	update;
 
 	if (header->msg_type == MSG_SHUTDOWN)
 	{
@@ -159,8 +139,8 @@ int	handle_msg(int master_socket, t_data *data,
 	}
 	if (header->msg_type == MSG_UPDATE)
 	{
-		recv_all(master_socket, &cam_update, sizeof(t_camera_update));
-		handle_camera_update(data, &cam_update);
+		recv_all(master_socket, &update, sizeof(t_update));
+		handle_camera_update(data, update.updated_varible);
 		return (0);
 	}
 	if (header->msg_type != MSG_RENDER_TILE)
