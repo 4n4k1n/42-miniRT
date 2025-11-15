@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/15 15:48:51 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 16:04:41 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,9 @@ static t_rgb	process_hit(t_data *data, t_ray_color_vars *vars)
 {
 	t_rgb	simple_shading;
 
+	if (vars->rec.bump)
+		apply_bump_mapping(vars);
+
 	if (!vars->rec.mat)
 	{
 		simple_shading = calculate_direct_lighting(data, &vars->rec);
@@ -96,8 +99,6 @@ static t_rgb	process_hit(t_data *data, t_ray_color_vars *vars)
 				rgb_modulate(vars->throughput, simple_shading));
 		return (vars->final_color);
 	}
-	if (vars->rec.bump)
-		apply_bump_mapping(vars);
 	if (vars->depth == 0)
 		vars->direct_light = calculate_direct_lighting(data, &vars->rec);
 	if (process_scatter(data, vars))
