@@ -20,10 +20,9 @@
 // SHADOW_SAMPLES: number of shadow rays per light for soft shadows
 # define SCALE 70
 
-# define AA_MIN_SAMPLES 8
-# define MAX_DEPTH 8
-# define SHADOW_SAMPLES 2
-# define SKY 0
+# define AA_MIN_SAMPLES 32
+# define MAX_DEPTH 64
+# define SHADOW_SAMPLES 4
 
 // for lume and color intensity(dont need to be modified normally)
 # define AA_VAR_EPS 0.0004
@@ -48,8 +47,8 @@
 #  define USE_BVH 0
 # endif
 
-# ifndef BONUS
-#  define BONUS 0
-# endif
+// # ifndef BONUS
+// #  define BONUS 0
+// # endif
 
 #endif

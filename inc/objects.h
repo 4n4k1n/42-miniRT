@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 15:34:27 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 22:20:11 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 18:20:29 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,6 +324,10 @@ typedef struct s_settings
 	uint32_t					shadow_samples;
 	uint32_t					depth;
 	uint32_t					use_bvh;
+	uint32_t					width;
+	uint32_t					height;
+	uint32_t					aspect_ratio_int;
+	uint32_t					aa_max_samples;
 }								t_settings;
 
 typedef struct s_master			t_master;
@@ -347,6 +351,7 @@ typedef struct s_data
 	mlx_image_t					*img;
 	t_master					*master;
 	t_defines					defines;
+	bool						is_local;
 }								t_data;
 
 #endif

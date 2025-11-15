@@ -115,12 +115,14 @@ SRC = src/main.c \
 		src/server/worker.c \
 		src/server/worker_accept.c \
 		src/server/worker_run.c \
+		src/server/worker_update.c \
 		src/server/worker_tile.c \
 		src/server/worker_utils.c \
 		src/server/socket.c \
 		src/server/queue.c \
 		src/server/ip.c \
 		src/server/broadcast.c \
+		src/server/broadcast_utils.c \
 		src/server/send/send_all.c \
 		src/server/send/send_file.c \
 		src/server/send/send_header.c \

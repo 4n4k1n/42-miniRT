@@ -27,7 +27,7 @@ static int	worker_setup(t_worker_context *context, t_master *master)
 
 	printf("Worker connected from socket: %d\n", context->worker_socket);
 	register_worker(master, context->worker_socket);
-	init_worker_settings(&settings);
+	init_worker_settings(&settings, master->data);
 	send_settings(context->worker_socket, &settings);
 	send_file(master->scene_file, context->worker_socket);
 	header = recive_header(context->worker_socket);
@@ -123,6 +123,10 @@ int	run_worker(char *master_ip, uint32_t port)
 	if (master_socket < 0)
 		return (1);
 	data.settings = recive_settings(master_socket);
+	data.defines.width = data.settings.width;
+	data.defines.height = data.settings.height;
+	data.defines.aspect_ratio = (double)data.settings.aspect_ratio_int / 1000000.0;
+	data.defines.aa_max_samples = data.settings.aa_max_samples;
 	if (setup_scene_file(master_socket, &data))
 	{
 		close(master_socket);

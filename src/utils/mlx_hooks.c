@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mlx_hooks.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 15:32:53 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:06:10 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,14 @@ static int	handle_special_keys(t_data *data, mlx_key_data_t k, float *dist)
 	if (k.key == MLX_KEY_ESCAPE)
 		return (mlx_close_window(data->mlx), 1);
 	else if (k.key == MLX_KEY_LEFT_BRACKET)
-		return (*dist *= 0.8, 1);
+		return (broadcast_update(data->master, k.key), *dist *= 0.75, 1);
 	else if (k.key == MLX_KEY_RIGHT_BRACKET)
-		return (*dist *= 1.2, 1);
+		return (broadcast_update(data->master, k.key), *dist *= 1.25, 1);
 	else if (k.key == MLX_KEY_R)
-		return (data->settings.aa_state = !data->settings.aa_state,
-			render(data), 1);
+	{
+		data->settings.aa_state = !data->settings.aa_state;
+		return (0);
+	}
 	else if (k.key == MLX_KEY_L)
 		data->settings.light_state = !data->settings.light_state;
 	return (0);
@@ -128,8 +130,8 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 			return ;
 		handle_movement(data, keydata, move_distance);
 		update_camera(data);
-		if (data->master && BONUS)
-			broadcast_update(data->master, 1);
+		if (data->master && !data->is_local)
+			broadcast_update(data->master, keydata.key);
 		else
 			render(data);
 	}
