@@ -1,0 +1,40 @@
+# Shadow Test Scene - Test 2
+# Complex scene with multiple objects casting shadows (inspired by subject V.6)
+
+# Ambient lighting - moderate to see details but clear shadows
+A   0.15   255,255,255
+
+# Camera positioned to view the complex scene
+C   25,6,5   1.0,0.0,0.0   70
+
+# Main light source - positioned above and to the side
+L   -10,20,10   0.7   255,240,220
+
+# Secondary light for fill (softer)
+L   15,10,-10   0.3   200,220,255
+
+# Ground plane - light color to show shadows
+pl  0,0,0   0,1,0   200,200,200
+
+# Back wall plane for depth
+pl  0,0,-15   0,0,1   150,150,180
+
+# Multiple spheres at different positions - creating complex shadows
+# Large central sphere
+sp  0,3,0   3   180,60,60
+
+# Medium spheres around
+sp  -6,2,-3   2   60,180,60
+sp  6,2.5,2   2.5   60,60,180
+sp  3,1.5,-5   1.5   180,180,60
+
+# Small spheres
+sp  -3,1,-8   1   180,60,180
+sp  8,1.2,-2   1.2   60,180,180
+
+# Cylinders creating interesting shadows
+cy  -10,0,-5   0,1,0   1.5   6   140,100,60
+cy  10,0,5   0,1,0   1   8   60,140,100
+
+# Tall cylinder in back
+cy  0,0,-10   0,1,0.1   0.8   15   100,60,140

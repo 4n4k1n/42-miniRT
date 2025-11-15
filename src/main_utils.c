@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:30:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/15 15:25:18 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 17:34:39 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void	cleanup_objects(t_obj_list *objects)
 		if (current->type == CYLINDER && current->data.cylinder.mat)
 			free(current->data.cylinder.mat);
 		if (current->type == TRIANGLE && current->data.triangle.mat)
+			free(current->data.triangle.mat);
+		if (current->type == CONE && current->data.triangle.mat)
 			free(current->data.triangle.mat);
 		free_bump_list(current);
 		free(current);

@@ -1,0 +1,22 @@
+# Shadow Test Scene - Test 1
+# Vertical spot light, sphere casting shadow on plane
+
+# Ambient lighting - low to see shadows clearly
+A   0.2   255,255,255
+
+# Camera positioned aside to view sphere, plane, and shadow
+# Positioned at angle to see both objects and shadow
+C   -10,8,10   0,0,1   70
+
+# Vertical spot light above sphere
+# Positioned at (0, 15, 0) - directly above the scene
+# This creates a clear shadow of the sphere on the plane below
+L   0,15,0   0.8   255,255,255
+
+# Sphere in the middle - red color
+# Positioned above the plane so shadow can be cast
+sp  0,3,0   2.5   200,80,80
+
+# Horizontal plane below - light gray
+# The sphere's shadow should be clearly visible on this plane
+pl  0,0,0   0,1,0   180,180,180
