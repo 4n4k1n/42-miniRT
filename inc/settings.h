@@ -6,7 +6,7 @@
 /*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:38:36 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/15 16:09:44 by apregitz         ###   ########.fr       */
+/*   Updated: 2025/11/15 16:30:29 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 // SHADOW_SAMPLES: number of shadow rays per light for soft shadows
 # define SCALE 70
 
-# define AA_MIN_SAMPLES 32
-# define MAX_DEPTH 64
+# define AA_MIN_SAMPLES 16
+# define MAX_DEPTH 32
 # define SHADOW_SAMPLES 4
 
 // for lume and color intensity(dont need to be modified normally)

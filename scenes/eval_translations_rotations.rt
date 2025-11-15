@@ -1,0 +1,26 @@
+# Translations and Rotations Test Scene
+# Tests: sphere translation and cylinder rotation
+
+# Ambient lighting
+A   0.2   255,255,255
+
+# Camera - positioned to view the objects along z-axis
+C   0,0,25   0,0,0.5   70
+
+# Light source - positioned to illuminate the scene
+L   10,10,20   0.8   255,255,255
+
+# TEST 1: Two spheres - one at origin, one translated along z-axis
+# First sphere at origin - red color
+sp  0,0,0   3   255,100,100
+
+# Second sphere translated 8 units toward camera (parallel to camera direction)
+# Translation: moved along positive z-axis (toward camera)
+# Distance > diameter (3*2 = 6), using 8 units - green color
+sp  0,0,8   3   100,255,100
+
+# TEST 2: Cylinder with 90° rotation along z-axis
+# Original orientation: extending along y-axis (0,1,0)
+# After 90° rotation around z-axis: orientation becomes (1,0,0) - extends along x-axis
+# Positioned to the side for better visibility - blue color
+cy  0,-8,0   1,0,0   2   10   100,100,255
