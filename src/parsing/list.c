@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 20:33:35 by nweber            #+#    #+#             */
-/*   Updated: 2025/09/30 11:26:44 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:43:32 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_obj	*obj_new(t_obj_type type)
 	o = (t_obj *)malloc(sizeof(t_obj));
 	if (!o)
 		return (NULL);
+	ft_memset(o, 0, sizeof(t_obj));
 	o->type = type;
 	o->next = NULL;
 	return (o);

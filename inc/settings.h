@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   settings.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:38:36 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/12 18:21:02 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:38:48 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@
 # endif
 
 # ifndef MULTI_THREADING
-#  define MULTI_THREADING 1
+#  define MULTI_THREADING 0
 # endif
 
 # ifndef USE_BVH
-#  define USE_BVH 1
+#  define USE_BVH 0
 # endif
 
 // # ifndef BONUS

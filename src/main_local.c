@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:30:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 18:21:35 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:45:04 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ int	run_local(char *scene_file)
 {
 	t_data	data;
 
+	ft_memset(&data, 0, sizeof(data));
 	if (init_data_local(&data, scene_file))
 		return (1);
 	if (init_mlx_local(&data))

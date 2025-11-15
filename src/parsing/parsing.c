@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 17:28:26 by nweber            #+#    #+#             */
-/*   Updated: 2025/10/28 22:03:05 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:12:21 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,9 +136,16 @@ int	parse_scene(const char *path, t_data *scene)
 		return (rt_error("initialization error"));
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
+	{
+		free(scene);
 		return (rt_error("failed to open file"));
+	}
 	if (read_parse(fd, scene, &args))
+	{
+		close(fd);
+		free_scene(scene);
 		return (close(fd), rt_error("parsing error"));
+	}
 	close(fd);
 	return (0);
 }
