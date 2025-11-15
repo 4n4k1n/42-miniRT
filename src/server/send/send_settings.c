@@ -30,7 +30,11 @@ void	send_settings(int socket_fd, t_settings *settings)
 	net_settings.max_samples = htonl(settings->max_samples);
 	net_settings.min_samples = htonl(settings->min_samples);
 	net_settings.scale = htonl(settings->scale);
-	net_settings.shadow_samples = htonl(net_settings.shadow_samples);
+	net_settings.shadow_samples = htonl(settings->shadow_samples);
 	net_settings.use_bvh = htonl(settings->use_bvh);
+	net_settings.width = htonl(settings->width);
+	net_settings.height = htonl(settings->height);
+	net_settings.aspect_ratio_int = htonl(settings->aspect_ratio_int);
+	net_settings.aa_max_samples = htonl(settings->aa_max_samples);
 	send_all(socket_fd, &net_settings, sizeof(t_settings));
 }

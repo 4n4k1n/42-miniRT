@@ -16,8 +16,9 @@
  * Initialize a t_settings structure with default worker-side values.
  * This mirrors the defaults used by the master when assigning work.
  * @param settings pointer to settings to initialize
+ * @param data pointer to master's data containing defines
  */
-void	init_worker_settings(t_settings *settings)
+void	init_worker_settings(t_settings *settings, t_data *data)
 {
 	settings->aa_state = ANTI_ALIASING;
 	settings->depth = MAX_DEPTH;
@@ -27,6 +28,10 @@ void	init_worker_settings(t_settings *settings)
 	settings->scale = SCALE;
 	settings->shadow_samples = SHADOW_SAMPLES;
 	settings->use_bvh = USE_BVH;
+	settings->width = data->defines.width;
+	settings->height = data->defines.height;
+	settings->aspect_ratio_int = (uint32_t)(data->defines.aspect_ratio * 1000000);
+	settings->aa_max_samples = data->defines.aa_max_samples;
 }
 
 /**

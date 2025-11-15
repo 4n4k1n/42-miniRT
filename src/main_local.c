@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_local.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:30:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 15:42:17 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 18:21:35 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
  */
 static int	init_data_local(t_data *data, char *scene_file)
 {
+	data->is_local = true;
 	translate_settings(data);
 	data->settings.light_state = false;
 	data->settings.use_bvh = USE_BVH;

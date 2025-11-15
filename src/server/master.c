@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   master.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 11:41:09 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 17:05:41 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/12 18:22:39 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ int	run_master(char *scene_file, uint32_t port)
 {
 	t_run_master	r_master;
 
+	r_master.data.is_local = false;
 	if (setup_master(&r_master.master, &r_master.data, scene_file, port) != 0)
 		return (1);
 	print_master_stats(&r_master, scene_file);

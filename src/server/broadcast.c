@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   broadcast.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/13 13:36:06 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:32:09 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	unregister_worker(t_master *master, int socket_fd)
  * @param master pointer to the master server state (socket table consulted)
  * @param cam_update pointer to the camera update payload to broadcast
  */
-static void	send_broadcast(t_master *master, t_camera_update *cam_update)
+static void	send_broadcast(t_master *master, t_update update)
 {
 	int	i;
 
@@ -84,16 +84,15 @@ static void	send_broadcast(t_master *master, t_camera_update *cam_update)
 		if (master->worker_sockets[i] != -1)
 		{
 			send_header(master->worker_sockets[i], MSG_UPDATE,
-				sizeof(t_camera_update));
-			send_all(master->worker_sockets[i], cam_update,
-				sizeof(t_camera_update));
+				sizeof(t_update));
+			send_all(master->worker_sockets[i], &update,
+				sizeof(t_update));
 			printf("Sent camera update to worker socket %d\n",
 				master->worker_sockets[i]);
 		}
 		i++;
 	}
 }
-
 /**
  * Broadcast a camera/state update to all workers and restart the render.
  * Prepares a t_camera_update from master's current scene camera and settings,
@@ -107,19 +106,12 @@ static void	send_broadcast(t_master *master, t_camera_update *cam_update)
  */
 void	broadcast_update(t_master *master, uint32_t update_value)
 {
-	t_camera_update	cam_update;
+	t_update	update;
 
-	(void)update_value;
 	printf("\n=== Broadcasting Update & Restarting Render ===\n");
-	cam_update.x = master->data->camera.cords.x;
-	cam_update.y = master->data->camera.cords.y;
-	cam_update.z = master->data->camera.cords.z;
-	cam_update.pitch = master->data->camera.pitch;
-	cam_update.yaw = master->data->camera.yaw;
-	cam_update.aa_state = master->data->settings.aa_state;
-	cam_update.light_state = master->data->settings.light_state;
+	update.updated_varible = get_update_value(update_value);
 	pthread_mutex_lock(&master->workers_lock);
-	send_broadcast(master, &cam_update);
+	send_broadcast(master, update);
 	pthread_mutex_unlock(&master->workers_lock);
 	reset_queue(master->queue);
 	pthread_mutex_lock(&master->restart_lock);
