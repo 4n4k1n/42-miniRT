@@ -1,7 +1,7 @@
 MAKEFLAGS += -s
 
 NAME	:= miniRT
-CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -march=native -mtune=native \
+CFLAGS	:= -Wall -Wextra -Werror -Ofast -flto -mtune=native \
   -funroll-loops -fprefetch-loop-arrays -fpeel-loops -funswitch-loops -ftracer \
   -ftree-vectorize -ftree-slp-vectorize -ftree-loop-distribution -fivopts \
   -fgraphite-identity -floop-nest-optimize -floop-interchange -floop-strip-mine -floop-block -floop-unroll-and-jam \

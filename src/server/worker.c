@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 13:35:40 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 16:51:45 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 15:16:32 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,8 @@ int	run_worker(char *master_ip, uint32_t port)
 	data.settings = recive_settings(master_socket);
 	data.defines.width = data.settings.width;
 	data.defines.height = data.settings.height;
-	data.defines.aspect_ratio = (double)data.settings.aspect_ratio_int / 1000000.0;
+	data.defines.aspect_ratio = (double)data.settings.aspect_ratio_int
+		/ 1000000.0;
 	data.defines.aa_max_samples = data.settings.aa_max_samples;
 	if (setup_scene_file(master_socket, &data))
 	{

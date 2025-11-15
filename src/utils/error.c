@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 12:45:19 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 15:35:05 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 15:17:00 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,12 @@ int	ft_error(char *msg, int error_code)
 {
 	perror(msg);
 	return (error_code);
+}
+
+void	free_bump(t_bump *b)
+{
+	if (!b)
+		return ;
+	free(b->pixels);
+	free(b);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_rt.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 15:34:10 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/11 22:48:00 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 15:13:39 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ void		get_camera_vectors(t_data *data, t_vec3 *forward, t_vec3 *right,
 void		key_hook(mlx_key_data_t keydata, void *param);
 int			get_time_in_ms(void);
 void		*thread_job(void *arg);
+void		free_bump(t_bump *b);
 int			render_with_mt(t_data *data);
 void		cleanup_data(t_data *data);
 int			init_threads(t_data *data);

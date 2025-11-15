@@ -6,7 +6,7 @@
 /*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 13:15:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/12 12:47:19 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 16:04:52 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ void	apply_bump_mapping(t_ray_color_vars *vars)
 {
 	t_bump_ctx	ctx;
 
-	ctx = (t_bump_ctx){vars->rec.bump, vars->rec.normal, vars->rec.tangent,
-		vars->rec.bitangent};
+	ctx = (t_bump_ctx){vars->rec.bump, vars->rec.normal,
+		vars->rec.tangent, vars->rec.bitangent};
 	vars->bumped = bump_perturb_from_uv(&ctx, vars->rec.u, vars->rec.v);
 	vars->front = (vec3_dot(vars->current_ray.direction,
 				vars->bumped) < 0.0);
