@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   worker_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 13:00:00 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/15 13:21:01 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/12 16:50:54 by nweber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ void	init_worker_settings(t_settings *settings, t_data *data)
 	settings->use_bvh = USE_BVH;
 	settings->width = data->defines.width;
 	settings->height = data->defines.height;
-	settings->aspect_ratio_int = (uint32_t)(data->defines.aspect_ratio
-			* 1000000);
+	settings->aspect_ratio_int = (uint32_t)(data->defines.aspect_ratio * 1000000);
 	settings->aa_max_samples = data->defines.aa_max_samples;
 }
 
