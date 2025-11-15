@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by claude            #+#    #+#             */
-/*   Updated: 2025/10/30 09:58:39 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 12:57:20 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	unregister_worker(t_master *master, int socket_fd)
 	pthread_mutex_unlock(&master->workers_lock);
 }
 
-static void	send_broadcast(t_master *master, t_camera_update *cam_update)
+static void	send_broadcast(t_master *master, t_update *update)
 {
 	int	i;
 
@@ -58,9 +58,9 @@ static void	send_broadcast(t_master *master, t_camera_update *cam_update)
 		if (master->worker_sockets[i] != -1)
 		{
 			send_header(master->worker_sockets[i], MSG_UPDATE,
-				sizeof(t_camera_update));
-			send_all(master->worker_sockets[i], cam_update,
-				sizeof(t_camera_update));
+				sizeof(t_update));
+			send_all(master->worker_sockets[i], update,
+				sizeof(t_update));
 			printf("Sent camera update to worker socket %d\n",
 				master->worker_sockets[i]);
 		}
@@ -70,19 +70,12 @@ static void	send_broadcast(t_master *master, t_camera_update *cam_update)
 
 void	broadcast_update(t_master *master, uint32_t update_value)
 {
-	t_camera_update	cam_update;
+	t_update	update;
 
-	(void)update_value;
 	printf("\n=== Broadcasting Update & Restarting Render ===\n");
-	cam_update.x = master->data->camera.cords.x;
-	cam_update.y = master->data->camera.cords.y;
-	cam_update.z = master->data->camera.cords.z;
-	cam_update.pitch = master->data->camera.pitch;
-	cam_update.yaw = master->data->camera.yaw;
-	cam_update.aa_state = master->data->settings.aa_state;
-	cam_update.light_state = master->data->settings.light_state;
+	update.updated_varible = get_update_value(update_value);
 	pthread_mutex_lock(&master->workers_lock);
-	send_broadcast(master, &cam_update);
+	send_broadcast(master, &update);
 	pthread_mutex_unlock(&master->workers_lock);
 	reset_queue(master->queue);
 	pthread_mutex_lock(&master->restart_lock);
