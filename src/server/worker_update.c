@@ -48,9 +48,9 @@ static void	handle_camera_update_rotation(t_data *data, uint32_t update)
 static int	handle_camera_update_special(t_data *data, uint32_t update, float *dist)
 {
 	if (update == DIST_INCREASE)
-		return (*dist *= 0.75, 1);
-	else if (update == DIST_DECREASE)
 		return (*dist *= 1.25, 1);
+	else if (update == DIST_DECREASE)
+		return (*dist *= 0.75, 1);
 	else if (update == UPDATE_RENDERING)
 	{
 		data->settings.aa_state = !data->settings.aa_state;

@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/01 23:21:04 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/15 09:36:31 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:06:10 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,9 @@ static int	handle_special_keys(t_data *data, mlx_key_data_t k, float *dist)
 	if (k.key == MLX_KEY_ESCAPE)
 		return (mlx_close_window(data->mlx), 1);
 	else if (k.key == MLX_KEY_LEFT_BRACKET)
-		return (*dist *= 0.8, 1);
+		return (broadcast_update(data->master, k.key), *dist *= 0.75, 1);
 	else if (k.key == MLX_KEY_RIGHT_BRACKET)
-		return (*dist *= 1.2, 1);
+		return (broadcast_update(data->master, k.key), *dist *= 1.25, 1);
 	else if (k.key == MLX_KEY_R)
 	{
 		data->settings.aa_state = !data->settings.aa_state;

@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 15:35:13 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/15 12:57:07 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:11:40 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #  define MAX_WORKER 16
 # endif
 
-# define TILE_SIZE 256
+# define TILE_SIZE 128
 
 typedef enum e_msg_types
 {
