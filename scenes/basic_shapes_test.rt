@@ -1,0 +1,23 @@
+# Basic Shapes Test Scene
+# Tests: sphere, plane, and cylinder rendering
+
+# Ambient lighting
+A   0.2   255,255,255
+
+# Camera - positioned to view all three objects
+C   0,0,20   0,0,0.5   70
+
+# Light source - positioned to illuminate the scene
+L   10,10,15   0.8   255,255,255
+
+# TEST 1: Sphere at coordinates {0, 0, 0}
+# Positioned at origin, red color for visibility
+sp  0,0,0   4   255,100,100
+
+# TEST 2: Plane with z value of null (z=0)
+# Positioned below the sphere, green color
+pl  0,-5,0   0,1,0   100,255,100
+
+# TEST 3: Cylinder extending along the y axis
+# Positioned to the right, extends vertically, blue color
+cy  6,0,0   0,1,0   2   8   100,100,255

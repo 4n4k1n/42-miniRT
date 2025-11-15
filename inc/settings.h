@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   settings.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 17:38:36 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/15 13:38:48 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 16:30:29 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 // SHADOW_SAMPLES: number of shadow rays per light for soft shadows
 # define SCALE 70
 
-# define AA_MIN_SAMPLES 32
-# define MAX_DEPTH 64
+# define AA_MIN_SAMPLES 16
+# define MAX_DEPTH 32
 # define SHADOW_SAMPLES 4
 
 // for lume and color intensity(dont need to be modified normally)
@@ -40,11 +40,11 @@
 # endif
 
 # ifndef MULTI_THREADING
-#  define MULTI_THREADING 0
+#  define MULTI_THREADING 1
 # endif
 
 # ifndef USE_BVH
-#  define USE_BVH 0
+#  define USE_BVH 1
 # endif
 
 // # ifndef BONUS

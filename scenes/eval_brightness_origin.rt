@@ -1,0 +1,20 @@
+# Brightness Test Scene - Test 1
+# Sphere at origin with sideways lighting
+
+# Ambient lighting - low to see the effect of spot light
+A   0.1   255,255,255
+
+# Camera - positioned to view sphere along z-axis
+C   0,0,15   0,0,-1   70
+
+# Spot light positioned to the LEFT of camera, lighting sphere sideways
+# Light at (-8, 0, 12) - to the left of camera, closer to sphere
+# This creates clear sideways lighting effect
+L   -8,0,12   0.9   255,255,255
+
+# Sphere at origin {0, 0, 0} - white/gray for better lighting visibility
+# Should show clear sideways lighting: bright on left side, gradually darker on right
+sp  0,0,0   4   200,200,200
+
+# Background plane for contrast
+pl  0,0,-8   0,0,1   50,50,80

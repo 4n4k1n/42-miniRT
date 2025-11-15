@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nweber <nweber@student.42Heilbronn.de>     +#+  +:+       +#+        */
+/*   By: apregitz <apregitz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:52:20 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/15 16:04:41 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 16:21:17 by apregitz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,13 @@ static int	check_hit(t_data *data, t_ray_color_vars *vars)
 	range.tmax = INFINITY;
 	if (data->settings.use_bvh)
 	{
-		bvh_ctx = (t_bvh_ctx){data->bvh_root, data->objects,
-			&vars->current_ray, range};
+		bvh_ctx = (t_bvh_ctx){data->bvh_root, data->objects, &vars->current_ray,
+			range};
 		if (world_hit_bvh(&bvh_ctx, &vars->rec))
 			return (1);
 	}
-	if (!data->settings.use_bvh && data->objects
-		&& world_hit(data->objects, &vars->current_ray, range, &vars->rec))
+	if (!data->settings.use_bvh && data->objects && world_hit(data->objects,
+			&vars->current_ray, range, &vars->rec))
 		return (1);
 	return (0);
 }
@@ -59,12 +59,9 @@ static int	process_scatter(t_data *data, t_ray_color_vars *vars)
 	ctx.scattered = &vars->scattered;
 	if (!vars->rec.mat->scatter(vars->rec.mat, &ctx))
 		return (0);
-	vars->direct_contrib = rgb_modulate(vars->throughput,
-			vars->direct_light);
-	vars->final_color = rgb_add(vars->final_color,
-			vars->direct_contrib);
-	vars->throughput = rgb_modulate(vars->throughput,
-			vars->attenuation);
+	vars->direct_contrib = rgb_modulate(vars->throughput, vars->direct_light);
+	vars->final_color = rgb_add(vars->final_color, vars->direct_contrib);
+	vars->throughput = rgb_modulate(vars->throughput, vars->attenuation);
 	if (vars->depth >= 3)
 	{
 		if (russian_roulette(vars))
@@ -89,12 +86,11 @@ static t_rgb	process_hit(t_data *data, t_ray_color_vars *vars)
 
 	if (vars->rec.bump)
 		apply_bump_mapping(vars);
-
 	if (!vars->rec.mat)
 	{
 		simple_shading = calculate_direct_lighting(data, &vars->rec);
-		simple_shading = rgb_add(simple_shading,
-				get_ambient_light(data, &vars->rec));
+		simple_shading = rgb_add(simple_shading, get_ambient_light(data,
+					&vars->rec));
 		vars->final_color = rgb_add(vars->final_color,
 				rgb_modulate(vars->throughput, simple_shading));
 		return (vars->final_color);
@@ -134,8 +130,7 @@ t_rgb	ray_color(t_ray *initial_ray, t_data *data, int max_depth)
 				return (result);
 			continue ;
 		}
-		vars.sky = calculate_final_color(&vars.final_color,
-				&vars.current_ray);
+		vars.sky = calculate_final_color(&vars.final_color, &vars.current_ray);
 		vars.final_color = rgb_add(vars.final_color,
 				rgb_modulate(vars.throughput, vars.sky));
 		return (vars.final_color);

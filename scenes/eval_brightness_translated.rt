@@ -1,0 +1,21 @@
+# Brightness Test Scene - Test 2
+# Translated sphere with sideways lighting (lighting computed after translation)
+
+# Ambient lighting - low to see the effect of spot light
+A   0.1   255,255,255
+
+# Camera - positioned to view translated sphere
+C   0,0,15   0,0,0.5   70
+
+# Spot light positioned to the RIGHT of camera, lighting sphere sideways
+# Light at (8, 0, 12) - to the right of camera position
+# This creates sideways lighting on the translated sphere
+L   8,0,12   0.9   255,255,255
+
+# Translated sphere at position (5, 0, 0) - white/gray for better lighting visibility
+# The halo/lighting should be computed at this translated position
+# Should show clear sideways lighting: bright on right side, darker on left
+sp  5,0,0   4   200,200,200
+
+# Background plane for contrast
+pl  0,0,-8   0,0,1   50,50,80
