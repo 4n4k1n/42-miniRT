@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/24 00:00:00 by nweber            #+#    #+#             */
-/*   Updated: 2025/11/13 13:36:06 by nweber           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:32:09 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	unregister_worker(t_master *master, int socket_fd)
  * @param master pointer to the master server state (socket table consulted)
  * @param cam_update pointer to the camera update payload to broadcast
  */
-static void	send_broadcast(t_master *master, t_camera_update *cam_update)
+static void	send_broadcast(t_master *master, t_update update)
 {
 	int	i;
 
@@ -85,7 +85,7 @@ static void	send_broadcast(t_master *master, t_camera_update *cam_update)
 		{
 			send_header(master->worker_sockets[i], MSG_UPDATE,
 				sizeof(t_update));
-			send_all(master->worker_sockets[i], update,
+			send_all(master->worker_sockets[i], &update,
 				sizeof(t_update));
 			printf("Sent camera update to worker socket %d\n",
 				master->worker_sockets[i]);
@@ -111,7 +111,7 @@ void	broadcast_update(t_master *master, uint32_t update_value)
 	printf("\n=== Broadcasting Update & Restarting Render ===\n");
 	update.updated_varible = get_update_value(update_value);
 	pthread_mutex_lock(&master->workers_lock);
-	send_broadcast(master, &update);
+	send_broadcast(master, update);
 	pthread_mutex_unlock(&master->workers_lock);
 	reset_queue(master->queue);
 	pthread_mutex_lock(&master->restart_lock);
