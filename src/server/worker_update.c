@@ -6,7 +6,7 @@
 /*   By: anakin <anakin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/14 18:57:22 by anakin            #+#    #+#             */
-/*   Updated: 2025/11/14 19:29:12 by anakin           ###   ########.fr       */
+/*   Updated: 2025/11/15 13:20:43 by anakin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ static void	handle_camera_update_rotation(t_data *data, uint32_t update)
 		data->camera.yaw -= 0.1;
 }
 
-static int	handle_camera_update_special(t_data *data, uint32_t update, float *dist)
+static int	handle_camera_update_special(t_data *data, uint32_t update,
+		float *dist)
 {
 	if (update == DIST_INCREASE)
 		return (*dist *= 1.25, 1);
@@ -56,12 +57,13 @@ static int	handle_camera_update_special(t_data *data, uint32_t update, float *di
 		data->settings.aa_state = !data->settings.aa_state;
 		return (0);
 	}
-	else if (update== UPDATE_LIGHT)
+	else if (update == UPDATE_LIGHT)
 		data->settings.light_state = !data->settings.light_state;
 	return (0);
 }
 
-static void	handle_camera_update_movement(t_data *data, uint32_t update, float dist)
+static void	handle_camera_update_movement(t_data *data, uint32_t update,
+		float dist)
 {
 	if (update <= MOVE_RIGHT)
 		handle_camera_update_move(data, update, dist);
@@ -69,8 +71,8 @@ static void	handle_camera_update_movement(t_data *data, uint32_t update, float d
 		data->camera.cords.y += 0.2 * dist;
 	else if (update == MOVE_DOWN)
 		data->camera.cords.y -= 0.2 * dist;
-	else if (update == LOOK_UP || update == LOOK_DOWN
-		|| update == LOOK_LEFT || update == LOOK_RIGHT)
+	else if (update == LOOK_UP || update == LOOK_DOWN || update == LOOK_LEFT
+		|| update == LOOK_RIGHT)
 		handle_camera_update_rotation(data, update);
 }
 
