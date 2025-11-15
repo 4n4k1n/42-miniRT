@@ -1,0 +1,28 @@
+# Brightness Test Scene 1/2
+# Tests: sideways lighting on sphere at origin and translated sphere
+
+# Ambient lighting - low to see the effect of spot light
+A   0.1   255,255,255
+
+# Camera - positioned to view spheres along z-axis
+C   0,0,20   0,0,0.5   70
+
+# TEST 1: Spot light positioned to the left of camera, lighting sphere sideways
+# Light at (-10, 0, 18) - to the left of camera, slightly forward
+# This creates sideways lighting on the sphere at origin
+L   -10,0,18   0.8   255,0,0
+
+# TEST 1: Sphere at origin {0, 0, 0} - red color
+# Should show clear sideways lighting with bright side on left, dark side on right
+sp  0,0,0   3   255,100,100
+
+# TEST 2: Translated sphere - positioned at (8, 0, 0)
+# Same lighting setup, sphere should be properly illuminated after translation
+# The halo/lighting should be computed on the translated position
+sp  8,0,0   3   100,255,100
+
+# Additional light for TEST 2 sphere - positioned to its right for sideways effect
+L   15,0,18   0.7   0,0,255
+
+# Background plane for reference
+pl  0,0,-10   0,0,1   255,255,255
