@@ -1,0 +1,1 @@
+⚡ A lightning-fast, distributed ray tracing renderer with BVH acceleration, multi-threading, and real-time camera control. Render photorealistic images across multiple machines with Lambertian, Metal, and Glass materials. 42 School project featuring 500x performance improvements and near-linear distributed scaling.
